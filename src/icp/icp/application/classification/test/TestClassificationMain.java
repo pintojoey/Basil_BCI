@@ -1,19 +1,8 @@
 package icp.application.classification.test;
 
-import icp.application.classification.ClassificationStatistics;
-import icp.application.classification.FilterAndSubsamplingFeatureExtraction;
-import icp.application.classification.WaveletTransformFeatureExtraction;
-import icp.application.classification.MatchingPursuitFeatureExtraction;
-import icp.application.classification.IERPClassifier;
-import icp.application.classification.IFeatureExtraction;
-import icp.application.classification.MLPClassifier;
-import icp.application.classification.DeepLearning;
+import icp.application.classification.*;
 
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -90,8 +79,7 @@ public class TestClassificationMain {
 			int outputNeurons 	     = 1;
 			ArrayList<Integer> nnStructure = new ArrayList<Integer>();
 			nnStructure.add(numberOfInputNeurons); nnStructure.add(middleNeurons); nnStructure.add(outputNeurons);
-			IERPClassifier classifier = new DeepLearning();//MLPClassifier(nnStructure);
-			//TADY!!!!
+			IERPClassifier classifier = new DBNClassifier();//MLPClassifier(nnStructure);
 			
 			// training
 			System.out.println("Training started.");

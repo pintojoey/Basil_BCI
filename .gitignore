@@ -10,3 +10,5 @@ data/best_class_2_650.txt
 log/
 .gitignore
 /target/
+.idea
+out/

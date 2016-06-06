@@ -1,6 +1,13 @@
 package icp.application.classification;
 
 import org.apache.commons.io.FileUtils;
+import org.deeplearning4j.datasets.iterator.DataSetIterator;
+import org.deeplearning4j.earlystopping.EarlyStoppingConfiguration;
+import org.deeplearning4j.earlystopping.EarlyStoppingResult;
+import org.deeplearning4j.earlystopping.scorecalc.DataSetLossCalculator;
+import org.deeplearning4j.earlystopping.termination.MaxEpochsTerminationCondition;
+import org.deeplearning4j.earlystopping.termination.MaxTimeIterationTerminationCondition;
+import org.deeplearning4j.earlystopping.trainer.EarlyStoppingTrainer;
 import org.deeplearning4j.nn.api.Layer;
 import org.deeplearning4j.nn.api.OptimizationAlgorithm;
 import org.deeplearning4j.nn.conf.GradientNormalization;
@@ -12,16 +19,21 @@ import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.deeplearning4j.nn.weights.WeightInit;
 import org.deeplearning4j.optimize.api.IterationListener;
 import org.deeplearning4j.optimize.listeners.ScoreIterationListener;
+import org.deeplearning4j.ui.weights.HistogramIterationListener;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.dataset.DataSet;
+import org.nd4j.linalg.dataset.SplitTestAndTrain;
 import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.lossfunctions.LossFunctions.LossFunction;
 
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 // creates instance of Stacked Denoising Autoencoder @author Pumprdlici group
 public class SDAClassifier implements IERPClassifier {
@@ -79,14 +91,47 @@ public class SDAClassifier implements IERPClassifier {
         Nd4j.ENFORCE_NUMERICAL_STABILITY = true; // Setting to enforce numerical stability
 
         // Building a neural net
-        build(numRows, numColumns, seed, listenerFreq);
+        MultiLayerConfiguration conf = this.createConfiguration(numRows, numColumns, seed, listenerFreq);
+        model = new MultiLayerNetwork(conf); // Passing built configuration to instance of multilayer network
+        model.init(); // Initialize model
+        //model.setListeners(Collections.singletonList((IterationListener) new ScoreIterationListener(listenerFreq))); // Setting listeners
+       // model.setListeners(new HistogramIterationListener(1));
 
-        System.out.println("Train model....");
-        model.fit(dataSet); // Learning of neural net with training data
+        SplitTestAndTrain testAndTrain = dataSet.splitTestAndTrain(80);
+
+
+        /*EarlyStoppingConfiguration esConf = new EarlyStoppingConfiguration.Builder()
+                .epochTerminationConditions(new MaxEpochsTerminationCondition(30))
+                .iterationTerminationConditions(new MaxTimeIterationTerminationCondition(20, TimeUnit.MINUTES))
+                .scoreCalculator(new DataSetLossCalculator((DataSetIterator) testAndTrain.getTest().iterator(), true))
+                .evaluateEveryNEpochs(5)
+                //.modelSaver(new LocalFileModelSaver(directory))
+                .build();
+
+        EarlyStoppingTrainer trainer = new EarlyStoppingTrainer(esConf,conf,(DataSetIterator) testAndTrain.getTrain().iterator());
+
+        //Conduct early stopping training:
+        EarlyStoppingResult result = trainer.fit();*/
+
+        //System.out.println("Train model....");
+        //model.fit(dataSet); // Learning of neural net with training data
+
+        //Print score vs. epoch
+        /*Map<Integer,Double> scoreVsEpoch = result.getScoreVsEpoch();
+        List<Integer> list = new ArrayList<>(scoreVsEpoch.keySet());
+        Collections.sort(list);
+        System.out.println("Score vs. Epoch:");
+        for( Integer i : list){
+            System.out.println(i + "\t" + scoreVsEpoch.get(i));
+        }
+
+        model = result.getBestModel();*/
+
+        model.fit(testAndTrain.getTrain());
     }
 
     //  initialization of neural net with params. For more info check http://deeplearning4j.org/iris-flower-dataset-tutorial where is more about params
-    private void build(int numRows, int outputNum, int seed, int listenerFreq) {
+    private MultiLayerConfiguration createConfiguration(int numRows, int outputNum, int seed, int listenerFreq) {
         System.out.print("Build model....");
         MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder() // Starting builder pattern
                 .seed(seed) // Locks in weight initialization for tuning
@@ -112,9 +157,7 @@ public class SDAClassifier implements IERPClassifier {
                 .pretrain(true) // Do pre training
                 .backprop(true) // Don't do back proping
                 .build(); // Build on set configuration
-        model = new MultiLayerNetwork(conf); // Passing built configuration to instance of multilayer network
-        model.init(); // Initialize model
-        model.setListeners(Collections.singletonList((IterationListener) new ScoreIterationListener(listenerFreq))); // Setting listeners
+        return conf;
     }
 
     // method for testing the classifier.

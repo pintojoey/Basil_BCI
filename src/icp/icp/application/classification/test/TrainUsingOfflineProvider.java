@@ -3,19 +3,15 @@ package icp.application.classification.test;
 import icp.Const;
 import icp.algorithm.math.ButterWorthFilter;
 import icp.algorithm.math.IFilter;
-import icp.application.classification.FilterAndSubsamplingFeatureExtraction;
 import icp.application.classification.IERPClassifier;
 import icp.application.classification.IFeatureExtraction;
-import icp.application.classification.MLPClassifier;
+import icp.application.classification.SDAClassifier;
 import icp.application.classification.WaveletTransformFeatureExtraction;
 import icp.online.app.DataObjects.MessageType;
 import icp.online.app.DataObjects.ObserverMessage;
 import icp.online.app.EpochMessenger;
 import icp.online.app.OffLineDataProvider;
 
-import org.neuroph.core.data.DataSet;
-
-import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.logging.Level;
@@ -228,7 +224,7 @@ public class TrainUsingOfflineProvider implements Observer {
         nnStructure.add(numberOfInputNeurons);
         nnStructure.add(middleNeurons);
         nnStructure.add(outputNeurons);
-        classifier = new MLPClassifier(nnStructure);
+        classifier = new SDAClassifier();
         //classifier = new SVMClassifier();
         classifier.setFeatureExtraction(fe);
     }

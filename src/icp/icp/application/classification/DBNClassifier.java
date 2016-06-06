@@ -85,13 +85,13 @@ public class DBNClassifier implements IERPClassifier {
     private void build(int numRows, int outputNum, int seed, int listenerFreq) {
         System.out.print("Build model....");
         MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder() // Starting builder pattern
-                .seed(seed) // Locks in weight initialization for tuning
+                //.seed(seed) // Locks in weight initialization for tuning
                 .iterations(this.iterations) // # training iterations predict/classify & backprop
-                .learningRate(0.001) // Optimization step size
+                .learningRate(0.05) // Optimization step size
                 .optimizationAlgo(OptimizationAlgorithm.CONJUGATE_GRADIENT) // Backprop to calculate gradients
                 .l1(0.001).regularization(true).l2(0.0001) // Setting regularization, decreasing model size and speed of learning
                 .useDropConnect(true) // Generalizing neural net, dropping part of connections
-                .list(2) // # NN layers (doesn't count input layer)
+                .list(4) // # NN layers (doesn't count input layer)
                 .layer(0, new RBM.Builder(RBM.HiddenUnit.RECTIFIED, RBM.VisibleUnit.GAUSSIAN) // Setting layer to Restricted Boltzmann machine
                         .nIn(numRows) // # input nodes
                         .nOut(neuronCount) // # fully connected hidden layer nodes. Add list if multiple layers.
@@ -102,14 +102,22 @@ public class DBNClassifier implements IERPClassifier {
                         .updater(Updater.ADAGRAD) // Updater type
                         .dropOut(0.5) // Dropping part of connections
                         .build() // Build on set configuration
+                ).layer(1, new RBM.Builder().nIn(24).nOut(16)
+                        .lossFunction(LossFunction.RMSE_XENT)
+                        .visibleUnit(RBM.VisibleUnit.GAUSSIAN)
+                        .hiddenUnit(RBM.HiddenUnit.GAUSSIAN).build()
+                ).layer(2, new RBM.Builder().nIn(16).nOut(8)
+                        .lossFunction(LossFunction.RMSE_XENT)
+                        .visibleUnit(RBM.VisibleUnit.GAUSSIAN)
+                        .hiddenUnit(RBM.HiddenUnit.GAUSSIAN).build()
                 ) // NN layer type
-                .layer(1, new OutputLayer.Builder(LossFunction.MCXENT) //Override default output layer that classifies input by Iris label using softmax
-                        .nIn(neuronCount) // # input nodes
+                .layer(3, new OutputLayer.Builder(LossFunction.MCXENT) //Override default output layer that classifies input by Iris label using softmax
+                        .nIn(8) // # input nodes
                         .nOut(outputNum) // # output nodes
                         .activation("softmax") // Activation function type
                         .build() // Build on set configuration
                 ) // NN layer type
-                .build(); // Build on set configuration
+                .pretrain(true).backprop(true).build(); // Build on set configuration
         model = new MultiLayerNetwork(conf); // Passing built configuration to instance of multilayer network
         model.init(); // Initialize model
         model.setListeners(new ScoreIterationListener(listenerFreq)); // Setting listeners

@@ -93,6 +93,11 @@
             <version>1.7.19</version>
         </dependency>
         <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>1.6.4</version>
+        </dependency>
+        <dependency>
             <groupId>xalan</groupId>
             <artifactId>xalan</artifactId>
             <version>2.7.2</version>
@@ -251,6 +256,11 @@
             <version>1.0</version>
             <scope>system</scope>
             <systemPath>${basedir}\lib\MPERPs.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>11.0</version>
         </dependency>
     </dependencies>
 </project>

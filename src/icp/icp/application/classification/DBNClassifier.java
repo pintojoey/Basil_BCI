@@ -11,6 +11,7 @@ import org.deeplearning4j.nn.conf.layers.RBM;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.deeplearning4j.nn.weights.WeightInit;
 import org.deeplearning4j.optimize.listeners.ScoreIterationListener;
+import org.deeplearning4j.ui.weights.HistogramIterationListener;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.dataset.DataSet;
 import org.nd4j.linalg.factory.Nd4j;
@@ -120,7 +121,8 @@ public class DBNClassifier implements IERPClassifier {
                 .pretrain(true).backprop(true).build(); // Build on set configuration
         model = new MultiLayerNetwork(conf); // Passing built configuration to instance of multilayer network
         model.init(); // Initialize model
-        model.setListeners(new ScoreIterationListener(listenerFreq)); // Setting listeners
+        //model.setListeners(new ScoreIterationListener(listenerFreq)); // Setting listeners
+        model.setListeners(new HistogramIterationListener(1));
     }
 
     // method for testing the classifier.

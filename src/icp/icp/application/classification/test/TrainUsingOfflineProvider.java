@@ -3,9 +3,9 @@ package icp.application.classification.test;
 import icp.Const;
 import icp.algorithm.math.ButterWorthFilter;
 import icp.algorithm.math.IFilter;
+import icp.application.classification.DBNClassifier;
 import icp.application.classification.IERPClassifier;
 import icp.application.classification.IFeatureExtraction;
-import icp.application.classification.SDAClassifier;
 import icp.application.classification.WaveletTransformFeatureExtraction;
 import icp.online.app.DataObjects.MessageType;
 import icp.online.app.DataObjects.ObserverMessage;
@@ -224,7 +224,8 @@ public class TrainUsingOfflineProvider implements Observer {
         nnStructure.add(numberOfInputNeurons);
         nnStructure.add(middleNeurons);
         nnStructure.add(outputNeurons);
-        classifier = new SDAClassifier();
+        //classifier = new MLPClassifier(nnStructure);
+        classifier = new DBNClassifier();
         //classifier = new SVMClassifier();
         classifier.setFeatureExtraction(fe);
     }

@@ -5,20 +5,9 @@ import icp.Const;
 import icp.algorithm.math.IArtifactDetection;
 import icp.algorithm.math.IFilter;
 //=======
-import icp.application.classification.CorrelationClassifier;
+import icp.application.classification.*;
 //>>>>>>> origin/ZSWI
-import icp.application.classification.DBNClassifier;
-import icp.application.classification.FilterAndSubsamplingFeatureExtraction;
-import icp.application.classification.HHTFeatureExtraction;
-import icp.application.classification.IERPClassifier;
-import icp.application.classification.IFeatureExtraction;
-import icp.application.classification.KNNClassifier;
-import icp.application.classification.LinearDiscriminantAnalysisClassifier;
-import icp.application.classification.MLPClassifier;
-import icp.application.classification.MatchingPursuitFeatureExtraction;
-import icp.application.classification.SDAClassifier;
-import icp.application.classification.SVMClassifier;
-import icp.application.classification.WaveletTransformFeatureExtraction;
+import icp.application.classification.SDAClassifierEarlyStop;
 import icp.application.classification.test.TestClassificationAccuracy;
 import icp.application.classification.test.TrainUsingOfflineProvider;
 import icp.online.app.IDataProvider;
@@ -238,9 +227,9 @@ public class MainFrame extends JFrame implements Observer {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-            } else if (radka.equals("SDAClassifier")) {
+            } else if (radka.equals("SDAClassifierEarlyStop")) {
             	try {
-                    classifier = new SDAClassifier(Integer.parseInt(br
+                    classifier = new SDAClassifierEarlyStop(Integer.parseInt(br
                             .readLine()));
                 } catch (Exception e) {
                     e.printStackTrace();

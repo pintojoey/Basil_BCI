@@ -6,7 +6,7 @@ import icp.application.classification.IFeatureExtraction;
 import icp.application.classification.KNNClassifier;
 import icp.application.classification.LinearDiscriminantAnalysisClassifier;
 import icp.application.classification.MLPClassifier;
-import icp.application.classification.SDAClassifier;
+import icp.application.classification.SDAClassifierEarlyStop;
 import icp.application.classification.SVMClassifier;
 import icp.application.classification.DBNClassifier;
 import icp.application.classification.test.TrainUsingOfflineProvider;
@@ -590,7 +590,7 @@ public class ChangeClassifierFrame extends JFrame {
 				}
 				else if (saeBttn.isSelected()) {
 					int neurons = (Integer) sdaNeuron.getValue();
-					IERPClassifier classifier = new SDAClassifier(neurons);
+					IERPClassifier classifier = new SDAClassifierEarlyStop(neurons);
 					classifier.setFeatureExtraction(fe);
 
 					List<String> classifierParams = new ArrayList<String>();

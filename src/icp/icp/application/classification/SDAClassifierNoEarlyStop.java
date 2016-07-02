@@ -95,19 +95,24 @@ public class SDAClassifierNoEarlyStop implements IERPClassifier {
         System.out.print("Build model....");
         MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder() // Starting builder pattern
                 .seed(seed) // Locks in weight initialization for tuning
-                .gradientNormalization(GradientNormalization.ClipElementWiseAbsoluteValue) // Gradient normalization strategy
-                .gradientNormalizationThreshold(1.0) // Treshold for gradient normalization
+                //.gradientNormalization(GradientNormalization.ClipElementWiseAbsoluteValue) // Gradient normalization strategy
+                //.gradientNormalizationThreshold(1.0) // Treshold for gradient normalization
                 .iterations(iterations) // # training iterations predict/classify & backprop
-                .momentum(0.5) // Momentum rate
-                .momentumAfter(Collections.singletonMap(3, 0.9)) //Map of the iteration to the momentum rate to apply at that iteration
-                .optimizationAlgo(OptimizationAlgorithm.CONJUGATE_GRADIENT) // Backprop to calculate gradients
-                .list(2) // # NN layers (doesn't count input layer)
-                .layer(0, new AutoEncoder.Builder().nIn(numRows).nOut(neuronCount) // Setting layer to Autoencoder
+                //.momentum(0.5) // Momentum rate
+                //.momentumAfter(Collections.singletonMap(3, 0.9)) //Map of the iteration to the momentum rate to apply at that iteration
+                //.optimizationAlgo(OptimizationAlgorithm.CONJUGATE_GRADIENT) // Backprop to calculate gradients
+                .list(3) // # NN layers (doesn't count input layer)
+                .layer(0, new AutoEncoder.Builder().nIn(numRows).nOut(50) // Setting layer to Autoencoder
                         .weightInit(WeightInit.XAVIER).lossFunction(LossFunction.RMSE_XENT) // Weight initialization
                         .corruptionLevel(0.3) // Set level of corruption
                         .build() // Build on set configuration
                 ) // NN layer type
-                .layer(1, new OutputLayer.Builder(LossFunction.NEGATIVELOGLIKELIHOOD)//Override default output layer that classifies input using softmax
+                .layer(1, new AutoEncoder.Builder().nIn(50).nOut(neuronCount)
+                        .weightInit(WeightInit.XAVIER).lossFunction(LossFunction.RMSE_XENT)
+                        .corruptionLevel(0.3)
+
+                        .build())
+                .layer(2, new OutputLayer.Builder(LossFunction.NEGATIVELOGLIKELIHOOD)//Override default output layer that classifies input using softmax
                         .activation("softmax") // Activation function type
                         .nIn(neuronCount) // # input nodes
                         .nOut(outputNum) // # output nodes
@@ -120,7 +125,7 @@ public class SDAClassifierNoEarlyStop implements IERPClassifier {
         model = new MultiLayerNetwork(conf); // Passing built configuration to instance of multilayer network
         model.init(); // Initialize model
         //model.setListeners(Collections.singletonList((IterationListener) new ScoreIterationListener(listenerFreq))); // Setting listeners
-        model.setListeners(new HistogramIterationListener(1));
+        model.setListeners(new HistogramIterationListener(10));
     }
 
     // method for testing the classifier.

@@ -1,6 +1,8 @@
 package icp.application.classification;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.math3.util.IterationListener;
+import org.deeplearning4j.eval.Evaluation;
 import org.deeplearning4j.nn.api.Layer;
 import org.deeplearning4j.nn.api.OptimizationAlgorithm;
 import org.deeplearning4j.nn.conf.MultiLayerConfiguration;
@@ -11,15 +13,18 @@ import org.deeplearning4j.nn.conf.layers.DenseLayer;
 import org.deeplearning4j.nn.conf.layers.OutputLayer;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.deeplearning4j.nn.weights.WeightInit;
+import org.deeplearning4j.optimize.listeners.ScoreIterationListener;
 import org.deeplearning4j.ui.weights.HistogramIterationListener;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.dataset.DataSet;
+import org.nd4j.linalg.dataset.SplitTestAndTrain;
 import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.lossfunctions.LossFunctions;
 
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -77,13 +82,18 @@ public class MLPDeepLearning4j  implements IERPClassifier  {
             INDArray output_data = Nd4j.create(labels); // Create INDArray with labels(targets)
             INDArray input_data = Nd4j.create(features_matrix); // Create INDArray with features(data)
             DataSet dataSet = new DataSet(input_data, output_data); // Create dataSet with features and labels
+            SplitTestAndTrain tat = dataSet.splitTestAndTrain(0.8);
             Nd4j.ENFORCE_NUMERICAL_STABILITY = true; // Setting to enforce numerical stability
 
             // Building a neural net
             build(numRows, numColumns, seed, listenerFreq);
 
             System.out.println("Train model....");
-            model.fit(dataSet); // Learning of neural net with training data
+            model.fit(tat.getTrain()); // Learning of neural net with training data
+
+            Evaluation eval = new Evaluation(numColumns);
+            eval.eval(tat.getTest().getLabels(), model.output(tat.getTest().getFeatureMatrix(), Layer.TrainingMode.TEST));
+            System.out.println(eval.stats());
         }
 
         //  initialization of neural net with params. For more info check http://deeplearning4j.org/iris-flower-dataset-tutorial where is more about params
@@ -92,9 +102,9 @@ public class MLPDeepLearning4j  implements IERPClassifier  {
 
             MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder()
                     .seed(seed)
-                    .iterations(1)
+                    .iterations(10000)
                     .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
-                    .learningRate(0.01)
+                    .learningRate(0.001)
                     .updater(Updater.NESTEROVS).momentum(0.9)
                     .list(2)
                     .layer(0, new DenseLayer.Builder().nIn(numRows).nOut(20)
@@ -105,13 +115,13 @@ public class MLPDeepLearning4j  implements IERPClassifier  {
                             .weightInit(WeightInit.XAVIER)
                             .activation("softmax").weightInit(WeightInit.XAVIER)
                             .nIn(20).nOut(outputNum).build())
-                    .pretrain(false).backprop(true).build();
+                    .pretrain(true).backprop(true).build();
 
 
             model = new MultiLayerNetwork(conf); // Passing built configuration to instance of multilayer network
-            model.init(); // Initialize model
-            //model.setListeners(Collections.singletonList((IterationListener) new ScoreIterationListener(listenerFreq))); // Setting listeners
-            model.setListeners(new HistogramIterationListener(10));
+            model.init(); // Initialize mode
+            model.setListeners(new ScoreIterationListener(10));// Setting listeners
+           // model.setListeners(new HistogramIterationListener(10));
         }
 
         // method for testing the classifier.

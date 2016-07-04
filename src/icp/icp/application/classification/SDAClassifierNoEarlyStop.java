@@ -3,6 +3,7 @@ package icp.application.classification;
 
 
 import org.apache.commons.io.FileUtils;
+import org.deeplearning4j.eval.Evaluation;
 import org.deeplearning4j.nn.api.Layer;
 import org.deeplearning4j.nn.api.OptimizationAlgorithm;
 import org.deeplearning4j.nn.conf.GradientNormalization;
@@ -17,6 +18,7 @@ import org.deeplearning4j.optimize.listeners.ScoreIterationListener;
 import org.deeplearning4j.ui.weights.HistogramIterationListener;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.dataset.DataSet;
+import org.nd4j.linalg.dataset.SplitTestAndTrain;
 import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.lossfunctions.LossFunctions.LossFunction;
 
@@ -81,35 +83,49 @@ public class SDAClassifierNoEarlyStop implements IERPClassifier {
         INDArray output_data = Nd4j.create(labels); // Create INDArray with labels(targets)
         INDArray input_data = Nd4j.create(features_matrix); // Create INDArray with features(data)
         DataSet dataSet = new DataSet(input_data, output_data); // Create dataSet with features and labels
+        SplitTestAndTrain tat = dataSet.splitTestAndTrain(0.8);
         Nd4j.ENFORCE_NUMERICAL_STABILITY = true; // Setting to enforce numerical stability
 
         // Building a neural net
         build(numRows, numColumns, seed, listenerFreq);
 
         System.out.println("Train model....");
-        model.fit(dataSet); // Learning of neural net with training data
+        model.fit(tat.getTrain()); // Learning of neural net with training data
+
+        Evaluation eval = new Evaluation(numColumns);
+        eval.eval(tat.getTest().getLabels(), model.output(tat.getTest().getFeatureMatrix(), Layer.TrainingMode.TEST));
+        //log.info(eval.stats());
+
+        System.out.println(eval.stats());
+
     }
 
     //  initialization of neural net with params. For more info check http://deeplearning4j.org/iris-flower-dataset-tutorial where is more about params
     private void build(int numRows, int outputNum, int seed, int listenerFreq) {
         System.out.print("Build model....");
+        /*StackedDenoisingAutoEncoder sda = new StackedDenoisingAutoEncoder.Builder()
+                               .hiddenLayerSizes(new int[]{600, 500, 400}).withRng(rng)
+                               .useRegularization(true).withL2(2e-5f)
+                               .numberOfInputs(784).numberOfOutPuts(iter.totalOutcomes())
+                               .build();*/
         MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder() // Starting builder pattern
                 .seed(seed) // Locks in weight initialization for tuning
-                //.gradientNormalization(GradientNormalization.ClipElementWiseAbsoluteValue) // Gradient normalization strategy
-                //.gradientNormalizationThreshold(1.0) // Treshold for gradient normalization
-                .iterations(iterations) // # training iterations predict/classify & backprop
-                //.momentum(0.5) // Momentum rate
-                //.momentumAfter(Collections.singletonMap(3, 0.9)) //Map of the iteration to the momentum rate to apply at that iteration
-                //.optimizationAlgo(OptimizationAlgorithm.CONJUGATE_GRADIENT) // Backprop to calculate gradients
+                .learningRate(1e-5)
+                .gradientNormalization(GradientNormalization.ClipElementWiseAbsoluteValue) // Gradient normalization strategy
+                .gradientNormalizationThreshold(1.0) // Treshold for gradient normalization
+                .iterations(100) // # training iterations predict/classify & backprop
+                .momentum(0.5) // Momentum rate
+                .momentumAfter(Collections.singletonMap(3, 0.9)) //Map of the iteration to the momentum rate to apply at that iteration
+                .optimizationAlgo(OptimizationAlgorithm.CONJUGATE_GRADIENT) // Backprop to calculate gradients
                 .list(3) // # NN layers (doesn't count input layer)
                 .layer(0, new AutoEncoder.Builder().nIn(numRows).nOut(50) // Setting layer to Autoencoder
                         .weightInit(WeightInit.XAVIER).lossFunction(LossFunction.RMSE_XENT) // Weight initialization
-                        .corruptionLevel(0.3) // Set level of corruption
+                        .corruptionLevel(0.25) // Set level of corruption
                         .build() // Build on set configuration
                 ) // NN layer type
                 .layer(1, new AutoEncoder.Builder().nIn(50).nOut(neuronCount)
                         .weightInit(WeightInit.XAVIER).lossFunction(LossFunction.RMSE_XENT)
-                        .corruptionLevel(0.3)
+                        .corruptionLevel(0.25)
 
                         .build())
                 .layer(2, new OutputLayer.Builder(LossFunction.NEGATIVELOGLIKELIHOOD)//Override default output layer that classifies input using softmax
@@ -122,10 +138,12 @@ public class SDAClassifierNoEarlyStop implements IERPClassifier {
                 .pretrain(true) // Do pre training
                 .backprop(true) // Don't do back proping
                 .build(); // Build on set configuration
+
+
         model = new MultiLayerNetwork(conf); // Passing built configuration to instance of multilayer network
         model.init(); // Initialize model
-        //model.setListeners(Collections.singletonList((IterationListener) new ScoreIterationListener(listenerFreq))); // Setting listeners
-        model.setListeners(new HistogramIterationListener(10));
+        model.setListeners(Collections.singletonList((IterationListener) new ScoreIterationListener(listenerFreq))); // Setting listeners
+       // model.setListeners(new HistogramIterationListener(10));
     }
 
     // method for testing the classifier.

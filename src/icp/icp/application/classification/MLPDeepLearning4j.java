@@ -101,11 +101,12 @@ public class MLPDeepLearning4j  implements IERPClassifier  {
             System.out.print("Build model....");
 
             MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder()
-                    .seed(seed)
-                    .iterations(10000)
+                    //.seed(seed)
+                    .iterations(2000)
                     .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
-                    .learningRate(0.001)
+                    .learningRate(0.005)
                     .updater(Updater.NESTEROVS).momentum(0.9)
+                    //.l1(1e-1).regularization(true).l2(2e-4)
                     .list(2)
                     .layer(0, new DenseLayer.Builder().nIn(numRows).nOut(20)
                             .weightInit(WeightInit.XAVIER)

@@ -2,7 +2,6 @@ package icp.application.classification;
 
 import org.apache.commons.io.FileUtils;
 import org.canova.api.records.reader.RecordReader;
-import org.deeplearning4j.datasets.iterator.impl.ListDataSetIterator;
 import org.deeplearning4j.eval.Evaluation;
 import org.deeplearning4j.nn.api.Layer;
 import org.deeplearning4j.nn.api.OptimizationAlgorithm;
@@ -17,7 +16,6 @@ import org.deeplearning4j.optimize.listeners.ScoreIterationListener;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.dataset.DataSet;
 import org.nd4j.linalg.dataset.SplitTestAndTrain;
-import org.nd4j.linalg.dataset.api.iterator.DataSetIterator;
 import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.lossfunctions.LossFunctions.LossFunction;
 
@@ -82,7 +80,7 @@ public class DBNClassifier implements IERPClassifier {
         INDArray input_data = Nd4j.create(features_matrix); // Create INDArray with features(data)
         DataSet dataSet = new DataSet(input_data, output_data); // Create dataSet with features and labels
         SplitTestAndTrain tat = dataSet.splitTestAndTrain(0.8);
-        DataSetIterator dataSetIterator = new ListDataSetIterator(dataSet.batchBy(32));
+        //DataSetIterator dataSetIterator = new ListDataSetIterator(dataSet.batchBy(32));
 
 
 
@@ -94,22 +92,26 @@ public class DBNClassifier implements IERPClassifier {
         List<INDArray> testLabels = new ArrayList<>();
         System.out.println("Train model....");
         int k = 0;
-        while (dataSetIterator.hasNext()) {
-            System.out.println("Iteration: " + ++k);
-            model.setListeners(new ScoreIterationListener(1));
-            DataSet cifarDataSet = dataSetIterator.next();
-            SplitTestAndTrain trainAndTest = cifarDataSet.splitTestAndTrain(0.8);
-            DataSet trainInput = trainAndTest.getTrain();
-            testInput.add(trainAndTest.getTest().getFeatureMatrix());
-            testLabels.add(trainAndTest.getTest().getLabels());
-            model.fit(trainInput);
-        }
+//        while (dataSetIterator.hasNext()) {
+//            System.out.println("Iteration: " + ++k);
+//            model.setListeners(new ScoreIterationListener(1));
+//            DataSet cifarDataSet = dataSetIterator.next();
+//            SplitTestAndTrain trainAndTest = cifarDataSet.splitTestAndTrain(0.8);
+//            DataSet trainInput = trainAndTest.getTrain();
+//            testInput.add(trainAndTest.getTest().getFeatureMatrix());
+//            testLabels.add(trainAndTest.getTest().getLabels());
+//            model.fit(trainInput);
+//        }
+        model.fit(tat.getTrain());
         System.out.println("Evaluation");
         Evaluation eval = new Evaluation(numColumns);
-        for (int i = 0; i < testInput.size(); i++) {
-            INDArray output = model.output(testInput.get(i));
-            eval.eval(testLabels.get(i), output);
-        }
+        eval.eval(tat.getTest().getLabels(), model.output(tat.getTest().getFeatureMatrix(), Layer.TrainingMode.TEST));
+        System.out.println(eval.stats());
+//        Evaluation eval = new Evaluation(numColumns);
+//        for (int i = 0; i < testInput.size(); i++) {
+//            INDArray output = model.output(testInput.get(i));
+//            eval.eval(testLabels.get(i), output);
+//        }
 
 
 
@@ -126,24 +128,25 @@ public class DBNClassifier implements IERPClassifier {
         System.out.print("Build model....");
         Nd4j.ENFORCE_NUMERICAL_STABILITY = true;
         MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder() // Starting builder pattern
-                .seed(seed) // Locks in weight initialization for tuning
-                .iterations(this.iterations) // # training iterations predict/classify & backprop
-                .miniBatch(true)
-                .learningRate(0.01) // Optimization step size
+                //.seed(seed) // Locks in weight initialization for tuning
+                .iterations(5000) // # training iterations predict/classify & backprop
+//                .miniBatch(true)
+                .learningRate(0.001) // Optimization step size
                 .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT) // Backprop to calculate gradients
-
-                .l2(0.01).regularization(true).l2(0.001) // Setting regularization, decreasing model size and speed of learning
-                .useDropConnect(true) // Generalizing neural net, dropping part of connections
+                //.updater(Updater.NESTEROVS).momentum(0.9)
+                //.l2(0.01).regularization(true).l2(0.001) // Setting regularization, decreasing model size and speed of learning
+                //.useDropConnect(true) // Generalizing neural net, dropping part of connections
                 .list(2) // # NN layers (doesn't count input layer)
-                .layer(0, new RBM.Builder(RBM.HiddenUnit.RECTIFIED, RBM.VisibleUnit.GAUSSIAN) // Setting layer to Restricted Boltzmann machine
+                .layer(0, new RBM.Builder(RBM.HiddenUnit.GAUSSIAN, RBM.VisibleUnit.GAUSSIAN) // Setting layer to Restricted Boltzmann machine
                         .nIn(numRows) // # input nodes
                         .nOut(neuronCount) // # fully connected hidden layer nodes. Add list if multiple layers.
                         .weightInit(WeightInit.RELU) // Weight initialization
-                        .k(3) // # contrastive divergence iterations
+                        //.k(3) // # contrastive divergence iterations
                         .activation("relu") // Activation function type
                         .lossFunction(LossFunction.RMSE_XENT) // Loss function type
-                        .updater(Updater.ADAGRAD) // Updater type
-                        .dropOut(0.5) // Dropping part of connections
+                        .updater(Updater.ADADELTA) // Updater type
+
+                        //.dropOut(0.5) // Dropping part of connections
                         .build() // Build on set configuration
 //                ).layer(1, new RBM.Builder().nIn(neuronCount).nOut(neuronCount)
 //                        .lossFunction(LossFunction.RMSE_XENT)
@@ -160,15 +163,16 @@ public class DBNClassifier implements IERPClassifier {
 //                        .hiddenUnit(RBM.HiddenUnit.GAUSSIAN).build()
                 ) // NN layer type
                 .layer(1, new OutputLayer.Builder(LossFunction.MCXENT) //Override default output layer that classifies input by Iris label using softmax
-                        .weightInit(WeightInit.RELU) // Weight initialization
+                        //.weightInit(WeightInit.XAVIER) // Weight initialization
                         .nIn(neuronCount) // # input nodes
                         .nOut(outputNum) // # output nodes
                         .activation("softmax") // Activation function type
                         .build() // Build on set configuration
                 ) // NN layer type
-                .pretrain(false).backprop(true).build(); // Build on set configuration
+                .pretrain(true).backprop(true).build(); // Build on set configuration
         model = new MultiLayerNetwork(conf); // Passing built configuration to instance of multilayer network
         model.init(); // Initialize model
+        model.setListeners(new ScoreIterationListener(100));// Setting listeners
         //model.setListeners(new ScoreIterationListener(listenerFreq)); // Setting listeners
     }
 

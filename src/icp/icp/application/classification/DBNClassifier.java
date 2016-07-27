@@ -27,7 +27,7 @@ import java.util.List;
 
 // creates instance of Deep Belief Network @author Pumprdlici group
 public class DBNClassifier implements IERPClassifier {
-    private final int NEURON_COUNT = 24; //default number of neurons
+    private final int NEURON_COUNT = 15; //default number of neurons
     private IFeatureExtraction fe;        //type of feature extraction (MatchingPursuit, FilterAndSubampling or WaveletTransform)
     private MultiLayerNetwork model;    //multi layer neural network with a logistic output layer and multiple hidden neuralNets
     private int iterations;             //Iterations used to classify
@@ -139,12 +139,12 @@ public class DBNClassifier implements IERPClassifier {
                 .list(2) // # NN layers (doesn't count input layer)
                 .layer(0, new RBM.Builder(RBM.HiddenUnit.GAUSSIAN, RBM.VisibleUnit.GAUSSIAN) // Setting layer to Restricted Boltzmann machine
                         .nIn(numRows) // # input nodes
-                        .nOut(neuronCount) // # fully connected hidden layer nodes. Add list if multiple layers.
+                        .nOut(2) // # fully connected hidden layer nodes. Add list if multiple layers.
                         .weightInit(WeightInit.RELU) // Weight initialization
                         //.k(3) // # contrastive divergence iterations
                         .activation("relu") // Activation function type
                         .lossFunction(LossFunction.RMSE_XENT) // Loss function type
-                        .updater(Updater.ADADELTA) // Updater type
+                        .updater(Updater.NESTEROVS).momentum(0.9) // Updater type
 
                         //.dropOut(0.5) // Dropping part of connections
                         .build() // Build on set configuration
@@ -164,7 +164,7 @@ public class DBNClassifier implements IERPClassifier {
                 ) // NN layer type
                 .layer(1, new OutputLayer.Builder(LossFunction.MCXENT) //Override default output layer that classifies input by Iris label using softmax
                         //.weightInit(WeightInit.XAVIER) // Weight initialization
-                        .nIn(neuronCount) // # input nodes
+                        .nIn(2) // # input nodes
                         .nOut(outputNum) // # output nodes
                         .activation("softmax") // Activation function type
                         .build() // Build on set configuration

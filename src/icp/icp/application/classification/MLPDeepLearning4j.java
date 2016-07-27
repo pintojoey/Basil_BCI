@@ -107,21 +107,29 @@ public class MLPDeepLearning4j  implements IERPClassifier  {
                     .learningRate(0.005)
                     .updater(Updater.NESTEROVS).momentum(0.9)
                     //.l1(1e-1).regularization(true).l2(2e-4)
-                    .list(2)
-                    .layer(0, new DenseLayer.Builder().nIn(numRows).nOut(20)
+                    .list(3)
+                    .layer(0, new DenseLayer.Builder().nIn(numRows).nOut(24)
                             .weightInit(WeightInit.XAVIER)
                             .activation("relu")
+                            //.corruptionLevel(0.2) // Set level of corruption
+                            //.lossFunction(LossFunctions.LossFunction.RMSE_XENT)
                             .build())
-                    .layer(1, new OutputLayer.Builder(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
+                    .layer(1, new DenseLayer.Builder().nIn(24).nOut(12)
+                            .weightInit(WeightInit.XAVIER)
+                            .activation("relu")
+                            //.corruptionLevel(0.2) // Set level of corruption
+                            //.lossFunction(LossFunctions.LossFunction.RMSE_XENT)
+                            .build())
+                    .layer(2, new OutputLayer.Builder()
                             .weightInit(WeightInit.XAVIER)
                             .activation("softmax").weightInit(WeightInit.XAVIER)
-                            .nIn(20).nOut(outputNum).build())
+                            .nIn(12).nOut(outputNum).build())
                     .pretrain(true).backprop(true).build();
 
 
             model = new MultiLayerNetwork(conf); // Passing built configuration to instance of multilayer network
             model.init(); // Initialize mode
-            model.setListeners(new ScoreIterationListener(10));// Setting listeners
+            model.setListeners(new ScoreIterationListener(100));// Setting listeners
            // model.setListeners(new HistogramIterationListener(10));
         }
 

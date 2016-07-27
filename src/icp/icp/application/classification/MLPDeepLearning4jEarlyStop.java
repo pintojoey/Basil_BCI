@@ -88,8 +88,8 @@ public class MLPDeepLearning4jEarlyStop implements IERPClassifier {
         INDArray input_data = Nd4j.create(features_matrix); // Create INDArray with features(data)
         DataSet dataSet = new DataSet(input_data, output_data); // Create dataSet with features and labels
         SplitTestAndTrain tat = dataSet.splitTestAndTrain(0.8);
-        DataSetIterator dataSetTrainIterator = new ListDataSetIterator(tat.getTrain().batchBy(32));
-        DataSetIterator dataSetTestIterator = new ListDataSetIterator(tat.getTest().batchBy(32));
+        DataSetIterator dataSetTrainIterator = new ListDataSetIterator(tat.getTrain().batchBy(8));
+        DataSetIterator dataSetTestIterator = new ListDataSetIterator(tat.getTest().batchBy(8));
 
         Nd4j.ENFORCE_NUMERICAL_STABILITY = true; // Setting to enforce numerical stability
 
@@ -102,7 +102,7 @@ public class MLPDeepLearning4jEarlyStop implements IERPClassifier {
 
         EarlyStoppingConfiguration esConf = new EarlyStoppingConfiguration.Builder()
                 //.epochTerminationConditions(new MaxEpochsTerminationCondition(50))
-                .iterationTerminationConditions(new MaxTimeIterationTerminationCondition(2, TimeUnit.MINUTES))
+                .iterationTerminationConditions(new MaxTimeIterationTerminationCondition(15, TimeUnit.MINUTES))
                 .scoreCalculator(new DataSetLossCalculator(dataSetTestIterator, true))
                 .evaluateEveryNEpochs(1)
                 //.modelSaver(new LocalFileModelSaver(directory))
@@ -133,24 +133,21 @@ public class MLPDeepLearning4jEarlyStop implements IERPClassifier {
         System.out.print("Build model....");
 
         MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder()
-                .seed(seed)
-                .iterations(10000)
+                //.seed(seed)
+                .iterations(3000)
                 .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
                 .learningRate(0.001)
                 .updater(Updater.NESTEROVS).momentum(0.9)
-                .list(3)
+                .list(2)
                 .layer(0, new DenseLayer.Builder().nIn(numRows).nOut(20)
                         .weightInit(WeightInit.XAVIER)
                         .activation("relu")
                         .build())
-                .layer(1, new DenseLayer.Builder().nIn(20).nOut(10)
-                        .weightInit(WeightInit.XAVIER)
-                        .activation("relu")
-                        .build())
-                .layer(2, new OutputLayer.Builder(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
+
+                .layer(1, new OutputLayer.Builder(LossFunctions.LossFunction.MCXENT)
                         .weightInit(WeightInit.XAVIER)
                         .activation("softmax").weightInit(WeightInit.XAVIER)
-                        .nIn(10).nOut(outputNum).build())
+                        .nIn(20).nOut(outputNum).build())
                 .pretrain(true).backprop(true).build();
 
 

@@ -92,11 +92,11 @@
             <artifactId>nd4j-api</artifactId>
             <version>0.4-rc3.8</version>
         </dependency>
-	<dependency>
-		<groupId>org.nd4j</groupId>
-		<artifactId>nd4j-x86</artifactId>
- 		<version>0.4-rc3.8</version>
- 	</dependency>
+        <dependency>
+            <groupId>org.nd4j</groupId>
+            <artifactId>nd4j-x86</artifactId>
+            <version>0.4-rc3.8</version>
+        </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
@@ -188,84 +188,21 @@
             <version>4.0.2</version>
         </dependency>
         <dependency>
-            <groupId>avalon</groupId>
-            <artifactId>avalon-framework-cvs</artifactId>
-            <version>20020806</version>
-            <scope>system</scope>
-            <systemPath>${basedir}\lib\avalon-framework-cvs-20020806.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>dsp</groupId>
-            <artifactId>dsp-collection</artifactId>
-            <version>1.0</version>
-            <systemPath>${basedir}\lib\dsp-collection.jar</systemPath>
-            <scope>system</scope>
-        </dependency>
-        <dependency>
-            <groupId>eegdsp</groupId>
-            <artifactId>eegdsp</artifactId>
-            <version>1.0</version>
-            <systemPath>${basedir}\lib\eegdsp.jar</systemPath>
-            <scope>system</scope>
-        </dependency>
-        <dependency>
-            <groupId>EEGLoader</groupId>
-            <artifactId>EEGLoader</artifactId>
-            <version>2.2</version>
-            <systemPath>${basedir}\lib\EEGLoader_2.2.jar</systemPath>
-            <scope>system</scope>
-        </dependency>
-        <dependency>
-            <groupId>fop</groupId>
+            <groupId>org.apache.xmlgraphics</groupId>
             <artifactId>fop</artifactId>
-            <version>1.0</version>
-            <scope>system</scope>
-            <systemPath>${basedir}\lib\fop.jar</systemPath>
+            <version>2.1</version>
         </dependency>
-        <dependency>
-            <groupId>HHT</groupId>
-            <artifactId>HHT</artifactId>
-            <version>1.0</version>
-            <scope>system</scope>
-            <systemPath>${basedir}\lib\HHT.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>javaml</groupId>
-            <artifactId>javaml</artifactId>
-            <version>0.1.5</version>
-            <scope>system</scope>
-            <systemPath>${basedir}\lib\javaml-0.1.5.jar</systemPath>
-        </dependency>
+
+
         <dependency>
             <groupId>tw.edu.ntu.csie</groupId>
             <artifactId>libsvm</artifactId>
             <version>3.17</version>
         </dependency>
         <dependency>
-            <groupId>neuroph</groupId>
-            <artifactId>neuroph-core</artifactId>
-            <version>2.9</version>
-            <scope>system</scope>
-            <systemPath>${basedir}\lib\neuroph-core-2.9.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>weka</groupId>
-            <artifactId>weka</artifactId>
-            <version>1.0</version>
-            <scope>system</scope>
-            <systemPath>${basedir}\lib\weka.jar</systemPath>
-        </dependency>
-        <dependency>
             <groupId>jdom</groupId>
             <artifactId>jdom</artifactId>
             <version>1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>MPERPs</groupId>
-            <artifactId>MPERPs</artifactId>
-            <version>1.0</version>
-            <scope>system</scope>
-            <systemPath>${basedir}\lib\MPERPs.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>
@@ -279,5 +216,75 @@
         </dependency>
 
 
+        <dependency>
+            <groupId>org.apache.avalon.framework</groupId>
+            <artifactId>avalon-framework-api</artifactId>
+            <version>4.3.1</version>
+        </dependency>
+
+
+        <!-- Home made or unavailable on public repositories -->
+        <dependency>
+            <groupId>cz.zcu.kiv</groupId>
+            <artifactId>eegdsp</artifactId>
+            <version>1.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>cz.zcu.kiv</groupId>
+            <artifactId>EEGLoader</artifactId>
+            <version>2.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>cz.zcu.kiv</groupId>
+            <artifactId>HHT</artifactId>
+            <version>1.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>net.sf.javaml</groupId>
+            <artifactId>javaml</artifactId>
+            <version>0.1.5</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.neuroph</groupId>
+            <artifactId>core</artifactId>
+            <version>2.9</version>
+        </dependency>
+
+        <dependency>
+            <groupId>MPERPs</groupId>
+            <artifactId>cz.zcu.kiv</artifactId>
+            <version>1.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.code</groupId>
+            <artifactId>matlabcontrol</artifactId>
+            <version>4.1.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>nz.ac.waikato</groupId>
+            <artifactId>weka</artifactId>
+            <version>1.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>biz.source_code.dsp</groupId>
+            <artifactId>dsp-collection</artifactId>
+            <version>1.0</version>
+        </dependency>
+
     </dependencies>
+
+    <repositories>
+        <!-- Nexus repository for in-house libs and jars not available in public repos -->
+        <repository>
+            <id>releases</id>
+            <url>http://eeg.kiv.zcu.cz:8081/nexus/content/repositories/releases/</url>
+        </repository>
+    </repositories>
 </project>

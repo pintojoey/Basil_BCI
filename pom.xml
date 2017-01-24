@@ -37,6 +37,22 @@
                     <target>1.7</target>
                 </configuration>
             </plugin>
+<plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-jar-plugin</artifactId>
+    <configuration>
+        <archive>
+            <manifest>
+                <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                <addClasspath>true</addClasspath>
+                <mainClass>icp.Main</mainClass>
+            </manifest>
+            <manifestEntries>
+                <Class-Path>.</Class-Path>
+            </manifestEntries>
+        </archive>
+    </configuration>
+</plugin>
         </plugins>
     </build>
     <dependencies>

@@ -261,7 +261,7 @@
         </dependency>
 
         <dependency>
-            <groupId>com.google.code</groupId>
+            <groupId>com.google.code.matlabcontrol</groupId>
             <artifactId>matlabcontrol</artifactId>
             <version>4.1.0</version>
         </dependency>

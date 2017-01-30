@@ -8,7 +8,7 @@
     <version>0.1.0</version>
 
     <build>
-        <sourceDirectory>${basedir}\src\icp</sourceDirectory>
+        <sourceDirectory>src</sourceDirectory>
         <testSourceDirectory>${basedir}\test</testSourceDirectory>
         <plugins>
             <plugin>

@@ -1,10 +1,10 @@
 package artifactDetection;
 
-import static org.junit.Assert.*;
 import icp.algorithm.math.GradientArtifactDet;
 
 import org.junit.Before;
 import org.junit.Test;
+import static org.junit.Assert.*;
 
 public class GradientArtifactDetTest {
 

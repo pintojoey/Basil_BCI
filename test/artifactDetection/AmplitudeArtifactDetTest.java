@@ -1,10 +1,10 @@
 package artifactDetection;
 
-import static org.junit.Assert.*;
 import icp.algorithm.math.AmplitudeArtifactDet;
 
 import org.junit.Before;
 import org.junit.Test;
+import static org.junit.Assert.*;
 
 public class AmplitudeArtifactDetTest {
 

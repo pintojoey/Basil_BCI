@@ -38,7 +38,8 @@ public class Main {
         out.println("-h   - print help," );
         out.println("-gui - run graphical user interface (GUI)," );
         out.println("-opt - run classifier optimization process," );
-        out.println("<no parameters>  - print help and run GUI." );
+        out.println("<no parameters>  - print help and run GUI," );
+        out.println("other - print help." );
     }
 
 

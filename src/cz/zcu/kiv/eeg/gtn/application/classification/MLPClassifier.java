@@ -223,7 +223,8 @@ public class MLPClassifier extends ERPClassifierAdapter implements LearningEvent
 
     @Override
     public void load(String file) {
-        this.neuralNetwork = NeuralNetwork.load(file);
+    	System.out.println("MLP: loading from file: " + file);
+        this.neuralNetwork = NeuralNetwork.createFromFile(file);
     }
     
     @Override

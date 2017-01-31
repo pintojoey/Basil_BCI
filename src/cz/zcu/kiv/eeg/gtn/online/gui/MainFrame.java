@@ -152,8 +152,8 @@ public class MainFrame extends JFrame implements Observer {
         try {
             FileReader fr = new FileReader(f);
             BufferedReader br = new BufferedReader(fr);
-            String radka = br.readLine();
-            if (radka.equals("FilterAndSubsamplingFeatureExtraction")) {
+            String row = br.readLine();
+            if (row.equals("FilterAndSubsamplingFeatureExtraction")) {
                 fe = new FilterAndSubsamplingFeatureExtraction();
                 ((FilterAndSubsamplingFeatureExtraction) fe)
                         .setEpochSize(Integer.parseInt(br.readLine()));
@@ -161,7 +161,7 @@ public class MainFrame extends JFrame implements Observer {
                         .setSubsampling(Integer.parseInt(br.readLine()));
                 ((FilterAndSubsamplingFeatureExtraction) fe)
                         .setSkipSamples(Integer.parseInt(br.readLine()));
-            } else if (radka
+            } else if (row
                     .equalsIgnoreCase("WaveletTransformFeatureExtraction")) {
                 fe = new WaveletTransformFeatureExtraction();
                 ((WaveletTransformFeatureExtraction) fe).setEpochSize(Integer
@@ -172,7 +172,7 @@ public class MainFrame extends JFrame implements Observer {
                         .parseInt(br.readLine()));
                 ((WaveletTransformFeatureExtraction) fe).setFeatureSize(Integer
                         .parseInt(br.readLine()));
-            } else if (radka.equals("MatchingPursuitFeatureExtraction")) {
+            } else if (row.equals("MatchingPursuitFeatureExtraction")) {
                 fe = new MatchingPursuitFeatureExtraction();
                 ((MatchingPursuitFeatureExtraction) fe).setEpochSize(Integer
                         .parseInt(br.readLine()));
@@ -180,7 +180,7 @@ public class MainFrame extends JFrame implements Observer {
                         .parseInt(br.readLine()));
                 ((MatchingPursuitFeatureExtraction) fe).setSkipSamples(Integer
                         .parseInt(br.readLine()));
-            } else if (radka.equals("HHTFeatureExtraction")) {
+            } else if (row.equals("HHTFeatureExtraction")) {
                 fe = new HHTFeatureExtraction();
                 ((HHTFeatureExtraction) fe).setEpochSize(Integer
                         .parseInt(br.readLine()));
@@ -201,34 +201,34 @@ public class MainFrame extends JFrame implements Observer {
                 ((HHTFeatureExtraction) fe).setTypeOfFeatures(Integer
                         .parseInt(br.readLine()));
             }
-            radka = br.readLine();
-            if (radka.equals("MLPClassifier")) {
+            row = br.readLine();
+            if (row.equals("MLPClassifier")) {
                 ArrayList<Integer> nnStructure = new ArrayList<Integer>();
                 nnStructure.add(Integer.parseInt(br.readLine()));
                 nnStructure.add(Integer.parseInt(br.readLine()));
                 nnStructure.add(Integer.parseInt(br.readLine()));
                 classifier = new MLPClassifier(nnStructure);
-            } else if (radka.equals("KNNClassifier")) {
+            } else if (row.equals("KNNClassifier")) {
                 classifier = new KNNClassifier(Integer.parseInt(br.readLine()));
-            } else if (radka.equals("LinearDiscriminantAnalysisClassifier")) {
+            } else if (row.equals("LinearDiscriminantAnalysisClassifier")) {
                 classifier = new LinearDiscriminantAnalysisClassifier();
-            } else if (radka.equals("SVMClassifier")) {
+            } else if (row.equals("SVMClassifier")) {
                 try {
                     classifier = new SVMClassifier(Double.parseDouble(br
                             .readLine()));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-            } else if (radka.equals("CorrelationClassifier")) {
+            } else if (row.equals("CorrelationClassifier")) {
                 classifier = new CorrelationClassifier();
-            } else if (radka.equals("DBNClassifier")) {
+            } else if (row.equals("DBNClassifier")) {
             	try {
                     classifier = new DBNClassifier(Integer.parseInt(br
                             .readLine()));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-            } else if (radka.equals("SDAClassifierEarlyStop")) {
+            } else if (row.equals("SDAClassifierEarlyStop")) {
             	try {
                     classifier = new SDAClassifierEarlyStop(Integer.parseInt(br
                             .readLine()));

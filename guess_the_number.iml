@@ -1,5 +1,62 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module org.jetbrains.idea.maven.project.MavenProjectsManager.isMavenModule="true" type="JAVA_MODULE" version="4">
+  <component name="FacetManager">
+    <facet type="Spring" name="Spring">
+      <configuration>
+        <fileset id="fileset" name="Spring Application Context" removed="false">
+          <file>file://$MODULE_DIR$/configs/emd/SDcfg8.xml</file>
+          <file>file://$MODULE_DIR$/configs/classification/classifiers.xml</file>
+          <file>file://$MODULE_DIR$/configs/data/vhdrTransform.xml</file>
+          <file>file://$MODULE_DIR$/configs/emd/SDcfg4_1.xml</file>
+          <file>file://$MODULE_DIR$/configs/emd/SDcfg5.xml</file>
+          <file>file://$MODULE_DIR$/configs/emd/CauchyCfg9.xml</file>
+          <file>file://$MODULE_DIR$/configs/emd/SDcfg4_2.xml</file>
+          <file>file://$MODULE_DIR$/configs/emd/SDcfg3.xml</file>
+          <file>file://$MODULE_DIR$/configs/classification/10_cz_CauchyCfg4_FreqAmpl5.xml</file>
+          <file>file://$MODULE_DIR$/configs/emd/CauchyCfg6_2.xml</file>
+          <file>file://$MODULE_DIR$/configs/cfgGen/cfg.xml</file>
+          <file>file://$MODULE_DIR$/configs/emd/CauchyCfg6_1.xml</file>
+          <file>file://$MODULE_DIR$/configs/emd/SDcfg6.xml</file>
+          <file>file://$MODULE_DIR$/configs/emd/CauchyCfg6.xml</file>
+          <file>file://$MODULE_DIR$/configs/emd/testEmdCfg.xml</file>
+          <file>file://$MODULE_DIR$/configs/emd/CauchyCfg3.xml</file>
+          <file>file://$MODULE_DIR$/configs/emd/CauchyCfg5.xml</file>
+          <file>file://$MODULE_DIR$/configs/classification/resultsViewStupidExcluded2.xml</file>
+          <file>file://$MODULE_DIR$/configs/classification/10_cz_baseline_CauchyCfg4_FreqAmpl4.xml</file>
+          <file>file://$MODULE_DIR$/configs/sifting/imfsCounter.xml</file>
+          <file>file://$MODULE_DIR$/configs/emd/CauchyCfg2.xml</file>
+          <file>file://$MODULE_DIR$/configs/emd/SDcfg4_3.xml</file>
+          <file>file://$MODULE_DIR$/configs/emd/EmdForTestingSignal.xml</file>
+          <file>file://$MODULE_DIR$/configs/sifting/mirrorVsFirst.xml</file>
+          <file>file://$MODULE_DIR$/configs/emd/CauchyCfg7.xml</file>
+          <file>file://$MODULE_DIR$/configs/emd/Cauchybest.xml</file>
+          <file>file://$MODULE_DIR$/configs/emd/SDcfg4.xml</file>
+          <file>file://$MODULE_DIR$/configs/classification/runAll.xml</file>
+          <file>file://$MODULE_DIR$/configs/classification/runAllTesting.xml</file>
+          <file>file://$MODULE_DIR$/configs/emd/SDcfg2.xml</file>
+          <file>file://$MODULE_DIR$/configs/emd/CauchyCfg10.xml</file>
+          <file>file://$MODULE_DIR$/configs/classification/classificationRun.xml</file>
+          <file>file://$MODULE_DIR$/configs/classification/runCfgs.xml</file>
+          <file>file://$MODULE_DIR$/configs/classification/resultsViewStupidExcluded.xml</file>
+          <file>file://$MODULE_DIR$/configs/emd/CauchyCfg6_3.xml</file>
+          <file>file://$MODULE_DIR$/configs/sifting/delta.xml</file>
+          <file>file://$MODULE_DIR$/configs/emd/SDcfg7.xml</file>
+          <file>file://$MODULE_DIR$/configs/emd/CauchyCfg1.xml</file>
+          <file>file://$MODULE_DIR$/configs/emd/SDcfg1.xml</file>
+          <file>file://$MODULE_DIR$/configs/classification/10_cz_baseline_SDCfg2_FreqAmpl5.xml</file>
+          <file>file://$MODULE_DIR$/configs/classification/10_cz_baseline_SDCfg2_FreqAmpl4.xml</file>
+          <file>file://$MODULE_DIR$/configs/classification/resultsView.xml</file>
+          <file>file://$MODULE_DIR$/configs/classification/10_cz_baseline_CauchyCfg4_FreqAmpl3.xml</file>
+          <file>file://$MODULE_DIR$/configs/classification/10_cz_CauchyCfg4_FreqAmpl4.xml</file>
+          <file>file://$MODULE_DIR$/configs/emd/CauchyCfg4.xml</file>
+          <file>file://$MODULE_DIR$/configs/classification/10_cz_baseline_CauchyCfg4_FreqAmpl5.xml</file>
+          <file>file://$MODULE_DIR$/configs/emd/CauchyCfg8.xml</file>
+          <file>file://$MODULE_DIR$/configs/classification/allPreview.xml</file>
+          <file>file://$MODULE_DIR$/configs/sifting/testsCfgs.xml</file>
+        </fileset>
+      </configuration>
+    </facet>
+  </component>
   <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_7" inherit-compiler-output="false">
     <output url="file://$MODULE_DIR$/target/classes" />
     <output-test url="file://$MODULE_DIR$/target/test-classes" />
@@ -10,6 +67,35 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="Maven: org.apache.xmlgraphics:fop:2.1" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.xmlgraphics:xmlgraphics-commons:2.1" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.xmlgraphics:batik-svg-dom:1.8" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.xmlgraphics:batik-css:1.8" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.xmlgraphics:batik-dom:1.8" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.xmlgraphics:batik-parser:1.8" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.xmlgraphics:batik-util:1.8" level="project" />
+    <orderEntry type="library" name="Maven: xml-apis:xml-apis-ext:1.3.04" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.xmlgraphics:batik-bridge:1.8" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.xmlgraphics:batik-anim:1.8" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.xmlgraphics:batik-script:1.8" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.xmlgraphics:batik-xml:1.8" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.xmlgraphics:batik-awt-util:1.8" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.xmlgraphics:batik-gvt:1.8" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.xmlgraphics:batik-transcoder:1.8" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.xmlgraphics:batik-svggen:1.8" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.xmlgraphics:batik-extension:1.8" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.xmlgraphics:batik-ext:1.8" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.avalon.framework:avalon-framework-impl:4.3.1" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.avalon.framework:avalon-framework-api:4.3.1" level="project" />
+    <orderEntry type="library" name="Maven: cz.zcu.kiv:eegdsp:1.0" level="project" />
+    <orderEntry type="library" name="Maven: cz.zcu.kiv:EEGLoader:2.2" level="project" />
+    <orderEntry type="library" name="Maven: cz.zcu.kiv:HHT:1.0" level="project" />
+    <orderEntry type="library" name="Maven: net.sf.javaml:javaml:0.1.5" level="project" />
+    <orderEntry type="library" name="Maven: org.neuroph:core:2.9" level="project" />
+    <orderEntry type="library" name="Maven: MPERPs:cz.zcu.kiv:1.0" level="project" />
+    <orderEntry type="library" name="Maven: com.google.code.matlabcontrol:matlabcontrol:4.1.0" level="project" />
+    <orderEntry type="library" name="Maven: nz.ac.waikato:weka:1.0" level="project" />
+    <orderEntry type="library" name="Maven: biz.source_code.dsp:dsp-collection:1.0" level="project" />
     <orderEntry type="library" name="Maven: batik:batik:1.5" level="project" />
     <orderEntry type="library" name="Maven: org.deeplearning4j:deeplearning4j-cli-api:0.4-rc3.8" level="project" />
     <orderEntry type="library" name="Maven: args4j:args4j:2.0.29" level="project" />

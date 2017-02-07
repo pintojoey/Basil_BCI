@@ -16,6 +16,7 @@ public class OptimizeMLP {
 		double accuracy = 0;
 		List<Double> accuracies = new ArrayList<Double>();
 		double maxAccuracy = 0;
+		double minAccuracy = Double.MAX_VALUE;
 		Random random = new Random(System.nanoTime());
 		while (accuracy < 0.9) { 
 			int numberOfIters = 10; // +random.nextInt(2000)
@@ -51,7 +52,13 @@ public class OptimizeMLP {
 			else {
 				System.out.println("No record: current accuracy = " + accuracy * 100 + ", max_accuracy = " + maxAccuracy * 100);
 			}
-			
+
+			if(minAccuracy > accuracy){
+				minAccuracy = accuracy;
+			}
+			if(minAccuracy != Double.MAX_VALUE)
+				System.out.print("Min value = " + minAccuracy*100+" ");
+
 			System.out.println ("Average value = " + calculateAverage (accuracies) * 100 + " %, calculated from " + accuracies.size() + " samples.");
 			
 			

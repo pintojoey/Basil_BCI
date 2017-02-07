@@ -1,27 +1,8 @@
 package icp.application.classification;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInput;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutput;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
-import java.util.List;
-
-import libsvm.svm;
-
-import org.apache.commons.lang.NotImplementedException;
-
 import icp.Const;
+import libsvm.svm;
+import org.apache.commons.lang.NotImplementedException;
 import weka.classifiers.Classifier;
 import weka.classifiers.functions.LibSVM;
 import weka.core.Attribute;
@@ -32,6 +13,9 @@ import weka.core.converters.ArffLoader.ArffReader;
 import weka.core.converters.ArffSaver;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.NumericToNominal;
+
+import java.io.*;
+import java.util.List;
 
 /**
  * Class using WEKA library for SVM classification.
@@ -72,7 +56,7 @@ public class SVMClassifier extends ERPClassifierAdapter {
 		this.classifier = new LibSVM();
 		String[] options;
 		try {
-			options = weka.core.Utils.splitOptions("-S 0 -K 0 -C 425 -M 40.0 -W 1 -seed 1");
+			options = weka.core.Utils.splitOptions("-S 0 -K 2 -C 425 -M 40.0 -W 1 -seed 1");
 			this.classifier.setOptions(options);
 		} catch (Exception e) {
 			throw new IllegalArgumentException("Wrong input value! Check that input values are correct.");
@@ -186,7 +170,7 @@ public class SVMClassifier extends ERPClassifierAdapter {
 	@Override
 	public double classify(double[][] epoch) {
 		double[] feature = fe.extractFeatures(epoch);
-		loadDataset();
+		//loadDataset();
 		load(Const.TRAINING_FILE_NAME);
 		Instance instance = new Instance(1, feature);
 		instances.add(instance);

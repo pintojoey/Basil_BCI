@@ -134,6 +134,7 @@ public class MLPDeepLearning4jEarlyStop implements IERPClassifier {
         System.out.println("Score at best epoch: " + result.getBestModelScore());
 
 //Get the best model
+        //TODO
         //model = result.getBestModel();
         model1 = result.getBestModel();
 

@@ -116,8 +116,9 @@ public class SDAClassifierEarlyStop implements IERPClassifier {
 
         //Conduct early stopping training:
         EarlyStoppingResult result = trainer.fit();
-        model = result.getBestModel();
+        //model = result.getBestModel();
 
+        //TODO
         //model.fit(testAndTrain.getTrain());
     }
 
@@ -132,7 +133,7 @@ public class SDAClassifierEarlyStop implements IERPClassifier {
                 .momentum(0.5) // Momentum rate
                 .momentumAfter(Collections.singletonMap(3, 0.9)) //Map of the iteration to the momentum rate to apply at that iteration
                 .optimizationAlgo(OptimizationAlgorithm.CONJUGATE_GRADIENT) // Backprop to calculate gradients
-                .list(2) // # NN layers (doesn't count input layer)
+                .list() // # NN layers (doesn't count input layer)
                 .layer(0, new AutoEncoder.Builder().nIn(numRows).nOut(neuronCount) // Setting layer to Autoencoder
                         .weightInit(WeightInit.XAVIER).lossFunction(LossFunction.RMSE_XENT) // Weight initialization
                         .corruptionLevel(0.3) // Set level of corruption

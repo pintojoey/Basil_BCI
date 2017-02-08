@@ -114,7 +114,7 @@ public class SDAClassifierNoEarlyStop  implements IERPClassifier  {
                 .updater(Updater.NESTEROVS).momentum(0.9)
                 //.regularization(true).dropOut(0.99)
                // .regularization(true).l2(1e-4)
-                .list(3)
+                .list()
                 .layer(0, new AutoEncoder.Builder().nIn(numRows).nOut(24)
                         .weightInit(WeightInit.XAVIER)
                         .activation("relu")

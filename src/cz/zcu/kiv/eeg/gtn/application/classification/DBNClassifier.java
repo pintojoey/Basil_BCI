@@ -138,7 +138,7 @@ public class DBNClassifier implements IERPClassifier {
                 //.updater(Updater.NESTEROVS).momentum(0.9)
                 //.l2(0.01).regularization(true).l2(0.001) // Setting regularization, decreasing model size and speed of learning
                 //.useDropConnect(true) // Generalizing neural net, dropping part of connections
-                .list(2) // # NN layers (doesn't count input layer)
+                .list() // # NN layers (doesn't count input layer)
                 .layer(0, new RBM.Builder(RBM.HiddenUnit.GAUSSIAN, RBM.VisibleUnit.GAUSSIAN) // Setting layer to Restricted Boltzmann machine
                         .nIn(numRows) // # input nodes
                         .nOut(2) // # fully connected hidden layer nodes. Add list if multiple layers.

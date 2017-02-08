@@ -1,5 +1,7 @@
 package cz.zcu.kiv.eeg.gtn.application.classification;
 
+import org.nd4j.linalg.activations.impl.*;
+import org.nd4j.linalg.dataset.api.iterator.DataSetIterator;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.math3.util.IterationListener;
 import org.deeplearning4j.eval.Evaluation;
@@ -20,8 +22,11 @@ import org.nd4j.linalg.dataset.DataSet;
 import org.nd4j.linalg.dataset.SplitTestAndTrain;
 import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.lossfunctions.LossFunctions;
+import org.deeplearning4j.nn.*;
+
 
 import cz.zcu.kiv.eeg.gtn.application.featureextraction.IFeatureExtraction;
+
 
 import java.io.*;
 import java.nio.file.Files;
@@ -109,22 +114,22 @@ public class MLPDeepLearning4j  implements IERPClassifier  {
                     .learningRate(0.005)
                     .updater(Updater.NESTEROVS).momentum(0.9)
                     //.l1(1e-1).regularization(true).l2(2e-4)
-                    .list(3)
+                    .list()
                     .layer(0, new DenseLayer.Builder().nIn(numRows).nOut(24)
                             .weightInit(WeightInit.XAVIER)
-                            .activation("relu")
+
                             //.corruptionLevel(0.2) // Set level of corruption
                             //.lossFunction(LossFunctions.LossFunction.RMSE_XENT)
                             .build())
                     .layer(1, new DenseLayer.Builder().nIn(24).nOut(12)
                             .weightInit(WeightInit.XAVIER)
-                            .activation("relu")
+                            .activation(new ActivationReLU())
                             //.corruptionLevel(0.2) // Set level of corruption
                             //.lossFunction(LossFunctions.LossFunction.RMSE_XENT)
                             .build())
                     .layer(2, new OutputLayer.Builder()
                             .weightInit(WeightInit.XAVIER)
-                            .activation("softmax").weightInit(WeightInit.XAVIER)
+                            .activation(new ActivationSoftmax()).weightInit(WeightInit.XAVIER)
                             .nIn(12).nOut(outputNum).build())
                     .pretrain(true).backprop(true).build();
 

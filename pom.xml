@@ -72,7 +72,7 @@
 		<dependency>
 			<groupId>org.deeplearning4j</groupId>
 			<artifactId>deeplearning4j-core</artifactId>
-			<version>0.4-rc3.8</version>
+			<version>0.7.2</version>
 		</dependency>
 		<dependency>
 			<groupId>org.deeplearning4j</groupId>
@@ -107,14 +107,14 @@
 		<dependency>
 			<groupId>org.nd4j</groupId>
 			<artifactId>nd4j-api</artifactId>
-			<version>0.4-rc3.8</version>
+			<version>0.7.2</version>
 		</dependency>
 		<dependency>
 			<groupId>org.nd4j</groupId>
 			<artifactId>nd4j-x86</artifactId>
 			<version>0.4-rc3.8</version>
 		</dependency>
-		<dependency>
+				<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 			<version>1.7.19</version>

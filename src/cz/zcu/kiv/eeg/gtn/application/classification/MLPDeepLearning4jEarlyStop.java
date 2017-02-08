@@ -11,6 +11,7 @@ import org.deeplearning4j.earlystopping.termination.MaxTimeIterationTerminationC
 import org.deeplearning4j.earlystopping.trainer.EarlyStoppingTrainer;
 import org.deeplearning4j.eval.Evaluation;
 import org.deeplearning4j.nn.api.Layer;
+import org.deeplearning4j.nn.api.Model;
 import org.deeplearning4j.nn.api.OptimizationAlgorithm;
 import org.deeplearning4j.nn.conf.MultiLayerConfiguration;
 import org.deeplearning4j.nn.conf.NeuralNetConfiguration;
@@ -24,7 +25,7 @@ import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.dataset.DataSet;
 import org.nd4j.linalg.dataset.SplitTestAndTrain;
 import org.nd4j.linalg.factory.Nd4j;
-import org.nd4j.linalg.lossfunctions.LossFunctions;
+import org.nd4j.linalg.lossfunctions.LossFunctions.LossFunction;
 
 import cz.zcu.kiv.eeg.gtn.application.featureextraction.IFeatureExtraction;
 
@@ -43,6 +44,10 @@ public class MLPDeepLearning4jEarlyStop implements IERPClassifier {
     private MultiLayerNetwork model;            //multi layer neural network with a logistic output layer and multiple hidden neuralNets
     private int neuronCount;                    // Number of neurons
     private int iterations;                    //Iterations used to classify
+    private Model model1;                       //model from new lbraries
+    //TODO
+    DataSetIterator myTestData =null;
+    DataSetIterator myTrainData = null;
 
     /*Default constructor*/
     public MLPDeepLearning4jEarlyStop() {
@@ -90,9 +95,15 @@ public class MLPDeepLearning4jEarlyStop implements IERPClassifier {
         INDArray input_data = Nd4j.create(features_matrix); // Create INDArray with features(data)
         DataSet dataSet = new DataSet(input_data, output_data); // Create dataSet with features and labels
         SplitTestAndTrain tat = dataSet.splitTestAndTrain(0.8);
+
+        /*
+
+        NOT WORKING WITH NEW LIBRARY
+
         DataSetIterator dataSetTrainIterator = new ListDataSetIterator(tat.getTrain().batchBy(8));
         DataSetIterator dataSetTestIterator = new ListDataSetIterator(tat.getTest().batchBy(8));
 
+        */
         Nd4j.ENFORCE_NUMERICAL_STABILITY = true; // Setting to enforce numerical stability
 
         // Building a neural net
@@ -105,12 +116,12 @@ public class MLPDeepLearning4jEarlyStop implements IERPClassifier {
         EarlyStoppingConfiguration esConf = new EarlyStoppingConfiguration.Builder()
                 //.epochTerminationConditions(new MaxEpochsTerminationCondition(50))
                 .iterationTerminationConditions(new MaxTimeIterationTerminationCondition(15, TimeUnit.MINUTES))
-                .scoreCalculator(new DataSetLossCalculator(dataSetTestIterator, true))
+                .scoreCalculator(new DataSetLossCalculator(myTestData, true))
                 .evaluateEveryNEpochs(1)
                 //.modelSaver(new LocalFileModelSaver(directory))
                 .build();
 
-        EarlyStoppingTrainer trainer = new EarlyStoppingTrainer(esConf,conf,dataSetTrainIterator);
+        EarlyStoppingTrainer trainer = new EarlyStoppingTrainer(esConf,conf,myTrainData);
 
 //Conduct early stopping training:
         EarlyStoppingResult result = trainer.fit();
@@ -122,11 +133,14 @@ public class MLPDeepLearning4jEarlyStop implements IERPClassifier {
         System.out.println("Best epoch number: " + result.getBestModelEpoch());
         System.out.println("Score at best epoch: " + result.getBestModelScore());
 
-//Get the best model:
-        model = result.getBestModel();
+//Get the best model
+        //model = result.getBestModel();
+        model1 = result.getBestModel();
+
 
         Evaluation eval = new Evaluation(numColumns);
-        eval.eval(tat.getTest().getLabels(), model.output(tat.getTest().getFeatureMatrix(), Layer.TrainingMode.TEST));
+        //eval.eval(tat.getTest().getLabels(), model.output(tat.getTest().getFeatureMatrix(), Layer.TrainingMode.TEST));
+
         System.out.println(eval.stats());
     }
 
@@ -140,13 +154,13 @@ public class MLPDeepLearning4jEarlyStop implements IERPClassifier {
                 .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
                 .learningRate(0.001)
                 .updater(Updater.NESTEROVS).momentum(0.9)
-                .list(2)
+                .list()
                 .layer(0, new DenseLayer.Builder().nIn(numRows).nOut(20)
                         .weightInit(WeightInit.XAVIER)
                         .activation("relu")
                         .build())
 
-                .layer(1, new OutputLayer.Builder(LossFunctions.LossFunction.MCXENT)
+                .layer(1, new OutputLayer.Builder(LossFunction.MCXENT)
                         .weightInit(WeightInit.XAVIER)
                         .activation("softmax").weightInit(WeightInit.XAVIER)
                         .nIn(20).nOut(outputNum).build())

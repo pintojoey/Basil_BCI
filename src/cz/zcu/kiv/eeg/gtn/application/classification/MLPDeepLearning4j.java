@@ -27,6 +27,7 @@ import org.deeplearning4j.nn.*;
 
 
 import cz.zcu.kiv.eeg.gtn.application.featureextraction.IFeatureExtraction;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 
 import java.io.*;
@@ -155,13 +156,13 @@ public class MLPDeepLearning4j implements IERPClassifier {
     // method not implemented. For loading use load(String file)
     @Override
     public void load(InputStream is) {
-
+        throw new NotImplementedException();
     }
 
     // method not implemented. For saving use method save(String file)
     @Override
     public void save(OutputStream dest) {
-
+        throw new NotImplementedException();
     }
 
 

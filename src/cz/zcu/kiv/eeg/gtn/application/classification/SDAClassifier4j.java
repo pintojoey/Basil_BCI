@@ -24,6 +24,7 @@ import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.lossfunctions.LossFunctions;
 
 import cz.zcu.kiv.eeg.gtn.application.featureextraction.IFeatureExtraction;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -155,13 +156,13 @@ public class SDAClassifier4j implements IERPClassifier  {
     // method not implemented. For loading use load(String file)
     @Override
     public void load(InputStream is) {
-
+        throw new NotImplementedException();
     }
 
     // method not implemented. For saving use method save(String file)
     @Override
     public void save(OutputStream dest) {
-
+    throw new NotImplementedException();
     }
 
     /**

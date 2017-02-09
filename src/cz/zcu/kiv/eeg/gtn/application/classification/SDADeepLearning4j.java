@@ -1,42 +1,36 @@
 package cz.zcu.kiv.eeg.gtn.application.classification;
 
+import cz.zcu.kiv.eeg.gtn.application.featureextraction.IFeatureExtraction;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.math3.util.IterationListener;
 import org.deeplearning4j.eval.Evaluation;
 import org.deeplearning4j.nn.api.Layer;
 import org.deeplearning4j.nn.api.OptimizationAlgorithm;
-import org.deeplearning4j.nn.conf.GradientNormalization;
 import org.deeplearning4j.nn.conf.MultiLayerConfiguration;
 import org.deeplearning4j.nn.conf.NeuralNetConfiguration;
 import org.deeplearning4j.nn.conf.Updater;
 import org.deeplearning4j.nn.conf.layers.AutoEncoder;
-import org.deeplearning4j.nn.conf.layers.DenseLayer;
 import org.deeplearning4j.nn.conf.layers.OutputLayer;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.deeplearning4j.nn.weights.WeightInit;
 import org.deeplearning4j.optimize.listeners.ScoreIterationListener;
-import org.deeplearning4j.ui.weights.HistogramIterationListener;
 import org.deeplearning4j.util.ModelSerializer;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.dataset.DataSet;
 import org.nd4j.linalg.dataset.SplitTestAndTrain;
 import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.lossfunctions.LossFunctions;
-
-import cz.zcu.kiv.eeg.gtn.application.featureextraction.IFeatureExtraction;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
 /**
  * Created by lukasvareka on 27. 6. 2016.
  */
-public class SDAClassifier4j implements IERPClassifier  {
+public class SDADeepLearning4j implements IERPClassifier {
     private final int NEURON_COUNT_DEFAULT = 30;    //default number of neurons
     private IFeatureExtraction fe;                //type of feature extraction (MatchingPursuit, FilterAndSubampling or WaveletTransform)
     private MultiLayerNetwork model;            //multi layer neural network with a logistic output layer and multiple hidden neuralNets
@@ -45,12 +39,12 @@ public class SDAClassifier4j implements IERPClassifier  {
     private Random random = new Random();
 
     /*Default constructor*/
-    public SDAClassifier4j() {
+    public SDADeepLearning4j() {
         this.neuronCount = NEURON_COUNT_DEFAULT; // sets count of neurons in layer(0) to default number
     }
 
     /*Parametric constructor */
-    public SDAClassifier4j(int neuronCount) {
+    public SDADeepLearning4j(int neuronCount) {
         this.neuronCount = neuronCount; // sets count of neurons in layer(0) to param
     }
 
@@ -115,7 +109,7 @@ public class SDAClassifier4j implements IERPClassifier  {
                 .learningRate(0.005)
                 .updater(Updater.NESTEROVS).momentum(0.9)
                 //.regularization(true).dropOut(0.99)
-               // .regularization(true).l2(1e-4)
+                // .regularization(true).l2(1e-4)
                 .list()
                 .layer(0, new AutoEncoder.Builder().nIn(numRows).nOut(24)
                         .weightInit(WeightInit.XAVIER)
@@ -162,16 +156,17 @@ public class SDAClassifier4j implements IERPClassifier  {
     // method not implemented. For saving use method save(String file)
     @Override
     public void save(OutputStream dest) {
-    throw new NotImplementedException();
+        throw new NotImplementedException();
     }
 
     /**
      * Save Model to file
      * uses save methods from library deeplearning4j
+     *
      * @param pathname path name and file name with archive name without .zip
      */
     public void save(String pathname) {
-        File locationToSave = new File(pathname+".zip");      //Where to save the network. Note: the file is in .zip format - can be opened externally
+        File locationToSave = new File(pathname + ".zip");      //Where to save the network. Note: the file is in .zip format - can be opened externally
         boolean saveUpdater = true;   //Updater: i.e., the state for Momentum, RMSProp, Adagrad etc. Save this if you want to train your network more in the future
         try {
             ModelSerializer.writeModel(model, locationToSave, saveUpdater);
@@ -184,17 +179,18 @@ public class SDAClassifier4j implements IERPClassifier  {
     }
 
     /**
-     *Loads Model from file
+     * Loads Model from file
      * uses load methods from library deepalerning4j
+     *
      * @param pathname pathname and file name of loaded Model without .zip
      */
-    public void load(String pathname){
-        File locationToLoad = new File(pathname+".zip");
+    public void load(String pathname) {
+        File locationToLoad = new File(pathname + ".zip");
         try {
             model = ModelSerializer.restoreMultiLayerNetwork(locationToLoad);
             System.out.println("Loaded");
             System.out.println("Loaded network params " + model.params());
-        }catch(IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

@@ -16,6 +16,7 @@ import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.deeplearning4j.nn.weights.WeightInit;
 import org.deeplearning4j.optimize.listeners.ScoreIterationListener;
 import org.deeplearning4j.ui.weights.HistogramIterationListener;
+import org.deeplearning4j.util.ModelSerializer;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.dataset.DataSet;
 import org.nd4j.linalg.dataset.SplitTestAndTrain;
@@ -163,8 +164,41 @@ public class SDAClassifierNoEarlyStop  implements IERPClassifier  {
 
     }
 
-    @Override
-    public void save(String file) {
+    /**
+     * Save Model to file
+     * uses save methods from library deeplearning4j
+     * @param pathname path name and file name with archive name without .zip
+     */
+    public void save(String pathname) {
+        File locationToSave = new File(pathname+".zip");      //Where to save the network. Note: the file is in .zip format - can be opened externally
+        boolean saveUpdater = true;   //Updater: i.e., the state for Momentum, RMSProp, Adagrad etc. Save this if you want to train your network more in the future
+        try {
+            ModelSerializer.writeModel(model, locationToSave, saveUpdater);
+            System.out.println("Saved network params " + model.params());
+            System.out.println("Saved");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    /**
+     *Loads Model from file
+     * uses load methods from library deepalerning4j
+     * @param pathname pathname and file name of loaded Model without .zip
+     */
+    public void load(String pathname){
+        File locationToLoad = new File(pathname+".zip");
+        try {
+            model = ModelSerializer.restoreMultiLayerNetwork(locationToLoad);
+            System.out.println("Loaded");
+            System.out.println("Loaded network params " + model.params());
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+    }
+
+    public void saveOld(String file) {
         OutputStream fos;
         // Choose the name of classifier and coefficient file to save based on the feature extraction, which is used
         String coefficientsName = "wrong.bin";
@@ -188,8 +222,7 @@ public class SDAClassifierNoEarlyStop  implements IERPClassifier  {
         }
     }
 
-    @Override
-    public void load(String file) {
+    public void loadOld(String file) {
         MultiLayerConfiguration confFromJson = null;
         INDArray newParams = null;
         // Choose the name of coefficient file to load based on the feature extraction, which is used

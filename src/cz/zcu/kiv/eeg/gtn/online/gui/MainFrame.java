@@ -47,6 +47,7 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
+import cz.zcu.kiv.eeg.gtn.application.classification.SDAClassifierEarlyStop;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 
@@ -221,9 +222,9 @@ public class MainFrame extends JFrame implements Observer {
                 }
             } else if (row.equals("CorrelationClassifier")) {
                 classifier = new CorrelationClassifier();
-            } else if (row.equals("DBNClassifier")) {
+            } else if (row.equals("DBNClassifierDeepLearning4j")) {
             	try {
-                    classifier = new DBNClassifier(Integer.parseInt(br
+                    classifier = new DBNClassifierDeepLearning4j(Integer.parseInt(br
                             .readLine()));
                 } catch (Exception e) {
                     e.printStackTrace();

@@ -227,7 +227,7 @@ public class TrainUsingOfflineProvider implements Observer {
         //classifier = new MLPClassifier(nnStructure);
         classifier = new SDADeepLearning4j();
         //classifier = new MLPDeepLearning4j();
-        //classifier = new DBNClassifier();
+        //classifier = new DBNClassifierDeepLearning4j();
         //classifier = new SVMClassifier();
         classifier.setFeatureExtraction(fe);
     }

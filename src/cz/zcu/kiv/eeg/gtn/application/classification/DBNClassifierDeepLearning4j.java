@@ -13,6 +13,7 @@ import org.deeplearning4j.nn.conf.layers.RBM;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.deeplearning4j.nn.weights.WeightInit;
 import org.deeplearning4j.optimize.listeners.ScoreIterationListener;
+import org.deeplearning4j.util.ModelSerializer;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.dataset.DataSet;
 import org.nd4j.linalg.dataset.SplitTestAndTrain;
@@ -28,7 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 // creates instance of Deep Belief Network @author Pumprdlici group
-public class DBNClassifier implements IERPClassifier {
+public class DBNClassifierDeepLearning4j implements IERPClassifier {
     private final int NEURON_COUNT = 15; //default number of neurons
     private IFeatureExtraction fe;        //type of feature extraction (MatchingPursuit, FilterAndSubampling or WaveletTransform)
     private MultiLayerNetwork model;    //multi layer neural network with a logistic output layer and multiple hidden neuralNets
@@ -36,12 +37,12 @@ public class DBNClassifier implements IERPClassifier {
     private int neuronCount;            // Number of neurons
 
     /*Default constructor*/
-    public DBNClassifier() {
+    public DBNClassifierDeepLearning4j() {
         this.neuronCount = NEURON_COUNT; // sets count of neurons to default number
     }
 
     /*Parametric constructor */
-    public DBNClassifier(int neuronCount) {
+    public DBNClassifierDeepLearning4j(int neuronCount) {
         this.neuronCount = neuronCount;     // sets count of neurons to parameter
     }
 
@@ -208,8 +209,38 @@ public class DBNClassifier implements IERPClassifier {
 
     }
 
-    @Override
-    public void save(String file) {
+    /**
+     * saves network to zip file
+     * @param file path and file name without .zip
+     */
+    public void save(String file){
+        File locationToSave = new File(file + ".zip");      //Where to save the network. Note: the file is in .zip format - can be opened externally
+        boolean saveUpdater = true;   //Updater: i.e., the state for Momentum, RMSProp, Adagrad etc. Save this if you want to train your network more in the future
+        try {
+            ModelSerializer.writeModel(model, locationToSave, saveUpdater);
+            System.out.println("Saved network params " + model.params());
+            System.out.println("Saved");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * loades network from zip file
+     * @param file path and file name without .zip
+     */
+    public void load(String file){
+        File locationToLoad = new File(file + ".zip");
+        try {
+            model = ModelSerializer.restoreMultiLayerNetwork(locationToLoad);
+            System.out.println("Loaded");
+            System.out.println("Loaded network params " + model.params());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void saveOld(String file) {
         OutputStream fos;
         // Choose the name of classifier and coefficient file to save based on the feature extraction, which is used
         String coefficientsName = "wrong.bin";
@@ -233,8 +264,8 @@ public class DBNClassifier implements IERPClassifier {
         }
     }
 
-    @Override
-    public void load(String file) {
+
+    public void loadOld(String file) {
         MultiLayerConfiguration confFromJson = null;
         INDArray newParams = null;
         // Choose the name of coefficient file to load based on the feature extraction, which is used

@@ -31,7 +31,7 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import cz.zcu.kiv.eeg.gtn.application.classification.CorrelationClassifier;
-import cz.zcu.kiv.eeg.gtn.application.classification.DBNClassifier;
+import cz.zcu.kiv.eeg.gtn.application.classification.DBNClassifierDeepLearning4j;
 import cz.zcu.kiv.eeg.gtn.application.classification.IERPClassifier;
 import cz.zcu.kiv.eeg.gtn.application.classification.KNNClassifier;
 import cz.zcu.kiv.eeg.gtn.application.classification.LinearDiscriminantAnalysisClassifier;
@@ -581,7 +581,7 @@ public class ChangeClassifierFrame extends JFrame {
 				}
 				else if (dbnBttn.isSelected()) {
 					int neurons = (Integer) dbnNeuron.getValue();
-					IERPClassifier classifier = new DBNClassifier(neurons);
+					IERPClassifier classifier = new DBNClassifierDeepLearning4j(neurons);
 					classifier.setFeatureExtraction(fe);
 
 					List<String> classifierParams = new ArrayList<String>();

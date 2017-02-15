@@ -226,7 +226,7 @@ public class DBNClassifierDeepLearning4j implements IERPClassifier {
     }
 
     /**
-     * loades network from zip file
+     * loads network from zip file
      * @param file path and file name without .zip
      */
     public void load(String file){

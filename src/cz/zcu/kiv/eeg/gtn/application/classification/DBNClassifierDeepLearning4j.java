@@ -133,7 +133,7 @@ public class DBNClassifierDeepLearning4j implements IERPClassifier {
         Nd4j.ENFORCE_NUMERICAL_STABILITY = true;
         MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder() // Starting builder pattern
                 //.seed(seed) // Locks in weight initialization for tuning
-                .iterations(5000) // # training iterations predict/classify & backprop
+                .iterations(iterations) // # training iterations predict/classify & backprop
 //                .miniBatch(true)
                 .learningRate(0.001) // Optimization step size
                 .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT) // Backprop to calculate gradients

@@ -16,6 +16,7 @@ import org.deeplearning4j.optimize.listeners.ScoreIterationListener;
 import org.deeplearning4j.util.ModelSerializer;
 import org.nd4j.linalg.activations.Activation;
 import org.nd4j.linalg.api.ndarray.INDArray;
+import org.nd4j.linalg.dataset.SplitTestAndTrain;
 import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.dataset.DataSet;
 import org.nd4j.linalg.lossfunctions.LossFunctions;
@@ -82,13 +83,14 @@ public class SDADeepLearning4j implements IERPClassifier {
         INDArray output_data = Nd4j.create(labels); // Create INDArray with labels(targets)
         INDArray input_data = Nd4j.create(features_matrix); // Create INDArray with features(data)
         DataSet dataSet = new DataSet(input_data, output_data); // Create dataSet with features and labels
-//        Nd4j.ENFORCE_NUMERICAL_STABILITY = true; // Setting to enforce numerical stability
+        SplitTestAndTrain tat = dataSet.splitTestAndTrain(0.8);
+        Nd4j.ENFORCE_NUMERICAL_STABILITY = true; // Setting to enforce numerical stability
 
         // Building a neural net
         build(numRows, numColumns, seed, listenerFreq);
 
         System.out.println("Train model....");
-        model.fit(dataSet); // Learning of neural net with training data
+        model.fit(tat.getTrain()); // Learning of neural net with training data
 
 
         Evaluation eval = new Evaluation(numColumns);
@@ -104,7 +106,7 @@ public class SDADeepLearning4j implements IERPClassifier {
                 .seed(seed)
                 .iterations(iterations)
                 .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
-                .learningRate(0.005)
+                .learningRate(0.05)
                 .updater(Updater.NESTEROVS).momentum(0.9)
                 //.regularization(true).dropOut(0.99)
                 // .regularization(true).l2(1e-4)
@@ -115,7 +117,7 @@ public class SDADeepLearning4j implements IERPClassifier {
                         //.corruptionLevel(0.2) // Set level of corruption
                         .lossFunction(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
                         .build())
-                .layer(1, new AutoEncoder.Builder().nOut(12)
+                .layer(1, new AutoEncoder.Builder().nOut(12).nIn(24)
                         .weightInit(WeightInit.XAVIER)
                         .activation(Activation.RELU)
                         //.corruptionLevel(0.2) // Set level of corruption
@@ -124,7 +126,7 @@ public class SDADeepLearning4j implements IERPClassifier {
                 .layer(2, new OutputLayer.Builder(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
                         .weightInit(WeightInit.XAVIER)
                         .activation(Activation.SOFTMAX)
-                       .nOut(outputNum).build())
+                       .nOut(outputNum).nIn(12).build())
                 .pretrain(false).backprop(true).build();
         model = new MultiLayerNetwork(conf); // Passing built configuration to instance of multilayer network
         model.init(); // Initialize mode

@@ -14,6 +14,7 @@ import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.deeplearning4j.nn.weights.WeightInit;
 import org.deeplearning4j.optimize.listeners.ScoreIterationListener;
 import org.deeplearning4j.util.ModelSerializer;
+import org.nd4j.linalg.activations.Activation;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.dataset.DataSet;
 import org.nd4j.linalg.dataset.SplitTestAndTrain;
@@ -36,7 +37,7 @@ public class SDADeepLearning4j implements IERPClassifier {
     private MultiLayerNetwork model;            //multi layer neural network with a logistic output layer and multiple hidden neuralNets
     private int neuronCount;                    // Number of neurons
     private int iterations;                    //Iterations used to classify
-    private Random random = new Random();
+
 
     /*Default constructor*/
     public SDADeepLearning4j() {
@@ -101,10 +102,10 @@ public class SDADeepLearning4j implements IERPClassifier {
     //  initialization of neural net with params. For more info check http://deeplearning4j.org/iris-flower-dataset-tutorial where is more about params
     private void build(int numRows, int outputNum, int seed, int listenerFreq) {
         System.out.print("Build model....");
-
+        System.out.print("rows "+numRows);
         MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder()
-                //.seed(seed)
-                .iterations(1500)
+                .seed(seed)
+                .iterations(iterations)
                 .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
                 .learningRate(0.005)
                 .updater(Updater.NESTEROVS).momentum(0.9)
@@ -113,26 +114,25 @@ public class SDADeepLearning4j implements IERPClassifier {
                 .list()
                 .layer(0, new AutoEncoder.Builder().nIn(numRows).nOut(24)
                         .weightInit(WeightInit.XAVIER)
-                        .activation("relu")
+                        .activation(Activation.RELU)
                         //.corruptionLevel(0.2) // Set level of corruption
-                        .lossFunction(LossFunctions.LossFunction.RMSE_XENT)
+                        .lossFunction(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
                         .build())
-                .layer(1, new AutoEncoder.Builder().nIn(24).nOut(12)
+                .layer(1, new AutoEncoder.Builder().nOut(12)
                         .weightInit(WeightInit.XAVIER)
-                        .activation("relu")
+                        .activation(Activation.RELU)
                         //.corruptionLevel(0.2) // Set level of corruption
-                        .lossFunction(LossFunctions.LossFunction.RMSE_XENT)
+                        .lossFunction(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
                         .build())
                 .layer(2, new OutputLayer.Builder(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
                         .weightInit(WeightInit.XAVIER)
-                        .activation("softmax").weightInit(WeightInit.XAVIER)
-                        .nIn(12).nOut(outputNum).build())
-                .pretrain(true).backprop(true).build();
-
-
+                        .activation(Activation.SOFTMAX)
+                       .nOut(outputNum).build())
+                .pretrain(false).backprop(true).build();
         model = new MultiLayerNetwork(conf); // Passing built configuration to instance of multilayer network
         model.init(); // Initialize mode
-        model.setListeners(new ScoreIterationListener(100));// Setting listeners
+
+        model.setListeners(new ScoreIterationListener(listenerFreq));// Setting listeners
         // model.setListeners(new HistogramIterationListener(10));
     }
 

@@ -81,6 +81,8 @@ public class TestClassificationMain {
 			int outputNeurons 	     = 1;
 			ArrayList<Integer> nnStructure = new ArrayList<Integer>();
 			nnStructure.add(numberOfInputNeurons); nnStructure.add(middleNeurons); nnStructure.add(outputNeurons);
+
+			//IERPClassifier classifier = new SDADeepLearning4j();//MLPClassifier(nnStructure);
 			IERPClassifier classifier = new DBNClassifierDeepLearning4j();//MLPClassifier(nnStructure);
 			
 			// training

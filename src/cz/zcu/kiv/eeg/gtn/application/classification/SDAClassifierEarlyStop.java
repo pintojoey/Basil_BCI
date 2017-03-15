@@ -19,6 +19,7 @@ import org.deeplearning4j.nn.conf.layers.OutputLayer;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.deeplearning4j.nn.weights.WeightInit;
 import org.deeplearning4j.ui.weights.HistogramIterationListener;
+import org.nd4j.linalg.activations.Activation;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.dataset.DataSet;
 import org.nd4j.linalg.dataset.SplitTestAndTrain;
@@ -128,12 +129,12 @@ public class SDAClassifierEarlyStop implements IERPClassifier {
                 .optimizationAlgo(OptimizationAlgorithm.CONJUGATE_GRADIENT) // Backprop to calculate gradients
                 .list() // # NN layers (doesn't count input layer)
                 .layer(0, new AutoEncoder.Builder().nIn(numRows).nOut(neuronCount) // Setting layer to Autoencoder
-                        .weightInit(WeightInit.XAVIER).lossFunction(LossFunction.RMSE_XENT) // Weight initialization
+                        .weightInit(WeightInit.XAVIER).lossFunction(LossFunction.SQUARED_LOSS) // Weight initialization
                         .corruptionLevel(0.3) // Set level of corruption
                         .build() // Build on set configuration
                 ) // NN layer type
                 .layer(1, new OutputLayer.Builder(LossFunction.NEGATIVELOGLIKELIHOOD)//Override default output layer that classifies input using softmax
-                        .activation("softmax") // Activation function type
+                        .activation(Activation.SOFTMAX)// Activation function type
                         .nIn(neuronCount) // # input nodes
                         .nOut(outputNum) // # output nodes
                         .build() // Build on set configuration

@@ -20,6 +20,7 @@ import org.deeplearning4j.nn.conf.layers.OutputLayer;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.deeplearning4j.nn.weights.WeightInit;
 import org.deeplearning4j.optimize.listeners.ScoreIterationListener;
+import org.nd4j.linalg.activations.Activation;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.dataset.DataSet;
 import org.nd4j.linalg.dataset.SplitTestAndTrain;
@@ -155,12 +156,13 @@ public class MLPDeepLearning4jEarlyStop implements IERPClassifier {
                 .list()
                 .layer(0, new DenseLayer.Builder().nIn(numRows).nOut(20)
                         .weightInit(WeightInit.XAVIER)
-                        .activation("relu")
+                        .activation(Activation.RELU)
                         .build())
 
                 .layer(1, new OutputLayer.Builder(LossFunction.MCXENT)
                         .weightInit(WeightInit.XAVIER)
-                        .activation("softmax").weightInit(WeightInit.XAVIER)
+                        .activation(Activation.SOFTMAX)
+                        .weightInit(WeightInit.XAVIER)
                         .nIn(20).nOut(outputNum).build())
                 .pretrain(true).backprop(true).build();
 

@@ -91,6 +91,7 @@ public class TrainUsingOfflineProvider implements Observer {
         } else {
             TrainUsingOfflineProvider train = new TrainUsingOfflineProvider(fe,
                     classifier, file, new ButterWorthFilter());
+            System.out.print("train regular");
         }
     }
 
@@ -192,7 +193,6 @@ public class TrainUsingOfflineProvider implements Observer {
         chart2.setVisible(true);*/
 
         // training
-        System.out.println("Training started.");
         //fe = new FilterAndSubsamplingFeatureExtraction();
         classifier.train(this.epochs, this.targets, this.iters, fe);
         if (file == null || file.equals("")) {

@@ -1,7 +1,7 @@
 package cz.zcu.kiv.eeg.gtn.application.classification;
 
 import org.apache.commons.io.FileUtils;
-import org.canova.api.records.reader.RecordReader;
+//import org.canova.api.records.reader.RecordReader;
 import org.deeplearning4j.eval.Evaluation;
 import org.deeplearning4j.nn.api.Layer;
 import org.deeplearning4j.nn.api.OptimizationAlgorithm;
@@ -14,6 +14,7 @@ import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.deeplearning4j.nn.weights.WeightInit;
 import org.deeplearning4j.optimize.listeners.ScoreIterationListener;
 import org.deeplearning4j.util.ModelSerializer;
+import org.nd4j.linalg.activations.Activation;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.dataset.DataSet;
 import org.nd4j.linalg.dataset.SplitTestAndTrain;
@@ -145,8 +146,8 @@ public class DBNClassifierDeepLearning4j implements IERPClassifier {
                         .nOut(2) // # fully connected hidden layer nodes. Add list if multiple layers.
                         .weightInit(WeightInit.RELU) // Weight initialization
                         //.k(3) // # contrastive divergence iterations
-                        .activation("relu") // Activation function type
-                        .lossFunction(LossFunction.RMSE_XENT) // Loss function type
+                                .activation(Activation.RELU) // Activation function type
+                        .lossFunction(LossFunction.MCXENT) // Loss function type
                         .updater(Updater.NESTEROVS).momentum(0.9) // Updater type
 
                         //.dropOut(0.5) // Dropping part of connections
@@ -169,7 +170,7 @@ public class DBNClassifierDeepLearning4j implements IERPClassifier {
                         //.weightInit(WeightInit.XAVIER) // Weight initialization
                         .nIn(2) // # input nodes
                         .nOut(outputNum) // # output nodes
-                        .activation("softmax") // Activation function type
+                        .activation(Activation.SOFTMAX) // Activation function type
                         .build() // Build on set configuration
                 ) // NN layer type
                 .pretrain(true).backprop(true).build(); // Build on set configuration
@@ -190,13 +191,13 @@ public class DBNClassifierDeepLearning4j implements IERPClassifier {
         return resultsStats;    //  returns classifier statistics
     }
 
-    public RecordReader loadData(List<double[][]> epochs, List<Double> targets) throws Exception {
+   /* public RecordReader loadData(List<double[][]> epochs, List<Double> targets) throws Exception {
 
 
 
         return null;
     }
-
+*/
     // method not implemented. For saving use method save(String file)
     @Override
     public void load(InputStream is) {

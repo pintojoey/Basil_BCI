@@ -564,7 +564,7 @@ public class ChangeClassifierFrame extends JFrame {
 						classifier.setFeatureExtraction(fe);
 
 						List<String> classifierParams = new ArrayList<String>();
-						classifierParams.add((Double) svmCost.getValue() + "");
+						classifierParams.add(svmCost.getValue() + "");
 
 						trainingDialog(c, mainFrame, classifier,
 								classifierParams);
@@ -585,7 +585,7 @@ public class ChangeClassifierFrame extends JFrame {
 					classifier.setFeatureExtraction(fe);
 
 					List<String> classifierParams = new ArrayList<String>();
-					classifierParams.add((Integer) dbnNeuron.getValue() + "");
+					classifierParams.add(dbnNeuron.getValue() + "");
 					
 					trainingDialog(c, mainFrame, classifier, classifierParams);
 				}
@@ -595,7 +595,7 @@ public class ChangeClassifierFrame extends JFrame {
 					classifier.setFeatureExtraction(fe);
 
 					List<String> classifierParams = new ArrayList<String>();
-					classifierParams.add((Integer) sdaNeuron.getValue() + "");
+					classifierParams.add(sdaNeuron.getValue() + "");
 					
 					trainingDialog(c, mainFrame, classifier, classifierParams);
 				}
@@ -652,7 +652,7 @@ public class ChangeClassifierFrame extends JFrame {
 
 					c.dispose();
 
-					new TrainUsingOfflineProvider(c.fe, classifier, classifierFile, mainFrame.dataFilter);
+					new TrainUsingOfflineProvider(c.fe, classifier, classifierFile, MainFrame.dataFilter);
 					mainFrame.setFe(fe);
 					mainFrame.setClassifier(classifier);
 					mainFrame.setFeStatus("Feature Extraction: "

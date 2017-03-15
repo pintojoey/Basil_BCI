@@ -233,7 +233,7 @@ public class TrainUsingOfflineProvider implements Observer {
     }
 
     public IERPClassifier getClassifier() {
-        return this.classifier;
+        return classifier;
     }
 
     /**

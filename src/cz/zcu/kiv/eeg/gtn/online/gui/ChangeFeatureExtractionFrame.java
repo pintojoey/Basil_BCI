@@ -561,9 +561,9 @@ public class ChangeFeatureExtractionFrame extends JFrame {
 					c.dispose();
 
 					feParams = new ArrayList<String>();
-					feParams.add((Integer) epochSpinner.getValue() + "");
-					feParams.add((Integer) subsampleSpinner.getValue() + "");
-					feParams.add((Integer) skipSpinner.getValue() + "");
+					feParams.add(epochSpinner.getValue() + "");
+					feParams.add(subsampleSpinner.getValue() + "");
+					feParams.add(skipSpinner.getValue() + "");
 
 					ChangeClassifierFrame cc = new ChangeClassifierFrame(
 							mainFrame, fe, feParams);
@@ -587,10 +587,10 @@ public class ChangeFeatureExtractionFrame extends JFrame {
 					c.dispose();
 
 					feParams = new ArrayList<String>();
-					feParams.add((Integer) epochSpinner.getValue() + "");
-					feParams.add((Integer) skipSpinner.getValue() + "");
+					feParams.add(epochSpinner.getValue() + "");
+					feParams.add(skipSpinner.getValue() + "");
 					feParams.add(waveletNameComboBox.getSelectedIndex() + "");
-					feParams.add((Integer) wtFeatureSize.getValue() + "");
+					feParams.add(wtFeatureSize.getValue() + "");
 
 					ChangeClassifierFrame cc = new ChangeClassifierFrame(
 							mainFrame, fe, feParams);
@@ -606,9 +606,9 @@ public class ChangeFeatureExtractionFrame extends JFrame {
 					c.dispose();
 
 					feParams = new ArrayList<String>();
-					feParams.add((Integer) epochSpinner.getValue() + "");
-					feParams.add((Integer) subsampleSpinner.getValue() + "");
-					feParams.add((Integer) skipSpinner.getValue() + "");
+					feParams.add(epochSpinner.getValue() + "");
+					feParams.add(subsampleSpinner.getValue() + "");
+					feParams.add(skipSpinner.getValue() + "");
 
 					ChangeClassifierFrame cc = new ChangeClassifierFrame(
 							mainFrame, fe, feParams);
@@ -639,15 +639,15 @@ public class ChangeFeatureExtractionFrame extends JFrame {
 						c.dispose();
 
 						feParams = new ArrayList<String>();
-						feParams.add((Integer) epochSpinner.getValue() + "");
-						feParams.add((Integer) subsampleSpinner.getValue() + "");
-						feParams.add((Integer) skipSpinner.getValue() + "");
-						feParams.add((Integer) hhtSampleWindowSize.getValue() + "");
-						feParams.add((Integer) hhtSampleWindowShift.getValue() + "");
-						feParams.add((Double) hhtAmplitudeThreshold.getValue()
+						feParams.add(epochSpinner.getValue() + "");
+						feParams.add(subsampleSpinner.getValue() + "");
+						feParams.add(skipSpinner.getValue() + "");
+						feParams.add(hhtSampleWindowSize.getValue() + "");
+						feParams.add(hhtSampleWindowShift.getValue() + "");
+						feParams.add(hhtAmplitudeThreshold.getValue()
 								+ "");
-						feParams.add((Double) hhtMinFreq.getValue() + "");
-						feParams.add((Double) hhtMaxFreq.getValue() + "");
+						feParams.add(hhtMinFreq.getValue() + "");
+						feParams.add(hhtMaxFreq.getValue() + "");
 						feParams.add((hhtTypeOfFeatures.getSelectedIndex() + 1)
 								+ "");
 

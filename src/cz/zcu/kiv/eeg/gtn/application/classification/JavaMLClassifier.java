@@ -138,8 +138,8 @@ public class JavaMLClassifier implements IERPClassifier {
 	}
 	
 	private Dataset createDataset(List<double[][]> epochs, List<Double> targets) {
-		Dataset dataset= new DefaultDataset();;
-		for (int i = 0; i < epochs.size(); i++ ) {
+		Dataset dataset= new DefaultDataset();
+        for (int i = 0; i < epochs.size(); i++ ) {
 			double[][] epoch = epochs.get(i);
 			double[] features = fe.extractFeatures(epoch);
 			Instance instance = new DenseInstance(features, targets.get(i));

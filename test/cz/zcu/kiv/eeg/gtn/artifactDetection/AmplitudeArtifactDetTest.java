@@ -48,7 +48,7 @@ public class AmplitudeArtifactDetTest {
 	@Test
 	public void testGetThreshold() { 
 		
-		assertEquals(a.DEFAULT_THRESHOLD, a.getThreshold(),0.0003);
+		assertEquals(AmplitudeArtifactDet.DEFAULT_THRESHOLD, a.getThreshold(),0.0003);
 	}
 	
 	@Test

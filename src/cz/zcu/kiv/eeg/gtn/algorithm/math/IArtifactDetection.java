@@ -10,5 +10,5 @@ import cz.zcu.kiv.eeg.gtn.online.app.EpochMessenger;
  * @version 1.00
  */
 public interface IArtifactDetection {
-	public EpochMessenger detectArtifact(EpochMessenger epoch);
+	EpochMessenger detectArtifact(EpochMessenger epoch);
 }

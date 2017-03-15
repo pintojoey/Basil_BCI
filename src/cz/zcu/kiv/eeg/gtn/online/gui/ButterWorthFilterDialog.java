@@ -181,7 +181,7 @@ import cz.zcu.kiv.eeg.gtn.algorithm.math.ButterWorthFilter;
 					}
 					
 					if(checkValues(lower, upper, sampleRate))
-						mainFrame.dataFilter = new ButterWorthFilter(lower, upper, sampleRate);
+						MainFrame.dataFilter = new ButterWorthFilter(lower, upper, sampleRate);
 					else {
 						JOptionPane.showMessageDialog(ButterWorthFilterDialog.this,"Some of the values are outside the interval!\r\n"
 								+ "You can find info about intervals in the tooltips of parametres."
@@ -241,8 +241,7 @@ import cz.zcu.kiv.eeg.gtn.algorithm.math.ButterWorthFilter;
 		private boolean checkValues(double lower, double upper, int sampleRate) {
 			if(lower <= 0 || lower >= upper) return false;
 			if(upper <= 0 || upper*2 >= sampleRate) return false;
-			if(sampleRate <= 0) return false;
-			return true;
-		}
+            return sampleRate > 0;
+        }
 	}
 

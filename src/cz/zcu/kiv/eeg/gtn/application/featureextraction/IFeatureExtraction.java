@@ -14,6 +14,6 @@ public interface IFeatureExtraction {
 	 * @param epoch source epoch 
 	 * @return feature vector
 	 */
-	public double[] extractFeatures(double[][] epoch);
-	public int getFeatureDimension();
+    double[] extractFeatures(double[][] epoch);
+	int getFeatureDimension();
 }

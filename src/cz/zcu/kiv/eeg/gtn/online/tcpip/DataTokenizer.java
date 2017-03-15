@@ -14,49 +14,49 @@ import cz.zcu.kiv.eeg.gtn.online.tcpip.objects.RDA_MessageStart;
 import cz.zcu.kiv.eeg.gtn.online.tcpip.objects.RDA_MessageStop;
 
 /**
- * Název úlohy: Jednoduché BCI Tøída: DataTokenizer
+ * Nï¿½zev ï¿½lohy: Jednoduchï¿½ BCI Tï¿½ï¿½da: DataTokenizer
  *
- * @author Michal Patoèka První verze vytvoøena: 3.3.2010
+ * @author Michal Patoï¿½ka Prvnï¿½ verze vytvoï¿½ena: 3.3.2010
  * @version 2.0
  *
- * Tato tøída formuje z toku bajtù získané od klienta TCPIP datové objekty. Celı
- * proces detekce zaèíná hledáním unikátní posloupnosti 12 bajtù, které oznaèují
- * hlavièku datového objektu. Toto je naimplementováno tak, e v nekoneèném
- * cyklu pøidávám poslední a ubírám první z pole 12 bajtù a hledám shodu mezi
- * tímto polem a polem oznaèujicím hlavièku. Je - li tato posloupnost nalezena,
- * znamená to, e pøišel jeden z pìti typù datovıch objektù. Jakı typ pøišel a
- * jaká je jeho délka zjistím pøeètením následujících 8 bajtù, které následují
- * po hlavièce. Obecnì platí, e na zaèátku kadého pøenosu pøijde objekt typu
- * RDA_MessageStart, ve kterém jsou deklarovány pouité parametry pro
- * následující datovı pøenos. Poté chodí znaèné mnoství objektù typu
- * RDA_MessageData, pøièem kadı z nich mùe obsahovat nìkolik objektù typu
- * RDA_Marker (nejèastìji však pouze jeden). Kdy zjistím typ objektu, jakı
- * pøichází, není problém do nìj naèíst data konverzí pole urèitého mnoství
- * bajtù, do poadovaného datového typu. Pokud je objekt neznámého typu, tak ho
- * nezpracovávám (pøi testech chodily objekty typu nType = 10000 jako vıplò mezi
- * jednotlivımi objekty). Všechny objekty naèítám do bufferu, kde jsou
- * pøipraveny k vyzvednutí pomocí metody retriveDataBlock().
+ * Tato tï¿½ï¿½da formuje z toku bajtï¿½ zï¿½skanï¿½ od klienta TCPIP datovï¿½ objekty. Celï¿½
+ * proces detekce zaï¿½ï¿½nï¿½ hledï¿½nï¿½m unikï¿½tnï¿½ posloupnosti 12 bajtï¿½, kterï¿½ oznaï¿½ujï¿½
+ * hlaviï¿½ku datovï¿½ho objektu. Toto je naimplementovï¿½no tak, ï¿½e v nekoneï¿½nï¿½m
+ * cyklu pï¿½idï¿½vï¿½m poslednï¿½ a ubï¿½rï¿½m prvnï¿½ z pole 12 bajtï¿½ a hledï¿½m shodu mezi
+ * tï¿½mto polem a polem oznaï¿½ujicï¿½m hlaviï¿½ku. Je - li tato posloupnost nalezena,
+ * znamenï¿½ to, ï¿½e pï¿½iï¿½el jeden z pï¿½ti typï¿½ datovï¿½ch objektï¿½. Jakï¿½ typ pï¿½iï¿½el a
+ * jakï¿½ je jeho dï¿½lka zjistï¿½m pï¿½eï¿½tenï¿½m nï¿½sledujï¿½cï¿½ch 8 bajtï¿½, kterï¿½ nï¿½sledujï¿½
+ * po hlaviï¿½ce. Obecnï¿½ platï¿½, ï¿½e na zaï¿½ï¿½tku kaï¿½dï¿½ho pï¿½enosu pï¿½ijde objekt typu
+ * RDA_MessageStart, ve kterï¿½m jsou deklarovï¿½ny pouï¿½itï¿½ parametry pro
+ * nï¿½sledujï¿½cï¿½ datovï¿½ pï¿½enos. Potï¿½ chodï¿½ znaï¿½nï¿½ mnoï¿½stvï¿½ objektï¿½ typu
+ * RDA_MessageData, pï¿½iï¿½emï¿½ kaï¿½dï¿½ z nich mï¿½ï¿½e obsahovat nï¿½kolik objektï¿½ typu
+ * RDA_Marker (nejï¿½astï¿½ji vï¿½ak pouze jeden). Kdyï¿½ zjistï¿½m typ objektu, jakï¿½
+ * pï¿½ichï¿½zï¿½, nenï¿½ problï¿½m do nï¿½j naï¿½ï¿½st data konverzï¿½ pole urï¿½itï¿½ho mnoï¿½stvï¿½
+ * bajtï¿½, do poï¿½adovanï¿½ho datovï¿½ho typu. Pokud je objekt neznï¿½mï¿½ho typu, tak ho
+ * nezpracovï¿½vï¿½m (pï¿½i testech chodily objekty typu nType = 10000 jako vï¿½plï¿½ mezi
+ * jednotlivï¿½mi objekty). Vï¿½echny objekty naï¿½ï¿½tï¿½m do bufferu, kde jsou
+ * pï¿½ipraveny k vyzvednutï¿½ pomocï¿½ metody retriveDataBlock().
  */
 public class DataTokenizer extends Thread {
 
     /**
-     * Poèet kanálù EEG
+     * Poï¿½et kanï¿½lï¿½ EEG
      */
     private int noOfChannels;
     
     /**
-     * Buffer jako vyrovnávací pamì pro doèasné uloení objektù *
+     * Buffer jako vyrovnï¿½vacï¿½ pamï¿½ pro doï¿½asnï¿½ uloï¿½enï¿½ objektï¿½ *
      */
     private final SynchronizedLinkedListObject buffer = new SynchronizedLinkedListObject();
     
     /**
-     * Unikátní posloupnost 12 bajtù, která oznaèuje hlavièku datového objektu.
+     * Unikï¿½tnï¿½ posloupnost 12 bajtï¿½, kterï¿½ oznaï¿½uje hlaviï¿½ku datovï¿½ho objektu.
      * *
      */
     private final byte[] UID = {-114, 69, 88, 67, -106, -55, -122, 76, -81, 74, -104, -69, -10, -55, 20, 80};
     
     /**
-     * Reference na TCP/IP klienta, ze kterého získávám bajty ke zpracování. *
+     * Reference na TCP/IP klienta, ze kterï¿½ho zï¿½skï¿½vï¿½m bajty ke zpracovï¿½nï¿½. *
      */
     private final TCPIPClient client;
 
@@ -65,15 +65,15 @@ public class DataTokenizer extends Thread {
     private boolean isRunning;
 
     /**
-     * Reference na logger událostí. *
+     * Reference na logger udï¿½lostï¿½. *
      */
     private static final Logger logger = Logger.getLogger(DataTokenizer.class);
 
     /**
-     * Zjišuje jestli jsou dvì pole bajtù shodná.
+     * Zjiï¿½ï¿½uje jestli jsou dvï¿½ pole bajtï¿½ shodnï¿½.
      *
-     * @param one první pole bajtù
-     * @param two drué pole bajtù
+     * @param one prvnï¿½ pole bajtï¿½
+     * @param two druï¿½ pole bajtï¿½
      * @return shoda/neshoda
      */
     private boolean comparator(byte[] one, byte[] two) {
@@ -86,12 +86,12 @@ public class DataTokenizer extends Thread {
     }
 
     /**
-     * Poli bajtù pøidá na konec novı bajt a posune index celého pole o 1, èím
-     * vymae odkaz na první bajt.
+     * Poli bajtï¿½ pï¿½idï¿½ na konec novï¿½ bajt a posune index celï¿½ho pole o 1, ï¿½ï¿½mï¿½
+     * vymaï¿½e odkaz na prvnï¿½ bajt.
      *
-     * @param field pole bajtù
-     * @param ap pøidávanı bajt
-     * @return posunuté pole s bajtem navíc
+     * @param field pole bajtï¿½
+     * @param ap pï¿½idï¿½vanï¿½ bajt
+     * @return posunutï¿½ pole s bajtem navï¿½c
      */
     private byte[] appendByte(byte[] field, byte ap) {
         for (int i = 0; i < (field.length - 1); i++) {
@@ -102,11 +102,11 @@ public class DataTokenizer extends Thread {
     }
 
     /**
-     * Tato metoda zapisuje objekty typu RDA_Marker a pøedává na nì reference
-     * pøíslušnému datovému objektu.
+     * Tato metoda zapisuje objekty typu RDA_Marker a pï¿½edï¿½vï¿½ na nï¿½ reference
+     * pï¿½ï¿½sluï¿½nï¿½mu datovï¿½mu objektu.
      *
-     * @param markerCount poèet markerù, které se zpracovávají.
-     * @return pole markerù
+     * @param markerCount poï¿½et markerï¿½, kterï¿½ se zpracovï¿½vajï¿½.
+     * @return pole markerï¿½
      */
     private RDA_Marker[] writeMarkers(int markerCount) {
         RDA_Marker[] nMarkers = new RDA_Marker[markerCount];
@@ -122,9 +122,9 @@ public class DataTokenizer extends Thread {
 
             client.read(4);
             /*
-             * Tuto funkci doposud servr nemá implementovanou.
-             * Proto vrací blbost. V návodu je e se defaultnì jedná
-             * o všechny kanály, proto hodnota -1.
+             * Tuto funkci doposud servr nemï¿½ implementovanou.
+             * Proto vracï¿½ blbost. V nï¿½vodu je ï¿½e se defaultnï¿½ jednï¿½
+             * o vï¿½echny kanï¿½ly, proto hodnota -1.
              * long channel = arr2long(nChannel);*/
             long channel = -1;
 
@@ -140,10 +140,10 @@ public class DataTokenizer extends Thread {
     }
 
     /**
-     * Konstruktor, kterému je pøedávám odkaz na TCP/IP clienta. Je pouit
-     * defaultní logger.
+     * Konstruktor, kterï¿½mu je pï¿½edï¿½vï¿½m odkaz na TCP/IP clienta. Je pouï¿½it
+     * defaultnï¿½ logger.
      *
-     * @param client TCP/IP client pro získávání dat
+     * @param client TCP/IP client pro zï¿½skï¿½vï¿½nï¿½ dat
      */
     public DataTokenizer(TCPIPClient client) {
         this.client = client;
@@ -168,9 +168,9 @@ public class DataTokenizer extends Thread {
     }
 
     /**
-     * Metoda pro spuštìní vlákna DataTokenizeru. Jeliko proces získávání dat a
-     * jejich pøevádìní na datové objekty musí bıt paraelizován, musí bıt
-     * pouito vláknového zpracování.
+     * Metoda pro spuï¿½tï¿½nï¿½ vlï¿½kna DataTokenizeru. Jelikoï¿½ proces zï¿½skï¿½vï¿½nï¿½ dat a
+     * jejich pï¿½evï¿½dï¿½nï¿½ na datovï¿½ objekty musï¿½ bï¿½t paraelizovï¿½n, musï¿½ bï¿½t
+     * pouï¿½ito vlï¿½knovï¿½ho zpracovï¿½nï¿½.
      */
     @Override
     public void run() {
@@ -204,7 +204,7 @@ public class DataTokenizer extends Thread {
                         resolutions[j] = getDouble(dResolutions);
                     }
 
-                    //jména kanálù mohou mít promìnnou délku, jsou oddìlená znakem \0
+                    //jmï¿½na kanï¿½lï¿½ mohou mï¿½t promï¿½nnou dï¿½lku, jsou oddï¿½lenï¿½ znakem \0
                     for (int j = 0; j < channels; j++) {
                         byte[] b = client.read(1);
                         char rd = (char) b[0];
@@ -221,13 +221,13 @@ public class DataTokenizer extends Thread {
                             channels, samplingInterval, resolutions, typeDesc);
                     start = pMsgStart;
                     buffer.addLast(pMsgStart);
-                    logger.debug("Zahájena komunikace se serverem.");
+                    logger.debug("Zahï¿½jena komunikace se serverem.");
 
                     //RDA_MessageStop	
                 } else if (pHeader.getnType() == 3) {
                     RDA_MessageStop pMsgStop = new RDA_MessageStop(pHeader.getnSize(), pHeader.getnType());
                     buffer.addLast(pMsgStop);
-                    logger.debug("Ukonèena komunikace se serverem.");
+                    logger.debug("Ukonï¿½ena komunikace se serverem.");
 
                     break;
 
@@ -243,7 +243,7 @@ public class DataTokenizer extends Thread {
                     byte[] nMarkers = client.read(4);
                     int markers = getInt(nMarkers);
 
-                    float[] data = new float[noOfChannels * (int) points];
+                    float[] data = new float[noOfChannels * points];
 
                     int ch = 0;
                     for (int j = 0; j < data.length; j++) {
@@ -254,7 +254,7 @@ public class DataTokenizer extends Thread {
                     //RDA_Marker
                     RDA_Marker[] markerField = null;
                     if (markers > 0) {
-                        markerField = writeMarkers((int) markers);
+                        markerField = writeMarkers(markers);
                     }
 
                     RDA_MessageData pMsgData = new RDA_MessageData(pHeader.getnSize(), pHeader.getnType(),
@@ -264,11 +264,11 @@ public class DataTokenizer extends Thread {
 
                     for (int j = 0; j < markers; j++) {
                         buffer.addLast(markerField[j]);
-                        logger.debug("Pøíchozí marker: " + markerField[j].getsTypeDesc());
+                        logger.debug("Pï¿½ï¿½chozï¿½ marker: " + markerField[j].getsTypeDesc());
                     }
 
                 } else {
-                    //všechny neznámé typy objektù se ignorují
+                    //vï¿½echny neznï¿½mï¿½ typy objektï¿½ se ignorujï¿½
                 }
 
             }
@@ -282,10 +282,10 @@ public class DataTokenizer extends Thread {
     }
 
     /**
-     * Tato metoda vrací první objekt na vrcholu bufferu, do kterého jsou
-     * naèítány datové bloky.
+     * Tato metoda vracï¿½ prvnï¿½ objekt na vrcholu bufferu, do kterï¿½ho jsou
+     * naï¿½ï¿½tï¿½ny datovï¿½ bloky.
      *
-     * @return datovı objekt
+     * @return datovï¿½ objekt
      */
     public synchronized Object retrieveDataBlock() {
 
@@ -305,9 +305,9 @@ public class DataTokenizer extends Thread {
     }
 
     /**
-     * Tato metoda zjišuje, jetli je prázdnı buffer.
+     * Tato metoda zjiï¿½ï¿½uje, jetli je prï¿½zdnï¿½ buffer.
      *
-     * @return zda - li je prázdnı buffer.
+     * @return zda - li je prï¿½zdnï¿½ buffer.
      */
     public boolean hasNext() {
         return buffer.isEmpty();

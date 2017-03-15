@@ -2,7 +2,8 @@ package cz.zcu.kiv.eeg.gtn.application.classification;
 
 import cz.zcu.kiv.eeg.gtn.application.featureextraction.IFeatureExtraction;
 import org.apache.commons.io.FileUtils;
-import org.deeplearning4j.datasets.iterator.DataSetIterator;
+import org.nd4j.linalg.activations.Activation;
+import org.nd4j.linalg.dataset.api.iterator.DataSetIterator;
 import org.deeplearning4j.earlystopping.EarlyStoppingConfiguration;
 import org.deeplearning4j.earlystopping.EarlyStoppingResult;
 import org.deeplearning4j.earlystopping.scorecalc.DataSetLossCalculator;
@@ -150,7 +151,7 @@ public class MLPDeepLearning4jEStopPokus implements IERPClassifier {
                         .build())
                 .layer(1, new OutputLayer.Builder(LossFunction.MCXENT)
                         .weightInit(WeightInit.XAVIER)
-                        .activation("softmax")
+                        .activation(Activation.SOFTMAX)
                         .weightInit(WeightInit.XAVIER)
                         .nIn(20)
                         .nOut(outputNum)

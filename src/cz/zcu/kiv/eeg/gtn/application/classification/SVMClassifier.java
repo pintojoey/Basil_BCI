@@ -164,7 +164,7 @@ public class SVMClassifier extends ERPClassifierAdapter {
 			for (int i = 0; i < numValues; i++) {
 				values[i] = features[i];
 			}
-			values[numValues] = (double) targets.get(j);
+			values[numValues] = targets.get(j);
 			helpDataset.add(new Instance(1.0, values));
 		}
 		instances = helpDataset;

@@ -16,4 +16,4 @@ package cz.zcu.kiv.eeg.gtn.algorithm.math.filter.biz;
 * The filter pass type.
 */
 public enum FilterPassType {
-   lowpass, highpass, bandpass, bandstop };
+   lowpass, highpass, bandpass, bandstop }

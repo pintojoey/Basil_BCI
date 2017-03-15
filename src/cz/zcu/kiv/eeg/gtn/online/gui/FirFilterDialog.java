@@ -233,7 +233,7 @@ import cz.zcu.kiv.eeg.gtn.algorithm.math.FirFilter;
 					}
 					
 					if(checkValues(lower, upper, sampleRate, nSample, ripple))
-						mainFrame.dataFilter = new FirFilter(lower, upper, sampleRate, nSample, ripple);
+						MainFrame.dataFilter = new FirFilter(lower, upper, sampleRate, nSample, ripple);
 					else {
 						JOptionPane.showMessageDialog(FirFilterDialog.this,"Some of the values are outside the interval!\r\n"
 								+ "You can find info about intervals in the tooltips of parametres."
@@ -298,9 +298,8 @@ import cz.zcu.kiv.eeg.gtn.algorithm.math.FirFilter;
 			if(upper <= 0 || upper*2 >= sampleRate) return false;
 			if(sampleRate <= 0) return false;
 			if(nSample <= 2) return false;
-			if(ripple < 0) return false;
-			return true;
-		}
+            return !(ripple < 0);
+        }
 	}
 
 

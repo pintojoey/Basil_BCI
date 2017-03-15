@@ -100,8 +100,8 @@ public class TrainingSetParser {
 			}
 			
 		} else {
-			double[][] channelData =  null;;
-			for (int i = 0; i < singleChannelEpochs.size(); i++) {
+			double[][] channelData =  null;
+            for (int i = 0; i < singleChannelEpochs.size(); i++) {
 				channelData = this.epochs.get(i);
 				channelData[channelIndex - 1] = singleChannelEpochs.get(i);
 				epochs.set(i, channelData);

@@ -330,7 +330,7 @@ public class MainFrame extends JFrame implements Observer {
             statusBar.add(Box.createHorizontalStrut(5));
 
             artDetectionStatus = new JLabel("Artifact Detection: "
-                    + this.artifactDetection.getClass().getSimpleName() + " ");
+                    + artifactDetection.getClass().getSimpleName() + " ");
             statusBar.add(artDetectionStatus);
         }
 
@@ -341,7 +341,7 @@ public class MainFrame extends JFrame implements Observer {
             statusBar.add(Box.createHorizontalStrut(5));
 
             filterStatus = new JLabel("Filter: "
-                    + this.dataFilter.getClass().getSimpleName() + " ");
+                    + dataFilter.getClass().getSimpleName() + " ");
             statusBar.add(filterStatus);
         }
 

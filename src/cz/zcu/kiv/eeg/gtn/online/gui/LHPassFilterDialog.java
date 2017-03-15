@@ -124,9 +124,9 @@ public class LHPassFilterDialog extends JDialog{
 				}
 				
 				if(lowBT.isSelected())
-					mainFrame.dataFilter = new LowPassFilter(border, sampleRate);
+					MainFrame.dataFilter = new LowPassFilter(border, sampleRate);
 				else if(highBT.isSelected())
-					mainFrame.dataFilter = new HighPassFilter(border, sampleRate);
+					MainFrame.dataFilter = new HighPassFilter(border, sampleRate);
 
 				LHPassFilterDialog.this.dispose();
 			}

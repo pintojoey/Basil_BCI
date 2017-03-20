@@ -12,13 +12,14 @@ import org.deeplearning4j.nn.conf.layers.AutoEncoder;
 import org.deeplearning4j.nn.conf.layers.OutputLayer;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.deeplearning4j.nn.weights.WeightInit;
-import org.deeplearning4j.optimize.listeners.ScoreIterationListener;
 import org.deeplearning4j.util.ModelSerializer;
+import org.deeplearning4j.ui.weights.*;
+import org.deeplearning4j.optimize.listeners.*;
 import org.nd4j.linalg.activations.Activation;
 import org.nd4j.linalg.api.ndarray.INDArray;
+import org.nd4j.linalg.dataset.DataSet;
 import org.nd4j.linalg.dataset.SplitTestAndTrain;
 import org.nd4j.linalg.factory.Nd4j;
-import org.nd4j.linalg.dataset.DataSet;
 import org.nd4j.linalg.lossfunctions.LossFunctions;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
@@ -63,7 +64,7 @@ public class SDADeepLearning4j implements IERPClassifier {
         final int numRows = fe.getFeatureDimension();   // number of targets on a line
         final int numColumns = 2;   // number of labels needed for classifying
         this.iterations = numberOfiter; // number of iteration in the learning phase
-        int listenerFreq = numberOfiter / 10; // frequency of output strings
+        int listenerFreq = numberOfiter / 500; // frequency of output strings
         int seed = 123; //  seed - one of parameters. For more info check http://deeplearning4j.org/iris-flower-dataset-tutorial
 
         //Load Data - when target is 0, label[0] is 0 and label[1] is 1.
@@ -103,25 +104,27 @@ public class SDADeepLearning4j implements IERPClassifier {
         System.out.print("Build model....");
         System.out.print("rows "+numRows);
         MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder()
-                .seed(seed)
-                .iterations(iterations)
+                //.seed(seed)
+                .iterations(1500)
                 .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
-                .learningRate(0.05)
+                .learningRate(0.005)
                 .updater(Updater.NESTEROVS).momentum(0.9)
                 //.regularization(true).dropOut(0.99)
                 // .regularization(true).l2(1e-4)
                 .list()
-                .layer(0, new AutoEncoder.Builder().nIn(numRows).nOut(24)
+                .layer(0, new AutoEncoder.Builder()
+                        .nIn(numRows)
+                        .nOut(24)
                         .weightInit(WeightInit.XAVIER)
                         .activation(Activation.RELU)
                         //.corruptionLevel(0.2) // Set level of corruption
-                        .lossFunction(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
+                        .lossFunction(LossFunctions.LossFunction.MCXENT)
                         .build())
                 .layer(1, new AutoEncoder.Builder().nOut(12).nIn(24)
                         .weightInit(WeightInit.XAVIER)
                         .activation(Activation.RELU)
-                        //.corruptionLevel(0.2) // Set level of corruption
-                        .lossFunction(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
+                        //.corruptionLevel(0.1) // Set level of corruption
+                        .lossFunction(LossFunctions.LossFunction.MCXENT)
                         .build())
                 .layer(2, new OutputLayer.Builder(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
                         .weightInit(WeightInit.XAVIER)
@@ -131,8 +134,9 @@ public class SDADeepLearning4j implements IERPClassifier {
         model = new MultiLayerNetwork(conf); // Passing built configuration to instance of multilayer network
         model.init(); // Initialize mode
 
-        model.setListeners(new ScoreIterationListener(listenerFreq));// Setting listeners
-        // model.setListeners(new HistogramIterationListener(10));
+        model.setListeners(new ScoreIterationListener(500));// Setting listeners
+        //model.setListeners(new ScoreIterationListener(listenerFreq));// Setting listeners
+        //model.setListeners(new HistogramIterationListener(10));
     }
 
     // method for testing the classifier.

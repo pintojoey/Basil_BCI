@@ -85,7 +85,9 @@ public class TestClassificationMain {
 			ArrayList<Integer> nnStructure = new ArrayList<Integer>();
 			nnStructure.add(numberOfInputNeurons); nnStructure.add(middleNeurons); nnStructure.add(outputNeurons);
 
+
 			IERPClassifier classifier = new SDADeepLearning4j();//MLPClassifier(nnStructure);
+			//IERPClassifier classifier = new MLPDeepLearning4j();
 			//IERPClassifier classifier = new DBNClassifierDeepLearning4j();//MLPClassifier(nnStructure);
 			//IERPClassifier classifier = new DBNClassifierDeepLearning4j();
 			
@@ -104,10 +106,8 @@ public class TestClassificationMain {
 			
 			classifier.save("data/classifier.txt");
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
 			

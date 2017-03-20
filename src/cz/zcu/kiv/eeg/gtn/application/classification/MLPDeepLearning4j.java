@@ -20,6 +20,7 @@ import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.dataset.DataSet;
 import org.nd4j.linalg.dataset.SplitTestAndTrain;
 import org.nd4j.linalg.factory.Nd4j;
+import org.nd4j.linalg.lossfunctions.LossFunctions;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.io.*;
@@ -118,7 +119,7 @@ public class MLPDeepLearning4j implements IERPClassifier {
                         .weightInit(WeightInit.XAVIER)
                         .activation(new ActivationReLU())
                         //.corruptionLevel(0.2) // Set level of corruption
-                        //.lossFunction(LossFunctions.LossFunction.RMSE_XENT)
+                        //.lossFunction(LossFunctions.LossFunction.MCXENT)
                         .build())
                 .layer(2, new OutputLayer.Builder()
                         .weightInit(WeightInit.XAVIER)

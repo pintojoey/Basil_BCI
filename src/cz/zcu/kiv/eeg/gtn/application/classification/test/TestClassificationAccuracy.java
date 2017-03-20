@@ -152,7 +152,6 @@ public class TestClassificationAccuracy implements Observer {
         	System.out.println("Human accuracy: " + this.humanAccuracy + " %");
 			
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 

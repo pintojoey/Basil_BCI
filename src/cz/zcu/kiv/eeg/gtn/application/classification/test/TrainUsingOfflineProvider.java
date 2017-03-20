@@ -55,7 +55,6 @@ public class TrainUsingOfflineProvider implements Observer {
 	            e.printStackTrace();
 	        }
 		} catch (IOException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
         
@@ -69,7 +68,10 @@ public class TrainUsingOfflineProvider implements Observer {
         numberOfNonTargets = 0;
         this.iters = iters;
         this.middleNeurons = middleNeurons;
-        classifier = null; 
+        classifier = null;
+
+
+
 
        // OffLineDataProvider offLineData = new OffLineDataProvider(new File(
        //         Const.TRAINING_RAW_DATA_FILE_NAME), this);
@@ -224,8 +226,11 @@ public class TrainUsingOfflineProvider implements Observer {
         nnStructure.add(numberOfInputNeurons);
         nnStructure.add(middleNeurons);
         nnStructure.add(outputNeurons);
+
+        //TODO clasifikatory
         //classifier = new MLPClassifier(nnStructure);
         classifier = new SDADeepLearning4j();
+        //classifier = new SDAClassifierEarlyStop();
         //classifier = new MLPDeepLearning4j();
         //classifier = new DBNClassifierDeepLearning4j();
         //classifier = new SVMClassifier();

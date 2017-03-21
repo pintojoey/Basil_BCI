@@ -9,6 +9,7 @@ import org.deeplearning4j.earlystopping.EarlyStoppingResult;
 import org.deeplearning4j.earlystopping.scorecalc.DataSetLossCalculator;
 import org.deeplearning4j.earlystopping.termination.MaxEpochsTerminationCondition;
 import org.deeplearning4j.earlystopping.termination.MaxTimeIterationTerminationCondition;
+import org.deeplearning4j.earlystopping.termination.ScoreImprovementEpochTerminationCondition;
 import org.deeplearning4j.earlystopping.trainer.EarlyStoppingTrainer;
 import org.deeplearning4j.eval.Evaluation;
 import org.deeplearning4j.nn.api.Layer;
@@ -23,6 +24,7 @@ import org.deeplearning4j.nn.conf.layers.OutputLayer;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.deeplearning4j.nn.weights.WeightInit;
 import org.deeplearning4j.optimize.listeners.ScoreIterationListener;
+import org.deeplearning4j.util.ModelSerializer;
 import org.nd4j.linalg.activations.Activation;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.dataset.DataSet;
@@ -41,24 +43,28 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 // creates instance of Stacked Denoising Autoencoder @author Pumprdlici group
-public class SDAClassifierEarlyStop implements IERPClassifier {
+public class SDADeepLearning4jEarlyStop implements IERPClassifier {
     private final int NEURON_COUNT_DEFAULT = 30;    //default number of neurons
     private IFeatureExtraction fe;                //type of feature extraction (MatchingPursuit, FilterAndSubampling or WaveletTransform)
-    private MultiLayerNetwork model;            //multi layer neural network with a logistic output layer and multiple hidden neuralNets
+    //private MultiLayerNetwork model;            //multi layer neural network with a logistic output layer and multiple hidden neuralNets
     private int neuronCount;                    // Number of neurons
     private int iterations;                    //Iterations used to classify
     private String directory = "C:\\Temp\\";
-    private int maxTime =5; //max time in minutes
+    private int maxTime =15; //max time in minutes
+    private int maxEpochs = 500;
+    private EarlyStoppingResult result;
+    private int noImprovementEpochs = 10;
     private EarlyStoppingConfiguration esConf;
+    private String pathname = "C:\\Temp\\SDAEStop"; //pathname+file name for saving model
 
 
     /*Default constructor*/
-    public SDAClassifierEarlyStop() {
+    public SDADeepLearning4jEarlyStop() {
         this.neuronCount = NEURON_COUNT_DEFAULT; // sets count of neurons in layer(0) to default number
     }
 
     /*Parametric constructor */
-    public SDAClassifierEarlyStop(int neuronCount) {
+    public SDADeepLearning4jEarlyStop(int neuronCount) {
         this.neuronCount = neuronCount; // sets count of neurons in layer(0) to param
     }
 
@@ -67,7 +73,9 @@ public class SDAClassifierEarlyStop implements IERPClassifier {
     public double classify(double[][] epoch) {
         double[] featureVector = this.fe.extractFeatures(epoch); // Extracting features to vector
         INDArray features = Nd4j.create(featureVector); // Creating INDArray with extracted features
-        return model.output(features, Layer.TrainingMode.TEST).getDouble(0); // Result of classifying
+        //return model.output(features, Layer.TrainingMode.TEST).getDouble(0); // Result of classifying
+        //TODO
+        return 0.9;
     }
 
     @Override
@@ -101,70 +109,81 @@ public class SDAClassifierEarlyStop implements IERPClassifier {
 
         // Building a neural net
         MultiLayerConfiguration conf = this.createConfiguration(numRows, numColumns, seed, listenerFreq);
-        model = new MultiLayerNetwork(conf); // Passing built configuration to instance of multilayer network
-        model.init(); // Initialize model
+        //model = new MultiLayerNetwork(conf); // Passing built configuration to instance of multilayer network
+       // model.init(); // Initialize model
         //model.setListeners(Collections.singletonList((IterationListener) new ScoreIterationListener(listenerFreq))); // Setting listeners
-        model.setListeners(new ScoreIterationListener(10));
+        //model.setListeners(new ScoreIterationListener(100));
 
         SplitTestAndTrain testAndTrain = dataSet.splitTestAndTrain(80);
         EarlyStoppingModelSaver saver = new LocalFileModelSaver(directory);
-    try {
+
         esConf = new EarlyStoppingConfiguration.Builder()
-                .epochTerminationConditions(new MaxEpochsTerminationCondition(100))
+                .epochTerminationConditions(new MaxEpochsTerminationCondition(maxEpochs))
                 .iterationTerminationConditions(new MaxTimeIterationTerminationCondition(maxTime, TimeUnit.MINUTES))
+                .epochTerminationConditions(new ScoreImprovementEpochTerminationCondition(noImprovementEpochs))
                 .scoreCalculator(new DataSetLossCalculator(new ListDataSetIterator(testAndTrain.getTest().asList(), 100), true))
                 .evaluateEveryNEpochs(5)
                 .modelSaver(saver)
                 .build();
-    }catch(Exception e){
-        e.printStackTrace();
-    }
 
         EarlyStoppingTrainer trainer = new EarlyStoppingTrainer(esConf, conf, new ListDataSetIterator(testAndTrain.getTrain().asList(), 100));
         //model.setListeners(new ScoreIterationListener(500));
         //Conduct early stopping training:
-        EarlyStoppingResult result = trainer.fit();
+        result = trainer.fit();
 
         //MultiLayerNetwork bestModel = result.getBestModel();
         System.out.println("Termination reason: " + result.getTerminationReason());
         System.out.println("Termination details: " + result.getTerminationDetails());
         System.out.println("Best epoch number: " + result.getBestModelEpoch());
         System.out.println("Score at best epoch: " + result.getBestModelScore());
-        //model.fit(testAndTrain.getTrain());
-        Model bestModel = result.getBestModel();
+
+        result.getBestModel().fit(input_data);
+/*
+        Evaluation eval = new Evaluation(numColumns);
+        eval.eval(dataSet.getLabels(), model.output(dataSet.getFeatureMatrix(), Layer.TrainingMode.TEST));
+        System.out.println(eval.stats());
+        */
+       //Model bestModel = result.getBestModel();
         //TODO
 
     }
 
     //  initialization of neural net with params. For more info check http://deeplearning4j.org/iris-flower-dataset-tutorial where is more about params
     private MultiLayerConfiguration createConfiguration(int numRows, int outputNum, int seed, int listenerFreq) {
-        System.out.print("Build model....");
+        System.out.print("Build model....SDA EStop");
         MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder() // Starting builder pattern
                 .seed(seed) // Locks in weight initialization for tuning
                 //.gradientNormalization(GradientNormalization.ClipElementWiseAbsoluteValue) // Gradient normalization strategy
                 //.gradientNormalizationThreshold(1.0) // Treshold for gradient normalization
-                .iterations(1800)
+                .iterations(1500)
                 .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
-                .learningRate(0.05)
+                .learningRate(0.09)
                 .updater(Updater.NESTEROVS).momentum(0.9)
                 //.momentum(0.5) // Momentum rate
                 //.momentumAfter(Collections.singletonMap(3, 0.9)) //Map of the iteration to the momentum rate to apply at that iteration
                 .list() // # NN layers (doesn't count input layer)
-                .layer(0, new AutoEncoder.Builder().nIn(numRows).nOut(neuronCount) // Setting layer to Autoencoder
+                .layer(0, new AutoEncoder.Builder()
+                        .nIn(numRows)
+                        .nOut(24) // Setting layer to Autoencoder
                         .weightInit(WeightInit.XAVIER)
                         .activation(Activation.RELU)
                         .lossFunction(LossFunction.MCXENT) // Weight initialization
                         //.corruptionLevel(0.1) // Set level of corruption
                         .build() // Build on set configuration
                 ) // NN layer type
-                .layer(1, new OutputLayer.Builder(LossFunction.NEGATIVELOGLIKELIHOOD)//Override default output layer that classifies input using softmax
+                .layer(1, new AutoEncoder.Builder().nOut(12).nIn(24)
+                        .weightInit(WeightInit.XAVIER)
+                        .activation(Activation.RELU)
+                        //.corruptionLevel(0.1) // Set level of corruption
+                        .lossFunction(LossFunctions.LossFunction.MCXENT)
+                        .build())
+                .layer(2, new OutputLayer.Builder(LossFunction.NEGATIVELOGLIKELIHOOD)//Override default output layer that classifies input using softmax
                         .activation(Activation.SOFTMAX)// Activation function type
                         .weightInit(WeightInit.XAVIER)
-                        .nIn(neuronCount) // # input nodes
+                        .nIn(12) // # input nodes
                         .nOut(outputNum) // # output nodes
                         .build() // Build on set configuration
                 ) // NN layer type
-
                 .pretrain(false) // Do pre training
                 .backprop(true)
                 .build(); // Build on set configuration
@@ -196,24 +215,12 @@ public class SDAClassifierEarlyStop implements IERPClassifier {
 
     @Override
     public void save(String file) {
-        OutputStream fos;
-        // Choose the name of classifier and coefficient file to save based on the feature extraction, which is used
-        String coefficientsName = "wrong.bin";
-        if (fe.getClass().getSimpleName().equals("FilterAndSubsamplingFeatureExtraction")) {
-            coefficientsName = "coefficients19.bin";
-        } else if (fe.getClass().getSimpleName().equals("WaveletTransformFeatureExtraction")) {
-            coefficientsName = "coefficients20.bin";
-        } else if (fe.getClass().getSimpleName().equals("MatchingPursuitFeatureExtraction")) {
-            coefficientsName = "coefficients21.bin";
-        }
+        File locationToSave = new File(pathname + ".zip");      //Where to save the network. Note: the file is in .zip format - can be opened externally
+        boolean saveUpdater = true;   //Updater: i.e., the state for Momentum, RMSProp, Adagrad etc. Save this if you want to train your network more in the future
         try {
-            // Save classifier and coefficients, used methods come from Nd4j library
-            fos = Files.newOutputStream(Paths.get("data/test_classifiers_and_settings/" + coefficientsName));
-            DataOutputStream dos = new DataOutputStream(fos);
-            Nd4j.write(model.params(), dos);
-            dos.flush();
-            dos.close();
-            FileUtils.writeStringToFile(new File(file), model.getLayerWiseConfigurations().toJson());
+            ModelSerializer.writeModel(result.getBestModel(), locationToSave, saveUpdater);
+            System.out.println("Saved network params " + result.getBestModel().params());
+            System.out.println("Saved");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -221,33 +228,16 @@ public class SDAClassifierEarlyStop implements IERPClassifier {
 
     @Override
     public void load(String file) {
-        MultiLayerConfiguration confFromJson = null;
-        INDArray newParams = null;
-        // Choose the name of coefficient file to load based on the feature extraction, which is used
-        String coefficientsName = "wrong.bin";
-        if (fe.getClass().getSimpleName().equals("FilterAndSubsamplingFeatureExtraction")) {
-            coefficientsName = "coefficients19.bin";
-        } else if (fe.getClass().getSimpleName().equals("WaveletTransformFeatureExtraction")) {
-            coefficientsName = "coefficients20.bin";
-        } else if (fe.getClass().getSimpleName().equals("MatchingPursuitFeatureExtraction")) {
-            coefficientsName = "coefficients21.bin";
-        }
+        File locationToLoad = new File(pathname + ".zip");
         try {
-            // Load classifier and coefficients, used methods come from Nd4j library
-            confFromJson = MultiLayerConfiguration.fromJson(FileUtils.readFileToString(new File(file)));
-            DataInputStream dis = new DataInputStream(new FileInputStream("data/test_classifiers_and_settings/" + coefficientsName));
-            newParams = Nd4j.read(dis);
-            dis.close();
+            result.setBestModel(ModelSerializer.restoreMultiLayerNetwork(locationToLoad));
+            System.out.println("Loaded");
+            System.out.println("Loaded network params " + result.getBestModel().params());
         } catch (IOException e) {
             e.printStackTrace();
         }
-        // Initialize network with loaded params
-        if (confFromJson != null) {
-            model = new MultiLayerNetwork(confFromJson);
-        }
-        model.init();
-        model.setParams(newParams);
-        System.out.println("Original network params " + model.params());
+
+        System.out.println("Original network params " + result.getBestModel().params());
         System.out.println("Loaded");
     }
 

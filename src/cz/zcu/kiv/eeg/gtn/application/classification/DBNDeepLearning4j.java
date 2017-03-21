@@ -30,7 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 // creates instance of Deep Belief Network @author Pumprdlici group
-public class DBNClassifierDeepLearning4j implements IERPClassifier {
+public class DBNDeepLearning4j implements IERPClassifier {
     private final int NEURON_COUNT = 15; //default number of neurons
     private IFeatureExtraction fe;        //type of feature extraction (MatchingPursuit, FilterAndSubampling or WaveletTransform)
     private MultiLayerNetwork model;    //multi layer neural network with a logistic output layer and multiple hidden neuralNets
@@ -38,12 +38,12 @@ public class DBNClassifierDeepLearning4j implements IERPClassifier {
     private int neuronCount;            // Number of neurons
 
     /*Default constructor*/
-    public DBNClassifierDeepLearning4j() {
+    public DBNDeepLearning4j() {
         this.neuronCount = NEURON_COUNT; // sets count of neurons to default number
     }
 
     /*Parametric constructor */
-    public DBNClassifierDeepLearning4j(int neuronCount) {
+    public DBNDeepLearning4j(int neuronCount) {
         this.neuronCount = neuronCount;     // sets count of neurons to parameter
     }
 
@@ -79,57 +79,27 @@ public class DBNClassifierDeepLearning4j implements IERPClassifier {
         }
 
 
-
         INDArray output_data = Nd4j.create(labels); // Create INDArray with labels(targets)
         INDArray input_data = Nd4j.create(features_matrix); // Create INDArray with features(data)
         DataSet dataSet = new DataSet(input_data, output_data); // Create dataSet with features and labels
         SplitTestAndTrain tat = dataSet.splitTestAndTrain(0.8);
         //DataSetIterator dataSetIterator = new ListDataSetIterator(dataSet.batchBy(32));
 
-
-
-        //int size = dataSet.numExamples() /4;
-
         // Building a neural net
         build(numRows, numColumns, seed, listenerFreq);
-        List<INDArray> testInput = new ArrayList<>();
-        List<INDArray> testLabels = new ArrayList<>();
+
         System.out.println("Train model....");
-        int k = 0;
-//        while (dataSetIterator.hasNext()) {
-//            System.out.println("Iteration: " + ++k);
-//            model.setListeners(new ScoreIterationListener(1));
-//            DataSet cifarDataSet = dataSetIterator.next();
-//            SplitTestAndTrain trainAndTest = cifarDataSet.splitTestAndTrain(0.8);
-//            DataSet trainInput = trainAndTest.getTrain();
-//            testInput.add(trainAndTest.getTest().getFeatureMatrix());
-//            testLabels.add(trainAndTest.getTest().getLabels());
-//            model.fit(trainInput);
-//        }
+
         model.fit(tat.getTrain());
         System.out.println("Evaluation");
         Evaluation eval = new Evaluation(numColumns);
-        eval.eval(tat.getTest().getLabels(), model.output(tat.getTest().getFeatureMatrix(), Layer.TrainingMode.TEST));
-        System.out.println(eval.stats());
-//        Evaluation eval = new Evaluation(numColumns);
-//        for (int i = 0; i < testInput.size(); i++) {
-//            INDArray output = model.output(testInput.get(i));
-//            eval.eval(testLabels.get(i), output);
-//        }
-
-
-
-        //model.fit(dataSet); // Learning of neural net with training data
-//
-//        Evaluation eval = new Evaluation(numColumns);
-//        eval.eval(tat.getTest().getLabels(), model.output(tat.getTest().getFeatureMatrix(), Layer.TrainingMode.TEST));
-
+        eval.eval(dataSet.getLabels(), model.output(dataSet.getFeatureMatrix(), Layer.TrainingMode.TEST));
         System.out.println(eval.stats());
     }
 
     //  initialization of neural net with params. For more info check http://deeplearning4j.org/iris-flower-dataset-tutorial where is more about params
     private void build(int numRows, int outputNum, int seed, int listenerFreq) {
-        System.out.print("Build model....");
+        System.out.print("Build model....DBN");
         Nd4j.ENFORCE_NUMERICAL_STABILITY = true;
         MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder() // Starting builder pattern
                 //.seed(seed) // Locks in weight initialization for tuning
@@ -143,7 +113,7 @@ public class DBNClassifierDeepLearning4j implements IERPClassifier {
                 .list() // # NN layers (doesn't count input layer)
                 .layer(0, new RBM.Builder(RBM.HiddenUnit.GAUSSIAN, RBM.VisibleUnit.GAUSSIAN) // Setting layer to Restricted Boltzmann machine
                         .nIn(numRows) // # input nodes
-                        .nOut(2) // # fully connected hidden layer nodes. Add list if multiple layers.
+                        .nOut(neuronCount) // # fully connected hidden layer nodes. Add list if multiple layers.
                         .weightInit(WeightInit.RELU) // Weight initialization
                         //.k(3) // # contrastive divergence iterations
                                 .activation(Activation.RELU) // Activation function type
@@ -152,23 +122,19 @@ public class DBNClassifierDeepLearning4j implements IERPClassifier {
 
                         //.dropOut(0.5) // Dropping part of connections
                         .build() // Build on set configuration
-//                ).layer(1, new RBM.Builder().nIn(neuronCount).nOut(neuronCount)
-//                        .lossFunction(LossFunction.RMSE_XENT)
-//                        .visibleUnit(RBM.VisibleUnit.GAUSSIAN)
-//                        .hiddenUnit(RBM.HiddenUnit.RECTIFIED)
-//                        .activation("relu")
-//                        .lossFunction(LossFunction.MCXENT)
-//                        .dropOut(0.5)
-//                        .updater(Updater.ADAGRAD)
-//                        .build()
-//                ).layer(2, new RBM.Builder().nIn(16).nOut(8)
-//                        .lossFunction(LossFunction.RMSE_XENT)
-//                        .visibleUnit(RBM.VisibleUnit.GAUSSIAN)
-//                        .hiddenUnit(RBM.HiddenUnit.GAUSSIAN).build()
+               // ).layer(1, new RBM.Builder().nIn(neuronCount).nOut(2)
+                 //       .lossFunction(LossFunction.MCXENT)
+                 //       .visibleUnit(RBM.VisibleUnit.GAUSSIAN)
+                 //       .hiddenUnit(RBM.HiddenUnit.RECTIFIED)
+                 //       .activation(Activation.RELU)
+                  //      .lossFunction(LossFunction.MCXENT)
+                 //       .dropOut(0.5)
+                 //       .updater(Updater.ADAGRAD)
+                 //       .build()//
                 ) // NN layer type
                 .layer(1, new OutputLayer.Builder(LossFunction.MCXENT) //Override default output layer that classifies input by Iris label using softmax
                         //.weightInit(WeightInit.XAVIER) // Weight initialization
-                        .nIn(2) // # input nodes
+                        .nIn(neuronCount) // # input nodes
                         .nOut(outputNum) // # output nodes
                         .activation(Activation.SOFTMAX) // Activation function type
                         .build() // Build on set configuration

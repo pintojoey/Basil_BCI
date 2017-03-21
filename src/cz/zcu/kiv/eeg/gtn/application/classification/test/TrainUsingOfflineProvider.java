@@ -9,7 +9,6 @@ import cz.zcu.kiv.eeg.gtn.Const;
 import cz.zcu.kiv.eeg.gtn.algorithm.math.ButterWorthFilter;
 import cz.zcu.kiv.eeg.gtn.algorithm.math.IFilter;
 import cz.zcu.kiv.eeg.gtn.application.classification.*;
-import cz.zcu.kiv.eeg.gtn.application.classification.SDADeepLearning4j;
 import cz.zcu.kiv.eeg.gtn.application.featureextraction.IFeatureExtraction;
 import cz.zcu.kiv.eeg.gtn.application.featureextraction.WaveletTransformFeatureExtraction;
 import cz.zcu.kiv.eeg.gtn.online.app.EpochMessenger;
@@ -229,10 +228,10 @@ public class TrainUsingOfflineProvider implements Observer {
 
         //TODO clasifikatory
         //classifier = new MLPClassifier(nnStructure);
-        classifier = new SDADeepLearning4j();
-        //classifier = new SDAClassifierEarlyStop();
+        //classifier = new SDADeepLearning4j();
+        classifier = new SDADeepLearning4jEarlyStop();
         //classifier = new MLPDeepLearning4j();
-        //classifier = new DBNClassifierDeepLearning4j();
+        //classifier = new DBNDeepLearning4j();
         //classifier = new SVMClassifier();
         classifier.setFeatureExtraction(fe);
     }

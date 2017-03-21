@@ -99,7 +99,7 @@ public class MLPDeepLearning4j implements IERPClassifier {
 
     //  initialization of neural net with params. For more info check http://deeplearning4j.org/iris-flower-dataset-tutorial where is more about params
     private void build(int numRows, int outputNum, int seed, int listenerFreq) {
-        System.out.print("Build model....");
+        System.out.print("Build model.... MLP");
 
         MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder()
                 //.seed(seed)

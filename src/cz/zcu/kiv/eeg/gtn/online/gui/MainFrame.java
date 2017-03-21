@@ -47,7 +47,7 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
-import cz.zcu.kiv.eeg.gtn.application.classification.SDAClassifierEarlyStop;
+import cz.zcu.kiv.eeg.gtn.application.classification.SDADeepLearning4jEarlyStop;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 
@@ -222,16 +222,16 @@ public class MainFrame extends JFrame implements Observer {
                 }
             } else if (row.equals("CorrelationClassifier")) {
                 classifier = new CorrelationClassifier();
-            } else if (row.equals("DBNClassifierDeepLearning4j")) {
+            } else if (row.equals("DBNDeepLearning4j")) {
             	try {
-                    classifier = new DBNClassifierDeepLearning4j(Integer.parseInt(br
+                    classifier = new DBNDeepLearning4j(Integer.parseInt(br
                             .readLine()));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-            } else if (row.equals("SDAClassifierEarlyStop")) {
+            } else if (row.equals("SDADeepLearning4jEarlyStop")) {
             	try {
-                    classifier = new SDAClassifierEarlyStop(Integer.parseInt(br
+                    classifier = new SDADeepLearning4jEarlyStop(Integer.parseInt(br
                             .readLine()));
                 } catch (Exception e) {
                     e.printStackTrace();

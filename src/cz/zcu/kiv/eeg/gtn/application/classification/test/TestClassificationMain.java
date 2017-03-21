@@ -88,8 +88,8 @@ public class TestClassificationMain {
 
 			IERPClassifier classifier = new SDADeepLearning4j();//MLPClassifier(nnStructure);
 			//IERPClassifier classifier = new MLPDeepLearning4j();
-			//IERPClassifier classifier = new DBNClassifierDeepLearning4j();//MLPClassifier(nnStructure);
-			//IERPClassifier classifier = new DBNClassifierDeepLearning4j();
+			//IERPClassifier classifier = new DBNDeepLearning4j();//MLPClassifier(nnStructure);
+			//IERPClassifier classifier = new DBNDeepLearning4j();
 			
 			// training
 			System.out.println("Training started.");

@@ -39,7 +39,76 @@
         "momentum" : 0.9,
         "momentumSchedule" : { },
         "nin" : 48,
-        "nout" : 30,
+        "nout" : 24,
+        "preTrainIterations" : 1,
+        "rho" : "NaN",
+        "rmsDecay" : "NaN",
+        "sparsity" : 0.0,
+        "updater" : "NESTEROVS",
+        "visibleBiasInit" : 0.0,
+        "weightInit" : "XAVIER"
+      }
+    },
+    "leakyreluAlpha" : 0.0,
+    "learningRateByParam" : {
+      "b" : 0.05,
+      "W" : 0.05,
+      "vb" : 0.05
+    },
+    "learningRatePolicy" : "None",
+    "lrPolicyDecayRate" : "NaN",
+    "lrPolicyPower" : "NaN",
+    "lrPolicySteps" : "NaN",
+    "maxNumLineSearchIterations" : 5,
+    "miniBatch" : true,
+    "minimize" : true,
+    "numIterations" : 1500,
+    "optimizationAlgo" : "STOCHASTIC_GRADIENT_DESCENT",
+    "pretrain" : false,
+    "seed" : 123,
+    "stepFunction" : null,
+    "useDropConnect" : false,
+    "useRegularization" : false,
+    "variables" : [ "W", "b", "vb" ]
+  }, {
+    "iterationCount" : 0,
+    "l1ByParam" : {
+      "b" : 0.0,
+      "W" : 0.0,
+      "vb" : 0.0
+    },
+    "l2ByParam" : {
+      "b" : 0.0,
+      "W" : 0.0,
+      "vb" : 0.0
+    },
+    "layer" : {
+      "autoEncoder" : {
+        "activationFn" : {
+          "ReLU" : { }
+        },
+        "adamMeanDecay" : "NaN",
+        "adamVarDecay" : "NaN",
+        "biasInit" : 0.0,
+        "biasLearningRate" : 0.05,
+        "corruptionLevel" : 0.30000001192092896,
+        "dist" : null,
+        "dropOut" : 0.0,
+        "epsilon" : "NaN",
+        "gradientNormalization" : "None",
+        "gradientNormalizationThreshold" : 1.0,
+        "l1" : 0.0,
+        "l1Bias" : 0.0,
+        "l2" : 0.0,
+        "l2Bias" : 0.0,
+        "layerName" : "layer1",
+        "learningRate" : 0.05,
+        "learningRateSchedule" : null,
+        "lossFunction" : "MCXENT",
+        "momentum" : 0.9,
+        "momentumSchedule" : { },
+        "nin" : 24,
+        "nout" : 12,
         "preTrainIterations" : 1,
         "rho" : "NaN",
         "rmsDecay" : "NaN",
@@ -98,7 +167,7 @@
         "l1Bias" : 0.0,
         "l2" : 0.0,
         "l2Bias" : 0.0,
-        "layerName" : "layer1",
+        "layerName" : "layer2",
         "learningRate" : 0.05,
         "learningRateSchedule" : null,
         "lossFn" : {
@@ -107,7 +176,7 @@
         "lossFunction" : "NEGATIVELOGLIKELIHOOD",
         "momentum" : 0.9,
         "momentumSchedule" : { },
-        "nin" : 30,
+        "nin" : 12,
         "nout" : 2,
         "rho" : "NaN",
         "rmsDecay" : "NaN",
@@ -137,7 +206,7 @@
     "variables" : [ "W", "b" ]
   } ],
   "inputPreProcessors" : { },
-  "iterationCount" : 54000,
+  "iterationCount" : 36000,
   "pretrain" : false,
   "tbpttBackLength" : 20,
   "tbpttFwdLength" : 20

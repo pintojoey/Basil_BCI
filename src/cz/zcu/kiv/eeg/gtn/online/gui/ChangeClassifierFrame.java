@@ -30,14 +30,8 @@ import javax.swing.KeyStroke;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import cz.zcu.kiv.eeg.gtn.application.classification.CorrelationClassifier;
-import cz.zcu.kiv.eeg.gtn.application.classification.DBNClassifierDeepLearning4j;
-import cz.zcu.kiv.eeg.gtn.application.classification.IERPClassifier;
-import cz.zcu.kiv.eeg.gtn.application.classification.KNNClassifier;
-import cz.zcu.kiv.eeg.gtn.application.classification.LinearDiscriminantAnalysisClassifier;
-import cz.zcu.kiv.eeg.gtn.application.classification.MLPClassifier;
-import cz.zcu.kiv.eeg.gtn.application.classification.SDAClassifierEarlyStop;
-import cz.zcu.kiv.eeg.gtn.application.classification.SVMClassifier;
+import cz.zcu.kiv.eeg.gtn.application.classification.*;
+import cz.zcu.kiv.eeg.gtn.application.classification.DBNDeepLearning4j;
 import cz.zcu.kiv.eeg.gtn.application.classification.test.TrainUsingOfflineProvider;
 import cz.zcu.kiv.eeg.gtn.application.featureextraction.IFeatureExtraction;
 
@@ -581,7 +575,7 @@ public class ChangeClassifierFrame extends JFrame {
 				}
 				else if (dbnBttn.isSelected()) {
 					int neurons = (Integer) dbnNeuron.getValue();
-					IERPClassifier classifier = new DBNClassifierDeepLearning4j(neurons);
+					IERPClassifier classifier = new DBNDeepLearning4j(neurons);
 					classifier.setFeatureExtraction(fe);
 
 					List<String> classifierParams = new ArrayList<String>();
@@ -591,7 +585,7 @@ public class ChangeClassifierFrame extends JFrame {
 				}
 				else if (saeBttn.isSelected()) {
 					int neurons = (Integer) sdaNeuron.getValue();
-					IERPClassifier classifier = new SDAClassifierEarlyStop(neurons);
+					IERPClassifier classifier = new SDADeepLearning4jEarlyStop(neurons);
 					classifier.setFeatureExtraction(fe);
 
 					List<String> classifierParams = new ArrayList<String>();

@@ -54,10 +54,10 @@ public class MLPDeepLearning4jEarlyStop implements IERPClassifier {
    private MultiLayerNetwork model;            //multi layer neural network with a logistic output layer and multiple hidden neuralNets
     private int neuronCount;                    // Number of neurons
     private int iterations;                    //Iterations used to classify
-    //private Model model1;                       //model from new lbraries
+    private Model model1;                       //model from new lbraries
     private int maxTime =15; //max time in minutes
     private int maxEpochs = 500;
-    private EarlyStoppingResult result;
+        private EarlyStoppingResult result;
     private int noImprovementEpochs = 10;
     private EarlyStoppingConfiguration esConf;
     private String pathname = "C:\\Temp\\MLPEStop"; //pathname+file name for saving model
@@ -82,9 +82,8 @@ public class MLPDeepLearning4jEarlyStop implements IERPClassifier {
     public double classify(double[][] epoch) {
         double[] featureVector = this.fe.extractFeatures(epoch); // Extracting features to vector
         INDArray features = Nd4j.create(featureVector); // Creating INDArray with extracted features
-        //return model.output(features, Layer.TrainingMode.TEST).getDouble(0); // Result of classifying
-        //TODO
-        return 0.9;
+        return model.output(features, Layer.TrainingMode.TEST).getDouble(0); // Result of classifying
+
     }
 
     @Override
@@ -144,7 +143,7 @@ public class MLPDeepLearning4jEarlyStop implements IERPClassifier {
         EarlyStoppingTrainer trainer = new EarlyStoppingTrainer(esConf,conf,new ListDataSetIterator(testAndTrain.getTrain().asList(), 100));
         //System.out.println("STARTED ");
 //Conduct early stopping training:
-        EarlyStoppingResult result = trainer.fit();
+        this.result = trainer.fit();
 
 //Print out the results:
         System.out.println("Termination reason: " + result.getTerminationReason());
@@ -154,14 +153,11 @@ public class MLPDeepLearning4jEarlyStop implements IERPClassifier {
         System.out.println("Score at best epoch: " + result.getBestModelScore());
 
 //Get the best model
-        //TODO
-        //model1 = result.getBestModel();
-        result.getBestModel().fit(input_data);
+        model = (MultiLayerNetwork) result.getBestModel();
 
-        //Evaluation eval = new Evaluation(numColumns);
-//        eval.eval(tat.getTest().getLabels(), model.output(tat.getTest().getFeatureMatrix(), Layer.TrainingMode.TEST));
-
-        //System.out.println(eval.stats());
+        Evaluation eval = new Evaluation(numColumns);
+        eval.eval(testAndTrain.getTest().getLabels(), model.output(testAndTrain.getTest().getFeatureMatrix(), Layer.TrainingMode.TEST));
+        System.out.println(eval.stats());
     }
 
     //  initialization of neural net with params. For more info check http://deeplearning4j.org/iris-flower-dataset-tutorial where is more about params
@@ -169,7 +165,7 @@ public class MLPDeepLearning4jEarlyStop implements IERPClassifier {
         System.out.print("Build model....");
         MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder()
                 //.seed(seed)
-                .iterations(1500)
+                .iterations(500)
                 .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
                 .learningRate(0.05)
                 .updater(Updater.NESTEROVS).momentum(0.9)

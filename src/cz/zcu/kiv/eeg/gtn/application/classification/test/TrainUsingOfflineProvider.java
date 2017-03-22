@@ -230,9 +230,9 @@ public class TrainUsingOfflineProvider implements Observer {
 
         //TODO clasifikatory
         //classifier = new MLPClassifier(nnStructure);
-        classifier = new SDADeepLearning4j();
+        //classifier = new SDADeepLearning4j();
         //classifier = new SDADeepLearning4jEarlyStop();
-        //classifier = new MLPDeepLearning4jEarlyStop();
+        classifier = new MLPDeepLearning4jEarlyStop();
         //classifier = new MLPDeepLearning4j();
         //classifier = new DBNDeepLearning4j();
         //classifier = new SVMClassifier();

@@ -123,9 +123,9 @@ public class MLPDeepLearning4j implements IERPClassifier {
                         .build())
                 .layer(2, new OutputLayer.Builder()
                         .weightInit(WeightInit.XAVIER)
-                        .activation(new ActivationSoftmax()).weightInit(WeightInit.XAVIER)
+                        .activation(new ActivationSoftmax())
                         .nIn(12).nOut(outputNum).build())
-                .pretrain(true).backprop(true).build();
+                .pretrain(false).backprop(true).build();
 
 
         model = new MultiLayerNetwork(conf); // Passing built configuration to instance of multilayer network

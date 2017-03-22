@@ -7,6 +7,7 @@ import org.deeplearning4j.earlystopping.EarlyStoppingConfiguration;
 import org.deeplearning4j.earlystopping.EarlyStoppingModelSaver;
 import org.deeplearning4j.earlystopping.EarlyStoppingResult;
 import org.deeplearning4j.earlystopping.scorecalc.DataSetLossCalculator;
+import org.deeplearning4j.earlystopping.termination.EpochTerminationCondition;
 import org.deeplearning4j.earlystopping.termination.MaxEpochsTerminationCondition;
 import org.deeplearning4j.earlystopping.termination.MaxTimeIterationTerminationCondition;
 import org.deeplearning4j.earlystopping.termination.ScoreImprovementEpochTerminationCondition;
@@ -38,6 +39,7 @@ import org.nd4j.linalg.lossfunctions.LossFunctions.LossFunction;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -119,13 +121,18 @@ public class SDADeepLearning4jEarlyStop implements IERPClassifier {
         //EarlyStoppingModelSaver saver = new LocalFileModelSaver(directory);
         InMemoryModelSaver <MultiLayerNetwork> saver = new InMemoryModelSaver();
 
+        List<EpochTerminationCondition> list = new ArrayList<>(2);
+        list.add(new MaxEpochsTerminationCondition(maxEpochs));
+        list.add(new ScoreImprovementEpochTerminationCondition(noImprovementEpochs));
+
         esConf = new EarlyStoppingConfiguration.Builder()
-                .epochTerminationConditions(new MaxEpochsTerminationCondition(maxEpochs))
+                //.epochTerminationConditions(new MaxEpochsTerminationCondition(maxEpochs))
                 .iterationTerminationConditions(new MaxTimeIterationTerminationCondition(maxTime, TimeUnit.MINUTES))
-                .epochTerminationConditions(new ScoreImprovementEpochTerminationCondition(noImprovementEpochs))
+                //.epochTerminationConditions(new ScoreImprovementEpochTerminationCondition(noImprovementEpochs))
                 .scoreCalculator(new DataSetLossCalculator(new ListDataSetIterator(testAndTrain.getTest().asList(), 100), true))
-                .evaluateEveryNEpochs(2)
+                .evaluateEveryNEpochs(3)
                 .modelSaver(saver)
+                .epochTerminationConditions(list)
                 .build();
 
         EarlyStoppingTrainer trainer = new EarlyStoppingTrainer(esConf, conf, new ListDataSetIterator(testAndTrain.getTrain().asList(), 100));
@@ -157,14 +164,14 @@ public class SDADeepLearning4jEarlyStop implements IERPClassifier {
                 .seed(seed) // Locks in weight initialization for tuning
                 //.gradientNormalization(GradientNormalization.ClipElementWiseAbsoluteValue) // Gradient normalization strategy
                 //.gradientNormalizationThreshold(1.0) // Treshold for gradient normalization
-                .iterations(500)
-                //.regularization(true).l2(0.005)
+                //.iterations(500)
+                .regularization(true).l2(0.005)
                 .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
                 .learningRate(0.005)
                 .updater(Updater.NESTEROVS).momentum(0.9)
                 .weightInit(WeightInit.XAVIER)
                 .activation(Activation.RELU)
-                //.momentum(0.5) // Momentum rate
+                .momentum(0.5) // Momentum rate
                 //.momentumAfter(Collections.singletonMap(3, 0.9)) //Map of the iteration to the momentum rate to apply at that iteration
                 .list() // # NN layers (doesn't count input layer)
                 .layer(0, new AutoEncoder.Builder()
@@ -176,7 +183,7 @@ public class SDADeepLearning4jEarlyStop implements IERPClassifier {
                         .build() // Build on set configuration
                 ) // NN layer type
                 .layer(1, new AutoEncoder.Builder().nOut(12).nIn(24)
-                        //.corruptionLevel(0.1) // Set level of corruption
+                        .corruptionLevel(0.1) // Set level of corruption
                         .lossFunction(LossFunctions.LossFunction.XENT)
                         .build())
                 .layer(2, new OutputLayer.Builder(LossFunction.NEGATIVELOGLIKELIHOOD)//Override default output layer that classifies input using softmax
@@ -185,7 +192,7 @@ public class SDADeepLearning4jEarlyStop implements IERPClassifier {
                         .nOut(outputNum) // # output nodes
                         .build() // Build on set configuration
                 ) // NN layer type
-                .pretrain(false) // Do pre training
+                .pretrain(true) // Do pre training
                 .backprop(true)
                 .build(); // Build on set configuration
         return conf;

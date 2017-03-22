@@ -5,6 +5,7 @@ import org.apache.commons.io.FileUtils;
 import org.deeplearning4j.datasets.iterator.impl.ListDataSetIterator;
 import org.deeplearning4j.earlystopping.EarlyStoppingModelSaver;
 import org.deeplearning4j.earlystopping.saver.LocalFileModelSaver;
+import org.deeplearning4j.earlystopping.termination.EpochTerminationCondition;
 import org.deeplearning4j.earlystopping.termination.MaxEpochsTerminationCondition;
 import org.deeplearning4j.earlystopping.termination.ScoreImprovementEpochTerminationCondition;
 import org.deeplearning4j.nn.conf.inputs.InputType;
@@ -41,6 +42,7 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -55,8 +57,8 @@ public class MLPDeepLearning4jEarlyStop implements IERPClassifier {
     private int neuronCount;                    // Number of neurons
     private int iterations;                    //Iterations used to classify
     private Model model1;                       //model from new lbraries
-    private int maxTime =15; //max time in minutes
-    private int maxEpochs = 500;
+    private int maxTime =5; //max time in minutes
+    private int maxEpochs = 1000;
         private EarlyStoppingResult result;
     private int noImprovementEpochs = 10;
     private EarlyStoppingConfiguration esConf;
@@ -131,13 +133,18 @@ public class MLPDeepLearning4jEarlyStop implements IERPClassifier {
 
         EarlyStoppingModelSaver saver = new LocalFileModelSaver(directory);
 
+        List<EpochTerminationCondition> list = new ArrayList<EpochTerminationCondition>(2);
+        list.add(new MaxEpochsTerminationCondition(maxEpochs));
+        list.add(new ScoreImprovementEpochTerminationCondition(noImprovementEpochs));
+
         esConf = new EarlyStoppingConfiguration.Builder()
-                .epochTerminationConditions(new MaxEpochsTerminationCondition(maxEpochs))
+                //.epochTerminationConditions(new MaxEpochsTerminationCondition(maxEpochs))
                 .iterationTerminationConditions(new MaxTimeIterationTerminationCondition(maxTime, TimeUnit.MINUTES))
-                .epochTerminationConditions(new ScoreImprovementEpochTerminationCondition(noImprovementEpochs))
+                //.epochTerminationConditions(new ScoreImprovementEpochTerminationCondition(noImprovementEpochs))
                 .scoreCalculator(new DataSetLossCalculator(new ListDataSetIterator(testAndTrain.getTest().asList(), 100), true))
-                .evaluateEveryNEpochs(2)
+                .evaluateEveryNEpochs(3)
                 .modelSaver(saver)
+                .epochTerminationConditions(list)
                 .build();
 
         EarlyStoppingTrainer trainer = new EarlyStoppingTrainer(esConf,conf,new ListDataSetIterator(testAndTrain.getTrain().asList(), 100));
@@ -164,28 +171,28 @@ public class MLPDeepLearning4jEarlyStop implements IERPClassifier {
     private MultiLayerConfiguration build(int numRows, int outputNum, int seed, int listenerFreq) {
         System.out.print("Build model....");
         MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder()
-                //.seed(seed)
-                .iterations(500)
+                .seed(seed)
+                //.iterations(500)
                 .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
                 .learningRate(0.05)
-                .updater(Updater.NESTEROVS).momentum(0.9)
+                //.updater(Updater.NESTEROVS).momentum(0.9)
                 .list()
-                .layer(0, new DenseLayer.Builder().nIn(numRows).nOut(20)
+                .layer(0, new DenseLayer.Builder().nIn(numRows).nOut(24)
                         .weightInit(WeightInit.XAVIER)
                         .activation(Activation.RELU)
                         .build())
-                .layer(1, new OutputLayer.Builder(LossFunction.MCXENT)
+                .layer(1, new OutputLayer.Builder(LossFunction.NEGATIVELOGLIKELIHOOD)
                         .weightInit(WeightInit.XAVIER)
+                        .lossFunction(LossFunctions.LossFunction.XENT)
                         .activation(Activation.SOFTMAX)
-                        .weightInit(WeightInit.XAVIER)
-                        .nIn(20).nOut(outputNum).build())
-                .pretrain(true).backprop(true).build();
+                        .nIn(24).nOut(outputNum).build())
+                .pretrain(false).backprop(true).build();
 
-       // model = new MultiLayerNetwork(conf); // Passing built configuration to instance of multilayer network
-        //model.init(); // Initialize mode
+
         //model.setListeners(new ScoreIterationListener(10));// Setting listeners
-        return conf;
-        // model.setListeners(new HistogramIterationListener(10));
+        //model.setListeners(new HistogramIterationListener(10));
+                return conf;
+
     }
 
     // method for testing the classifier.

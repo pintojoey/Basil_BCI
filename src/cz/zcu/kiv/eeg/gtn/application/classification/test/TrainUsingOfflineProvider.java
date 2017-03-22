@@ -196,11 +196,13 @@ public class TrainUsingOfflineProvider implements Observer {
         // training
         //fe = new FilterAndSubsamplingFeatureExtraction();
         classifier.train(this.epochs, this.targets, this.iters, fe);
+
         if (file == null || file.equals("")) {
             classifier.save(Const.TRAINING_FILE_NAME);
         } else {
             classifier.save(file);
         }
+
         System.out.println("Training finished.");
         
      
@@ -228,8 +230,9 @@ public class TrainUsingOfflineProvider implements Observer {
 
         //TODO clasifikatory
         //classifier = new MLPClassifier(nnStructure);
-        //classifier = new SDADeepLearning4j();
-        classifier = new SDADeepLearning4jEarlyStop();
+        classifier = new SDADeepLearning4j();
+        //classifier = new SDADeepLearning4jEarlyStop();
+        //classifier = new MLPDeepLearning4jEarlyStop();
         //classifier = new MLPDeepLearning4j();
         //classifier = new DBNDeepLearning4j();
         //classifier = new SVMClassifier();

@@ -1,12 +1,28 @@
 package cz.zcu.kiv.eeg.gtn.online.gui;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.GridLayout;
-import java.awt.Toolkit;
+import cz.zcu.kiv.eeg.gtn.Const;
+import cz.zcu.kiv.eeg.gtn.algorithm.math.IArtifactDetection;
+import cz.zcu.kiv.eeg.gtn.algorithm.math.IFilter;
+import cz.zcu.kiv.eeg.gtn.application.classification.*;
+import cz.zcu.kiv.eeg.gtn.application.classification.test.TestClassificationAccuracy;
+import cz.zcu.kiv.eeg.gtn.application.classification.test.TrainUsingOfflineProvider;
+import cz.zcu.kiv.eeg.gtn.application.featureextraction.*;
+import cz.zcu.kiv.eeg.gtn.online.app.IDataProvider;
+import cz.zcu.kiv.eeg.gtn.online.app.OffLineDataProvider;
+import cz.zcu.kiv.eeg.gtn.online.app.OnLineDataProvider;
+import cz.zcu.kiv.eeg.gtn.online.app.OnlineDetection;
+import cz.zcu.kiv.eeg.gtn.utils.ColorUtils;
+import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.Logger;
+
+import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -14,58 +30,9 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Observable;
-import java.util.Observer;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
-
-import javax.swing.AbstractAction;
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
-import javax.swing.JTable;
-import javax.swing.JTextPane;
-import javax.swing.KeyStroke;
-import javax.swing.SwingConstants;
-import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.table.AbstractTableModel;
-import javax.swing.table.TableCellRenderer;
-import javax.swing.text.SimpleAttributeSet;
-import javax.swing.text.StyleConstants;
-import javax.swing.text.StyledDocument;
-
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Logger;
-
-import cz.zcu.kiv.eeg.gtn.Const;
-import cz.zcu.kiv.eeg.gtn.algorithm.math.IArtifactDetection;
-import cz.zcu.kiv.eeg.gtn.algorithm.math.IFilter;
-import cz.zcu.kiv.eeg.gtn.application.classification.*;
-import cz.zcu.kiv.eeg.gtn.application.classification.test.TestClassificationAccuracy;
-import cz.zcu.kiv.eeg.gtn.application.classification.test.TrainUsingOfflineProvider;
-import cz.zcu.kiv.eeg.gtn.application.featureextraction.FilterAndSubsamplingFeatureExtraction;
-import cz.zcu.kiv.eeg.gtn.application.featureextraction.HHTFeatureExtraction;
-import cz.zcu.kiv.eeg.gtn.application.featureextraction.IFeatureExtraction;
-import cz.zcu.kiv.eeg.gtn.application.featureextraction.MatchingPursuitFeatureExtraction;
-import cz.zcu.kiv.eeg.gtn.application.featureextraction.WaveletTransformFeatureExtraction;
-import cz.zcu.kiv.eeg.gtn.online.app.IDataProvider;
-import cz.zcu.kiv.eeg.gtn.online.app.OffLineDataProvider;
-import cz.zcu.kiv.eeg.gtn.online.app.OnLineDataProvider;
-import cz.zcu.kiv.eeg.gtn.online.app.OnlineDetection;
-import cz.zcu.kiv.eeg.gtn.utils.ColorUtils;
 
 @SuppressWarnings("serial")
 public class MainFrame extends JFrame implements Observer {
@@ -222,14 +189,14 @@ public class MainFrame extends JFrame implements Observer {
             } else if (row.equals("CorrelationClassifier")) {
                 classifier = new CorrelationClassifier();
             } else if (row.equals("DBNClassifier")) {
-            	try {
+                try {
                     classifier = new DBNClassifier(Integer.parseInt(br
                             .readLine()));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             } else if (row.equals("SDAClassifierEarlyStop")) {
-            	try {
+                try {
                     classifier = new SDAClassifierEarlyStop(Integer.parseInt(br
                             .readLine()));
                 } catch (Exception e) {
@@ -515,12 +482,27 @@ public class MainFrame extends JFrame implements Observer {
             }
         });
 
+        JMenuItem addScript = new JMenuItem("New Script");
+        addScript.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
+                ActionEvent.CTRL_MASK));
+        addScript.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new ScriptDialog(mf);
+                //mf.getContentPane().add(createStatusBar(), BorderLayout.SOUTH);
+                revalidate();
+
+            }
+        });
+
         menuBar.add(fileMenu);
         fileMenu.add(onlineMenuItem);
         fileMenu.add(offlineMenuItem);
         fileMenu.add(testAllMenuItem);
         fileMenu.add(loadConfigAndClassifierItem);
         fileMenu.add(chartMenuItem);
+        fileMenu.add(addScript);
         fileMenu.addSeparator();
         fileMenu.add(endMenuItem);
 

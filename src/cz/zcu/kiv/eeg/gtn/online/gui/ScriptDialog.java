@@ -153,6 +153,7 @@ public class ScriptDialog extends JDialog {
         optionPanel.setLayout(new BoxLayout(optionPanel,BoxLayout.LINE_AXIS));
 
         JButton addBT = new JButton("+");
+        JButton importBT = new JButton("Import data");
         JButton applyBT = new JButton("Apply");
         JButton cancelBT = new JButton("Cancel");
 
@@ -160,15 +161,23 @@ public class ScriptDialog extends JDialog {
             @Override
             public void actionPerformed(ActionEvent e) {
                 boxPanel.add(scriptMain());
-                //scriptFrame.setSize(scriptFrame.getWidth(),scriptFrame.getHeight()+100);
+                ScriptDialog.this.setSize(ScriptDialog.this.getWidth(),ScriptDialog.this.getHeight()+100);
+            }
+        });
+        cancelBT.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ScriptDialog.this.dispose();
             }
         });
 
         optionPanel.add(Box.createRigidArea(new Dimension(10,0)));
         optionPanel.add(addBT);
-
-        optionPanel.add(Box.createRigidArea(new Dimension(200,0)));
+        optionPanel.add(Box.createRigidArea(new Dimension(10,0)));
+        optionPanel.add(importBT);
+        optionPanel.add(Box.createRigidArea(new Dimension(95,0)));
         optionPanel.add(applyBT);
+        optionPanel.add(Box.createRigidArea(new Dimension(5,0)));
         optionPanel.add(cancelBT);
 
         return optionPanel;

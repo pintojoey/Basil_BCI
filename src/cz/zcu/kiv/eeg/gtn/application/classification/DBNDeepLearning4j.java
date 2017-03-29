@@ -103,46 +103,38 @@ public class DBNDeepLearning4j implements IERPClassifier {
         Nd4j.ENFORCE_NUMERICAL_STABILITY = true;
         MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder() // Starting builder pattern
                 //.seed(seed) // Locks in weight initialization for tuning
-                .iterations(iterations) // # training iterations predict/classify & backprop
+                .iterations(20) // # training iterations predict/classify & backprop
 //                .miniBatch(true)
-                .learningRate(0.001) // Optimization step size
-                .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT) // Backprop to calculate gradients
+                .learningRate(0.01) // Optimization step size
+                .optimizationAlgo(OptimizationAlgorithm.LINE_GRADIENT_DESCENT) // Backprop to calculate gradients
                 //.updater(Updater.NESTEROVS).momentum(0.9)
                 //.l2(0.01).regularization(true).l2(0.001) // Setting regularization, decreasing model size and speed of learning
                 //.useDropConnect(true) // Generalizing neural net, dropping part of connections
                 .list() // # NN layers (doesn't count input layer)
                 .layer(0, new RBM.Builder(RBM.HiddenUnit.GAUSSIAN, RBM.VisibleUnit.GAUSSIAN) // Setting layer to Restricted Boltzmann machine
                         .nIn(numRows) // # input nodes
-                        .nOut(neuronCount) // # fully connected hidden layer nodes. Add list if multiple layers.
-                        .weightInit(WeightInit.RELU) // Weight initialization
+                        .nOut(250) // # fully connected hidden layer nodes. Add list if multiple layers.
                         //.k(3) // # contrastive divergence iterations
-                                .activation(Activation.RELU) // Activation function type
-                        .lossFunction(LossFunction.MCXENT) // Loss function type
-                        .updater(Updater.NESTEROVS).momentum(0.9) // Updater type
-
+                        .lossFunction(LossFunction.KL_DIVERGENCE)
                         //.dropOut(0.5) // Dropping part of connections
                         .build() // Build on set configuration
-               // ).layer(1, new RBM.Builder().nIn(neuronCount).nOut(2)
-                 //       .lossFunction(LossFunction.MCXENT)
-                 //       .visibleUnit(RBM.VisibleUnit.GAUSSIAN)
-                 //       .hiddenUnit(RBM.HiddenUnit.RECTIFIED)
-                 //       .activation(Activation.RELU)
-                  //      .lossFunction(LossFunction.MCXENT)
-                 //       .dropOut(0.5)
-                 //       .updater(Updater.ADAGRAD)
-                 //       .build()//
+                ).layer(1, new RBM.Builder().nIn(250).nOut(125)
+                        .lossFunction(LossFunction.MCXENT)
+                        .activation(Activation.RELU)
+                        .lossFunction(LossFunction.KL_DIVERGENCE)
+                        .build()//
                 ) // NN layer type
-                .layer(1, new OutputLayer.Builder(LossFunction.MCXENT) //Override default output layer that classifies input by Iris label using softmax
+                .layer(2, new OutputLayer.Builder(LossFunction.MSE) //Override default output layer that classifies input by Iris label using softmax
                         //.weightInit(WeightInit.XAVIER) // Weight initialization
-                        .nIn(neuronCount) // # input nodes
+                        .nIn(125) // # input nodes
                         .nOut(outputNum) // # output nodes
-                        .activation(Activation.SOFTMAX) // Activation function type
+                        .activation(Activation.SIGMOID) // Activation function type
                         .build() // Build on set configuration
                 ) // NN layer type
                 .pretrain(true).backprop(true).build(); // Build on set configuration
         model = new MultiLayerNetwork(conf); // Passing built configuration to instance of multilayer network
         model.init(); // Initialize model
-        model.setListeners(new ScoreIterationListener(100));// Setting listeners
+        model.setListeners(new ScoreIterationListener(10));// Setting listeners
         //model.setListeners(new ScoreIterationListener(listenerFreq)); // Setting listeners
     }
 

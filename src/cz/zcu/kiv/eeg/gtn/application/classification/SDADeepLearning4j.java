@@ -92,7 +92,7 @@ public class SDADeepLearning4j implements IERPClassifier {
 
         System.out.println("Train model....");
         model.fit(tat.getTrain()); // Learning of neural net with training data
-
+        model.finetune();
 
         Evaluation eval = new Evaluation(numColumns);
         eval.eval(dataSet.getLabels(), model.output(dataSet.getFeatureMatrix(), Layer.TrainingMode.TEST));
@@ -106,26 +106,32 @@ public class SDADeepLearning4j implements IERPClassifier {
                 //.seed(seed)
                 .iterations(2000)
                 .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
-                .learningRate(0.005)
+                .learningRate(0.001)
                 .updater(Updater.NESTEROVS).momentum(0.9)
                 //.regularization(true).dropOut(0.99)
                 // .regularization(true).l2(1e-4)
                 .list()
                 .layer(0, new AutoEncoder.Builder()
                         .nIn(numRows)
-                        .nOut(24)
+                        .nOut(48)
                         .weightInit(WeightInit.XAVIER)
-                        .activation(Activation.RELU)
-                        //.corruptionLevel(0.2) // Set level of corruption
+                        .activation(Activation.LEAKYRELU)
+                        .corruptionLevel(0.2) // Set level of corruption
+                        .lossFunction(LossFunctions.LossFunction.XENT)
+                        .build())
+                .layer(1, new AutoEncoder.Builder().nOut(24).nIn(48)
+                        .weightInit(WeightInit.XAVIER)
+                        .activation(Activation.LEAKYRELU)
+                        //.corruptionLevel(0.1) // Set level of corruption
                         .lossFunction(LossFunctions.LossFunction.MCXENT)
                         .build())
-                .layer(1, new AutoEncoder.Builder().nOut(12).nIn(24)
+                .layer(2, new AutoEncoder.Builder().nOut(12).nIn(24)
                         .weightInit(WeightInit.XAVIER)
                         .activation(Activation.RELU)
                         //.corruptionLevel(0.1) // Set level of corruption
                         .lossFunction(LossFunctions.LossFunction.MCXENT)
                         .build())
-                .layer(2, new OutputLayer.Builder(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
+                .layer(3, new OutputLayer.Builder(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
                         .weightInit(WeightInit.XAVIER)
                         .activation(Activation.SOFTMAX)
                        .nOut(outputNum).nIn(12).build())

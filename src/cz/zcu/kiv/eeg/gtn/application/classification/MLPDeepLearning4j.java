@@ -5,15 +5,18 @@ import org.apache.commons.io.FileUtils;
 import org.deeplearning4j.eval.Evaluation;
 import org.deeplearning4j.nn.api.Layer;
 import org.deeplearning4j.nn.api.OptimizationAlgorithm;
+import org.deeplearning4j.nn.conf.GradientNormalization;
 import org.deeplearning4j.nn.conf.MultiLayerConfiguration;
 import org.deeplearning4j.nn.conf.NeuralNetConfiguration;
 import org.deeplearning4j.nn.conf.Updater;
+import org.deeplearning4j.nn.conf.layers.AutoEncoder;
 import org.deeplearning4j.nn.conf.layers.DenseLayer;
 import org.deeplearning4j.nn.conf.layers.OutputLayer;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.deeplearning4j.nn.weights.WeightInit;
 import org.deeplearning4j.optimize.listeners.ScoreIterationListener;
 import org.deeplearning4j.util.ModelSerializer;
+import org.nd4j.linalg.activations.Activation;
 import org.nd4j.linalg.activations.impl.ActivationReLU;
 import org.nd4j.linalg.activations.impl.ActivationSoftmax;
 import org.nd4j.linalg.api.ndarray.INDArray;
@@ -91,7 +94,7 @@ public class MLPDeepLearning4j implements IERPClassifier {
 
         System.out.println("Train model....");
         model.fit(tat.getTrain()); // Learning of neural net with training data
-
+        model.finetune();
         Evaluation eval = new Evaluation(numColumns);
         eval.eval(tat.getTest().getLabels(), model.output(tat.getTest().getFeatureMatrix(), Layer.TrainingMode.TEST));
         System.out.println(eval.stats());
@@ -103,29 +106,28 @@ public class MLPDeepLearning4j implements IERPClassifier {
 
         MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder()
                 //.seed(seed)
-                .iterations(2000)
-                .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
-                .learningRate(0.005)
-                .updater(Updater.NESTEROVS).momentum(0.9)
-                //.l1(1e-1).regularization(true).l2(2e-4)
+                .iterations(4500)
+                //.optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
+                .learningRate(0.0009)
+                //.updater(Updater.NESTEROVS).momentum(0.9)
+                //.l1(1e-1)
+                //.regularization(true)
                 .list()
-                .layer(0, new DenseLayer.Builder().nIn(numRows).nOut(24)
-                        .weightInit(WeightInit.XAVIER)
-
+                .layer(0, new DenseLayer.Builder().nIn(numRows).nOut(400)
+                        .weightInit(WeightInit.RELU)
+                        .activation(Activation.RELU)
                         //.corruptionLevel(0.2) // Set level of corruption
-                        //.lossFunction(LossFunctions.LossFunction.RMSE_XENT)
                         .build())
-                .layer(1, new DenseLayer.Builder().nIn(24).nOut(12)
-                        .weightInit(WeightInit.XAVIER)
-                        .activation(new ActivationReLU())
+                .layer(1, new DenseLayer.Builder().nIn(400).nOut(200)
+                        .weightInit(WeightInit.RELU)
+                        .activation(Activation.RELU)
                         //.corruptionLevel(0.2) // Set level of corruption
-                        //.lossFunction(LossFunctions.LossFunction.MCXENT)
                         .build())
-                .layer(2, new OutputLayer.Builder()
-                        .weightInit(WeightInit.XAVIER)
-                        .activation(new ActivationSoftmax())
-                        .nIn(12).nOut(outputNum).build())
-                .pretrain(false).backprop(true).build();
+                .layer(2, new OutputLayer.Builder(LossFunctions.LossFunction.XENT)
+                        .weightInit(WeightInit.RELU)
+                        .activation(Activation.RELU)
+                        .nIn(200).nOut(outputNum).build())
+                .pretrain(true).backprop(true).build();
 
 
         model = new MultiLayerNetwork(conf); // Passing built configuration to instance of multilayer network

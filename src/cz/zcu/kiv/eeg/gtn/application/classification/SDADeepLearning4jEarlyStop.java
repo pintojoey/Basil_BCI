@@ -6,6 +6,7 @@ import org.deeplearning4j.datasets.iterator.impl.ListDataSetIterator;
 import org.deeplearning4j.earlystopping.EarlyStoppingConfiguration;
 import org.deeplearning4j.earlystopping.EarlyStoppingModelSaver;
 import org.deeplearning4j.earlystopping.EarlyStoppingResult;
+import org.deeplearning4j.earlystopping.listener.EarlyStoppingListener;
 import org.deeplearning4j.earlystopping.scorecalc.DataSetLossCalculator;
 import org.deeplearning4j.earlystopping.termination.EpochTerminationCondition;
 import org.deeplearning4j.earlystopping.termination.MaxEpochsTerminationCondition;
@@ -53,10 +54,10 @@ public class SDADeepLearning4jEarlyStop implements IERPClassifier {
     private int neuronCount;                    // Number of neurons
     private int iterations;                    //Iterations used to classify
     private String directory = "C:\\Temp\\";
-    private int maxTime =20; //max time in minutes
-    private int maxEpochs = 100;
+    private int maxTime =5; //max time in minutes
+    private int maxEpochs = 10000;
     private EarlyStoppingResult result;
-    private int noImprovementEpochs = 10;
+    private int noImprovementEpochs = 50;
     private EarlyStoppingConfiguration esConf;
     private String pathname = "C:\\Temp\\SDAEStop"; //pathname+file name for saving model
 
@@ -77,9 +78,6 @@ public class SDADeepLearning4jEarlyStop implements IERPClassifier {
         double[] featureVector = this.fe.extractFeatures(epoch); // Extracting features to vector
         INDArray features = Nd4j.create(featureVector); // Creating INDArray with extracted features
         return bestModel.output(features, Layer.TrainingMode.TEST).getDouble(0); // Result of classifying
-        //TODO
-        //return result.getBestModelScore();
-
     }
 
     @Override
@@ -90,7 +88,6 @@ public class SDADeepLearning4jEarlyStop implements IERPClassifier {
         this.iterations = numberOfiter; // number of iteration in the learning phase
         int listenerFreq = numberOfiter / 10; // frequency of output strings
         int seed = 123; //  seed - one of parameters. For more info check http://deeplearning4j.org/iris-flower-dataset-tutorial
-
         //Load Data - when target is 0, label[0] is 0 and label[1] is 1.
         double[][] labels = new double[targets.size()][numColumns]; // Matrix of labels for classifier
         double[][] features_matrix = new double[targets.size()][numRows]; // Matrix of features
@@ -121,6 +118,7 @@ public class SDADeepLearning4jEarlyStop implements IERPClassifier {
         //EarlyStoppingModelSaver saver = new LocalFileModelSaver(directory);
         InMemoryModelSaver <MultiLayerNetwork> saver = new InMemoryModelSaver();
 
+
         List<EpochTerminationCondition> list = new ArrayList<>(2);
         list.add(new MaxEpochsTerminationCondition(maxEpochs));
         list.add(new ScoreImprovementEpochTerminationCondition(noImprovementEpochs));
@@ -129,32 +127,26 @@ public class SDADeepLearning4jEarlyStop implements IERPClassifier {
                 //.epochTerminationConditions(new MaxEpochsTerminationCondition(maxEpochs))
                 .iterationTerminationConditions(new MaxTimeIterationTerminationCondition(maxTime, TimeUnit.MINUTES))
                 //.epochTerminationConditions(new ScoreImprovementEpochTerminationCondition(noImprovementEpochs))
-                .scoreCalculator(new DataSetLossCalculator(new ListDataSetIterator(testAndTrain.getTest().asList(), 100), true))
-                .evaluateEveryNEpochs(3)
+                .scoreCalculator(new DataSetLossCalculator(new ListDataSetIterator(testAndTrain.getTest().asList(), 80), true))
+                //.evaluateEveryNEpochs(10)
                 .modelSaver(saver)
                 .epochTerminationConditions(list)
                 .build();
 
-        EarlyStoppingTrainer trainer = new EarlyStoppingTrainer(esConf, conf, new ListDataSetIterator(testAndTrain.getTrain().asList(), 100));
-        //model.setListeners(new ScoreIterationListener(500));
-        //Conduct early stopping training:
+        MultiLayerNetwork net = new MultiLayerNetwork(conf);
+        EarlyStoppingTrainer trainer = new EarlyStoppingTrainer(esConf, net, new ListDataSetIterator(testAndTrain.getTrain().asList(), 100));
         result = trainer.fit();
 
         bestModel = (MultiLayerNetwork) result.getBestModel();
+
         System.out.println("Termination reason: " + result.getTerminationReason());
         System.out.println("Termination details: " + result.getTerminationDetails());
         System.out.println("Best epoch number: " + result.getBestModelEpoch());
         System.out.println("Score at best epoch: " + result.getBestModelScore());
 
-        //result.getBestModel().fit();
-
         Evaluation eval = new Evaluation(numColumns);
         eval.eval(dataSet.getLabels(), bestModel.output(dataSet.getFeatureMatrix(), Layer.TrainingMode.TEST));
         System.out.println(eval.stats());
-
-
-        //TODO
-
     }
 
     //  initialization of neural net with params. For more info check http://deeplearning4j.org/iris-flower-dataset-tutorial where is more about params
@@ -162,28 +154,23 @@ public class SDADeepLearning4jEarlyStop implements IERPClassifier {
         System.out.print("Build model....SDA EStop");
         MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder() // Starting builder pattern
                 .seed(seed) // Locks in weight initialization for tuning
-                //.gradientNormalization(GradientNormalization.ClipElementWiseAbsoluteValue) // Gradient normalization strategy
-                //.gradientNormalizationThreshold(1.0) // Treshold for gradient normalization
-                //.iterations(500)
-                .regularization(true).l2(0.005)
-                .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
-                .learningRate(0.005)
-                .updater(Updater.NESTEROVS).momentum(0.9)
                 .weightInit(WeightInit.XAVIER)
-                .activation(Activation.RELU)
-                .momentum(0.5) // Momentum rate
+                .activation(Activation.LEAKYRELU)
+                .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
+                .learningRate(0.01)
+                //.momentum(0.5) // Momentum rate
                 //.momentumAfter(Collections.singletonMap(3, 0.9)) //Map of the iteration to the momentum rate to apply at that iteration
                 .list() // # NN layers (doesn't count input layer)
                 .layer(0, new AutoEncoder.Builder()
                         .nIn(numRows)
                         .nOut(24) // Setting layer to Autoencoder
-                        .dropOut(0.5)
-                        .lossFunction(LossFunctions.LossFunction.XENT)
-                        .corruptionLevel(0.1) // Set level of corruption
+                        //.dropOut(0.5)
+                        .lossFunction(LossFunctions.LossFunction.MCXENT)
+                        //.corruptionLevel(0.1) // Set level of corruption
                         .build() // Build on set configuration
                 ) // NN layer type
                 .layer(1, new AutoEncoder.Builder().nOut(12).nIn(24)
-                        .corruptionLevel(0.1) // Set level of corruption
+                        //.corruptionLevel(0.1) // Set level of corruption
                         .lossFunction(LossFunctions.LossFunction.XENT)
                         .build())
                 .layer(2, new OutputLayer.Builder(LossFunction.NEGATIVELOGLIKELIHOOD)//Override default output layer that classifies input using softmax

@@ -9,8 +9,7 @@ import org.deeplearning4j.earlystopping.termination.EpochTerminationCondition;
 import org.deeplearning4j.earlystopping.termination.MaxEpochsTerminationCondition;
 import org.deeplearning4j.earlystopping.termination.ScoreImprovementEpochTerminationCondition;
 import org.deeplearning4j.nn.conf.inputs.InputType;
-import org.deeplearning4j.nn.conf.layers.ConvolutionLayer;
-import org.deeplearning4j.nn.conf.layers.SubsamplingLayer;
+import org.deeplearning4j.nn.conf.layers.*;
 import org.deeplearning4j.util.ModelSerializer;
 import org.nd4j.linalg.dataset.api.iterator.DataSetIterator;
 import org.deeplearning4j.earlystopping.EarlyStoppingConfiguration;
@@ -25,8 +24,6 @@ import org.deeplearning4j.nn.api.OptimizationAlgorithm;
 import org.deeplearning4j.nn.conf.MultiLayerConfiguration;
 import org.deeplearning4j.nn.conf.NeuralNetConfiguration;
 import org.deeplearning4j.nn.conf.Updater;
-import org.deeplearning4j.nn.conf.layers.DenseLayer;
-import org.deeplearning4j.nn.conf.layers.OutputLayer;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.deeplearning4j.nn.weights.WeightInit;
 import org.deeplearning4j.optimize.listeners.ScoreIterationListener;
@@ -58,9 +55,9 @@ public class MLPDeepLearning4jEarlyStop implements IERPClassifier {
     private int iterations;                    //Iterations used to classify
     private Model model1;                       //model from new lbraries
     private int maxTime =5; //max time in minutes
-    private int maxEpochs = 1000;
+    private int maxEpochs = 4500;
         private EarlyStoppingResult result;
-    private int noImprovementEpochs = 10;
+    private int noImprovementEpochs = 30;
     private EarlyStoppingConfiguration esConf;
     private String pathname = "C:\\Temp\\MLPEStop"; //pathname+file name for saving model
     private String directory = "C:\\Temp\\";
@@ -139,8 +136,8 @@ public class MLPDeepLearning4jEarlyStop implements IERPClassifier {
 
         esConf = new EarlyStoppingConfiguration.Builder()
                 //.epochTerminationConditions(new MaxEpochsTerminationCondition(maxEpochs))
-                .iterationTerminationConditions(new MaxTimeIterationTerminationCondition(maxTime, TimeUnit.MINUTES))
                 //.epochTerminationConditions(new ScoreImprovementEpochTerminationCondition(noImprovementEpochs))
+                .iterationTerminationConditions(new MaxTimeIterationTerminationCondition(maxTime, TimeUnit.MINUTES))
                 .scoreCalculator(new DataSetLossCalculator(new ListDataSetIterator(testAndTrain.getTest().asList(), 100), true))
                 .evaluateEveryNEpochs(3)
                 .modelSaver(saver)
@@ -148,7 +145,6 @@ public class MLPDeepLearning4jEarlyStop implements IERPClassifier {
                 .build();
 
         EarlyStoppingTrainer trainer = new EarlyStoppingTrainer(esConf,conf,new ListDataSetIterator(testAndTrain.getTrain().asList(), 100));
-        //System.out.println("STARTED ");
 //Conduct early stopping training:
         this.result = trainer.fit();
 
@@ -160,7 +156,7 @@ public class MLPDeepLearning4jEarlyStop implements IERPClassifier {
         System.out.println("Score at best epoch: " + result.getBestModelScore());
 
 //Get the best model
-        model = (MultiLayerNetwork) result.getBestModel();
+        this.model = (MultiLayerNetwork) result.getBestModel();
 
         Evaluation eval = new Evaluation(numColumns);
         eval.eval(testAndTrain.getTest().getLabels(), model.output(testAndTrain.getTest().getFeatureMatrix(), Layer.TrainingMode.TEST));
@@ -173,9 +169,9 @@ public class MLPDeepLearning4jEarlyStop implements IERPClassifier {
         MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder()
                 .seed(seed)
                 //.iterations(500)
-                .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
-                .learningRate(0.05)
-                //.updater(Updater.NESTEROVS).momentum(0.9)
+                //.optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
+                .learningRate(0.005)
+               // .updater(Updater.NESTEROVS).momentum(0.9)
                 .list()
                 .layer(0, new DenseLayer.Builder().nIn(numRows).nOut(24)
                         .weightInit(WeightInit.XAVIER)
@@ -186,7 +182,7 @@ public class MLPDeepLearning4jEarlyStop implements IERPClassifier {
                         .lossFunction(LossFunctions.LossFunction.XENT)
                         .activation(Activation.SOFTMAX)
                         .nIn(24).nOut(outputNum).build())
-                .pretrain(false).backprop(true).build();
+                .pretrain(true).backprop(true).build();
 
 
         //model.setListeners(new ScoreIterationListener(10));// Setting listeners

@@ -91,6 +91,7 @@ public class DBNDeepLearning4j implements IERPClassifier {
         System.out.println("Train model....");
 
         model.fit(tat.getTrain());
+        model.finetune();
         System.out.println("Evaluation");
         Evaluation eval = new Evaluation(numColumns);
         eval.eval(dataSet.getLabels(), model.output(dataSet.getFeatureMatrix(), Layer.TrainingMode.TEST));

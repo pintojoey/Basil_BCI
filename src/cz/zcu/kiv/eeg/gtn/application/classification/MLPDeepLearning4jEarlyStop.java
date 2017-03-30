@@ -55,7 +55,7 @@ public class MLPDeepLearning4jEarlyStop implements IERPClassifier {
     private int iterations;                    //Iterations used to classify
     private Model model1;                       //model from new lbraries
     private int maxTime =5; //max time in minutes
-    private int maxEpochs = 4500;
+    private int maxEpochs = 1500;
         private EarlyStoppingResult result;
     private int noImprovementEpochs = 30;
     private EarlyStoppingConfiguration esConf;
@@ -168,21 +168,26 @@ public class MLPDeepLearning4jEarlyStop implements IERPClassifier {
         System.out.print("Build model....");
         MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder()
                 .seed(seed)
-                //.iterations(500)
+                .iterations(10)
                 //.optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
-                .learningRate(0.005)
+                .learningRate(0.0005)
                // .updater(Updater.NESTEROVS).momentum(0.9)
                 .list()
-                .layer(0, new DenseLayer.Builder().nIn(numRows).nOut(24)
+                .layer(0, new DenseLayer.Builder().nIn(numRows).nOut(400)
                         .weightInit(WeightInit.XAVIER)
                         .activation(Activation.RELU)
+                        //.corruptionLevel(0.2) // Set level of corruption
                         .build())
-                .layer(1, new OutputLayer.Builder(LossFunction.NEGATIVELOGLIKELIHOOD)
+                .layer(1, new DenseLayer.Builder().nIn(400).nOut(200)
                         .weightInit(WeightInit.XAVIER)
-                        .lossFunction(LossFunctions.LossFunction.XENT)
-                        .activation(Activation.SOFTMAX)
-                        .nIn(24).nOut(outputNum).build())
-                .pretrain(true).backprop(true).build();
+                        .activation(Activation.RELU)
+                        //.corruptionLevel(0.2) // Set level of corruption
+                        .build())
+                .layer(2, new OutputLayer.Builder(LossFunctions.LossFunction.XENT)
+                        .weightInit(WeightInit.RELU)
+                        .activation(Activation.RELU)
+                        .nIn(200).nOut(outputNum).build())
+                .pretrain(false).backprop(true).build();
 
 
         //model.setListeners(new ScoreIterationListener(10));// Setting listeners

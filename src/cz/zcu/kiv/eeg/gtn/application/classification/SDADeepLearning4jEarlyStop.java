@@ -128,7 +128,7 @@ public class SDADeepLearning4jEarlyStop implements IERPClassifier {
                 .iterationTerminationConditions(new MaxTimeIterationTerminationCondition(maxTime, TimeUnit.MINUTES))
                 //.epochTerminationConditions(new ScoreImprovementEpochTerminationCondition(noImprovementEpochs))
                 .scoreCalculator(new DataSetLossCalculator(new ListDataSetIterator(testAndTrain.getTest().asList(), 80), true))
-                //.evaluateEveryNEpochs(10)
+                .evaluateEveryNEpochs(5)
                 .modelSaver(saver)
                 .epochTerminationConditions(list)
                 .build();
@@ -154,32 +154,39 @@ public class SDADeepLearning4jEarlyStop implements IERPClassifier {
         System.out.print("Build model....SDA EStop");
         MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder() // Starting builder pattern
                 .seed(seed) // Locks in weight initialization for tuning
-                .weightInit(WeightInit.XAVIER)
-                .activation(Activation.LEAKYRELU)
+                //.weightInit(WeightInit.XAVIER)
+                //.activation(Activation.LEAKYRELU)
                 .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
                 .learningRate(0.01)
+                .iterations(100)
                 //.momentum(0.5) // Momentum rate
                 //.momentumAfter(Collections.singletonMap(3, 0.9)) //Map of the iteration to the momentum rate to apply at that iteration
                 .list() // # NN layers (doesn't count input layer)
                 .layer(0, new AutoEncoder.Builder()
                         .nIn(numRows)
-                        .nOut(24) // Setting layer to Autoencoder
-                        //.dropOut(0.5)
-                        .lossFunction(LossFunctions.LossFunction.MCXENT)
-                        //.corruptionLevel(0.1) // Set level of corruption
-                        .build() // Build on set configuration
-                ) // NN layer type
-                .layer(1, new AutoEncoder.Builder().nOut(12).nIn(24)
-                        //.corruptionLevel(0.1) // Set level of corruption
+                        .nOut(48)
+                        .weightInit(WeightInit.XAVIER)
+                        .activation(Activation.RELU)
+                        .corruptionLevel(0.2) // Set level of corruption
                         .lossFunction(LossFunctions.LossFunction.XENT)
                         .build())
-                .layer(2, new OutputLayer.Builder(LossFunction.NEGATIVELOGLIKELIHOOD)//Override default output layer that classifies input using softmax
-                        .activation(Activation.SOFTMAX)// Activation function type
-                        .nIn(12) // # input nodes
-                        .nOut(outputNum) // # output nodes
-                        .build() // Build on set configuration
-                ) // NN layer type
-                .pretrain(true) // Do pre training
+                .layer(1, new AutoEncoder.Builder().nOut(24).nIn(48)
+                        .weightInit(WeightInit.XAVIER)
+                        .activation(Activation.LEAKYRELU)
+                        //.corruptionLevel(0.1) // Set level of corruption
+                        .lossFunction(LossFunctions.LossFunction.MCXENT)
+                        .build())
+                .layer(2, new AutoEncoder.Builder().nOut(12).nIn(24)
+                        .weightInit(WeightInit.XAVIER)
+                        .activation(Activation.RELU)
+                        //.corruptionLevel(0.1) // Set level of corruption
+                        .lossFunction(LossFunctions.LossFunction.MCXENT)
+                        .build())
+                .layer(3, new OutputLayer.Builder(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
+                        .weightInit(WeightInit.XAVIER)
+                        .activation(Activation.SOFTMAX)
+                        .nOut(outputNum).nIn(12).build())
+                .pretrain(false) // Do pre training
                 .backprop(true)
                 .build(); // Build on set configuration
         return conf;

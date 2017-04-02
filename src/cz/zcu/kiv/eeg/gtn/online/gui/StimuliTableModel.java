@@ -1,16 +1,16 @@
 package cz.zcu.kiv.eeg.gtn.online.gui;
 
-import javax.swing.table.AbstractTableModel;
-
 import cz.zcu.kiv.eeg.gtn.Const;
+
+import javax.swing.table.AbstractTableModel;
 
 @SuppressWarnings("serial")
 class StimuliTableModel extends AbstractTableModel {
 
     private final Object[][] data;
 
-    StimuliTableModel() {
-        data = new Object[9][3];
+    StimuliTableModel(int count) {
+        data = new Object[count][4];
 
         for (int i = 0; i < data.length; i++) {
             data[i][0] = i + 1;

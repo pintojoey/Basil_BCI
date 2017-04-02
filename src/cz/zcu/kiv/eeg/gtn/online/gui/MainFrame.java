@@ -523,7 +523,7 @@ public class MainFrame extends JFrame implements Observer {
     private JPanel createContentJP() {
         GridLayout mainLayout = new GridLayout(0, 2);
         JPanel contentJP = new JPanel(mainLayout);
-        contentJP.add(createStimuliJT());
+        contentJP.add(createStimuliJT(9));
         contentJP.add(createWinnerJTA());
         return contentJP;
     }
@@ -543,8 +543,8 @@ public class MainFrame extends JFrame implements Observer {
         return winnerJTA;
     }
 
-    private JScrollPane createStimuliJT() {
-        data = new StimuliTableModel();
+    public JScrollPane createStimuliJT(int id) {
+        data = new StimuliTableModel(id);
         JTable stimuliJT = new JTable(data) {
             public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
                 Component c = super.prepareRenderer(renderer, row, column);

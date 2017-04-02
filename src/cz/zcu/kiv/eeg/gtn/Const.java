@@ -64,7 +64,7 @@ public class Const {
 
     public static final int RESULT_FONT_STYLE = Font.BOLD;
 
-    public static final String[] TABLE_COLUMN_NAMES = {"Number", "Score", "Trials"};
+    public static final String[] TABLE_COLUMN_NAMES = {"ID", "Name", "Score", "Trials"};
     
     
     //----------------------Experiment---------------------

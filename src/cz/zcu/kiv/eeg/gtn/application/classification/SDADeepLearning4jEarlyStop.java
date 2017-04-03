@@ -2,7 +2,11 @@ package cz.zcu.kiv.eeg.gtn.application.classification;
 
 import cz.zcu.kiv.eeg.gtn.application.featureextraction.IFeatureExtraction;
 import org.apache.commons.io.FileUtils;
+import org.bytedeco.javacv.FrameFilter;
+import org.deeplearning4j.api.storage.StatsStorage;
+import org.deeplearning4j.datasets.iterator.BaseDatasetIterator;
 import org.deeplearning4j.datasets.iterator.impl.ListDataSetIterator;
+import org.deeplearning4j.datasets.iterator.impl.MnistDataSetIterator;
 import org.deeplearning4j.earlystopping.EarlyStoppingConfiguration;
 import org.deeplearning4j.earlystopping.EarlyStoppingModelSaver;
 import org.deeplearning4j.earlystopping.EarlyStoppingResult;
@@ -26,6 +30,9 @@ import org.deeplearning4j.nn.conf.layers.OutputLayer;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.deeplearning4j.nn.weights.WeightInit;
 import org.deeplearning4j.optimize.listeners.ScoreIterationListener;
+import org.deeplearning4j.ui.api.UIServer;
+import org.deeplearning4j.ui.stats.StatsListener;
+import org.deeplearning4j.ui.storage.InMemoryStatsStorage;
 import org.deeplearning4j.util.ModelSerializer;
 import org.nd4j.linalg.activations.Activation;
 import org.nd4j.linalg.api.ndarray.INDArray;
@@ -33,6 +40,8 @@ import org.nd4j.linalg.dataset.DataSet;
 import org.nd4j.linalg.dataset.SplitTestAndTrain;
 import org.deeplearning4j.earlystopping.saver.*;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
+import org.nd4j.linalg.dataset.api.iterator.DataSetIterator;
+import org.nd4j.linalg.dataset.api.iterator.TestDataSetIterator;
 import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.lossfunctions.LossFunctions;
 import org.nd4j.linalg.lossfunctions.LossFunctions.LossFunction;
@@ -54,10 +63,10 @@ public class SDADeepLearning4jEarlyStop implements IERPClassifier {
     private int neuronCount;                    // Number of neurons
     private int iterations;                    //Iterations used to classify
     private String directory = "C:\\Temp\\";
-    private int maxTime =5; //max time in minutes
+    private int maxTime =10; //max time in minutes
     private int maxEpochs = 10000;
     private EarlyStoppingResult result;
-    private int noImprovementEpochs = 50;
+    private int noImprovementEpochs = 10;
     private EarlyStoppingConfiguration esConf;
     private String pathname = "C:\\Temp\\SDAEStop"; //pathname+file name for saving model
 
@@ -114,27 +123,47 @@ public class SDADeepLearning4jEarlyStop implements IERPClassifier {
         //model.setListeners(Collections.singletonList((IterationListener) new ScoreIterationListener(listenerFreq))); // Setting listeners
         //model.setListeners(new ScoreIterationListener(100));
 
-        SplitTestAndTrain testAndTrain = dataSet.splitTestAndTrain(80);
+        SplitTestAndTrain testAndTrain = dataSet.splitTestAndTrain(0.3);
         //EarlyStoppingModelSaver saver = new LocalFileModelSaver(directory);
         InMemoryModelSaver <MultiLayerNetwork> saver = new InMemoryModelSaver();
 
 
         List<EpochTerminationCondition> list = new ArrayList<>(2);
         list.add(new MaxEpochsTerminationCondition(maxEpochs));
-        list.add(new ScoreImprovementEpochTerminationCondition(noImprovementEpochs));
+        list.add(new ScoreImprovementEpochTerminationCondition(noImprovementEpochs, 0.001));
 
-        esConf = new EarlyStoppingConfiguration.Builder()
+        MultiLayerNetwork net = new MultiLayerNetwork(conf);
+        //DataSetIterator testData= new TestDataSetIterator(dataSet);
+        //DataSetIterator trainData= new TestDataSetIterator(dataSet);
+
+
+                esConf = new EarlyStoppingConfiguration.Builder()
                 //.epochTerminationConditions(new MaxEpochsTerminationCondition(maxEpochs))
                 .iterationTerminationConditions(new MaxTimeIterationTerminationCondition(maxTime, TimeUnit.MINUTES))
                 //.epochTerminationConditions(new ScoreImprovementEpochTerminationCondition(noImprovementEpochs))
-                .scoreCalculator(new DataSetLossCalculator(new ListDataSetIterator(testAndTrain.getTest().asList(), 80), true))
-                .evaluateEveryNEpochs(5)
+                //
+                //.scoreCalculator(new DataSetLossCalculator(testData,true))
+                        .scoreCalculator(new DataSetLossCalculator(new ListDataSetIterator(testAndTrain.getTest().asList(), 100), true))
+                //.evaluateEveryNEpochs(5)
                 .modelSaver(saver)
                 .epochTerminationConditions(list)
                 .build();
 
-        MultiLayerNetwork net = new MultiLayerNetwork(conf);
+
         EarlyStoppingTrainer trainer = new EarlyStoppingTrainer(esConf, net, new ListDataSetIterator(testAndTrain.getTrain().asList(), 100));
+        UIServer uiServer = UIServer.getInstance();
+
+        //Configure where the network information (gradients, score vs. time etc) is to be stored. Here: store in memory.
+        StatsStorage statsStorage = new InMemoryStatsStorage();         //Alternative: new FileStatsStorage(File), for saving and loading later
+
+        //Attach the StatsStorage instance to the UI: this allows the contents of the StatsStorage to be visualized
+        uiServer.attach(statsStorage);
+
+        //Then add the StatsListener to collect this information from the network, as it trains
+        ArrayList listeners = new ArrayList();
+        //listeners.add(new ScoreIterationListener(100));
+        listeners.add(new StatsListener(statsStorage));
+        net.setListeners(listeners);
         result = trainer.fit();
 
         bestModel = (MultiLayerNetwork) result.getBestModel();
@@ -157,8 +186,8 @@ public class SDADeepLearning4jEarlyStop implements IERPClassifier {
                 //.weightInit(WeightInit.XAVIER)
                 //.activation(Activation.LEAKYRELU)
                 .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
-                .learningRate(0.01)
-                .iterations(100)
+                .learningRate(0.005)
+                .iterations(1)
                 //.momentum(0.5) // Momentum rate
                 //.momentumAfter(Collections.singletonMap(3, 0.9)) //Map of the iteration to the momentum rate to apply at that iteration
                 .list() // # NN layers (doesn't count input layer)
@@ -167,8 +196,8 @@ public class SDADeepLearning4jEarlyStop implements IERPClassifier {
                         .nOut(48)
                         .weightInit(WeightInit.XAVIER)
                         .activation(Activation.RELU)
-                        .corruptionLevel(0.2) // Set level of corruption
-                        .lossFunction(LossFunctions.LossFunction.XENT)
+                        //.corruptionLevel(0.2) // Set level of corruption
+                        .lossFunction(LossFunctions.LossFunction.MCXENT)
                         .build())
                 .layer(1, new AutoEncoder.Builder().nOut(24).nIn(48)
                         .weightInit(WeightInit.XAVIER)

@@ -49,22 +49,19 @@ import java.util.concurrent.TimeUnit;
 public class MLPDeepLearning4jEarlyStop implements IERPClassifier {
     private final int NEURON_COUNT_DEFAULT = 30;    //default number of neurons
     private IFeatureExtraction fe;                //type of feature extraction (MatchingPursuit, FilterAndSubampling or WaveletTransform)
-    //TODO clasify
-   private MultiLayerNetwork model;            //multi layer neural network with a logistic output layer and multiple hidden neuralNets
+    private MultiLayerNetwork model;            //multi layer neural network with a logistic output layer and multiple hidden neuralNets
     private int neuronCount;                    // Number of neurons
     private int iterations;                    //Iterations used to classify
     private Model model1;                       //model from new lbraries
     private int maxTime =5; //max time in minutes
     private int maxEpochs = 1500;
-        private EarlyStoppingResult result;
+    private EarlyStoppingResult result;
     private int noImprovementEpochs = 30;
     private EarlyStoppingConfiguration esConf;
     private String pathname = "C:\\Temp\\MLPEStop"; //pathname+file name for saving model
     private String directory = "C:\\Temp\\";
 
-    //TODO
-    DataSetIterator myTestData =null;
-    //DataSetIterator myTrainData = null;
+
 
     /*Default constructor*/
     public MLPDeepLearning4jEarlyStop() {

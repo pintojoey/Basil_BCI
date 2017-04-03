@@ -12,8 +12,12 @@ import org.deeplearning4j.nn.conf.layers.AutoEncoder;
 import org.deeplearning4j.nn.conf.layers.OutputLayer;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.deeplearning4j.nn.weights.WeightInit;
+import org.deeplearning4j.optimize.api.IterationListener;
 import org.deeplearning4j.util.ModelSerializer;
-import org.deeplearning4j.ui.weights.*;
+import org.deeplearning4j.ui.api.UIServer;
+import org.deeplearning4j.api.storage.StatsStorage;
+import org.deeplearning4j.ui.stats.StatsListener;
+import org.deeplearning4j.ui.storage.InMemoryStatsStorage;
 import org.deeplearning4j.optimize.listeners.*;
 import org.nd4j.linalg.activations.Activation;
 import org.nd4j.linalg.api.ndarray.INDArray;
@@ -26,6 +30,7 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -104,9 +109,9 @@ public class SDADeepLearning4j implements IERPClassifier {
         System.out.print("Build model....SDA");
         MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder()
                 //.seed(seed)
-                .iterations(2500)
+                .iterations(1200)
                 .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
-                .learningRate(0.002)
+                .learningRate(0.008)
                 .updater(Updater.NESTEROVS).momentum(0.9)
                 //.regularization(true).dropOut(0.99)
                 // .regularization(true).l2(1e-4)
@@ -139,7 +144,16 @@ public class SDADeepLearning4j implements IERPClassifier {
         model = new MultiLayerNetwork(conf); // Passing built configuration to instance of multilayer network
         model.init(); // Initialize mode
 
-        model.setListeners(new ScoreIterationListener(500));// Setting listeners
+
+        UIServer uiServer = UIServer.getInstance();
+        StatsStorage statsStorage = new InMemoryStatsStorage();         //Alternative: new FileStatsStorage(File), for saving and loading later
+        //Attach the StatsStorage instance to the UI: this allows the contents of the StatsStorage to be visualized
+        uiServer.attach(statsStorage);
+
+        ArrayList listenery = new ArrayList();
+        listenery.add(new ScoreIterationListener(500));
+        listenery.add(new StatsListener(statsStorage));
+        model.setListeners(listenery);
         //model.setListeners(new ScoreIterationListener(listenerFreq));// Setting listeners
         //model.setListeners(new HistogramIterationListener(10));
     }

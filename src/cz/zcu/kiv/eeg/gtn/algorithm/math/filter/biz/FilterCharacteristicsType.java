@@ -16,4 +16,4 @@ package cz.zcu.kiv.eeg.gtn.algorithm.math.filter.biz;
 * The filter characteristics type.
 */
 public enum FilterCharacteristicsType {
-   butterworth, chebyshev, bessel};
+   butterworth, chebyshev, bessel}

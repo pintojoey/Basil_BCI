@@ -17,7 +17,7 @@ public class OptimizeMLP {
 		List<Double> accuracies = new ArrayList<Double>();
 		double maxAccuracy = 0;
 		Random random = new Random(System.nanoTime());
-		while (accuracy < 0.9) { 
+		while (accuracy < 0.9) {
 			int numberOfIters = 10; // +random.nextInt(2000)
 			int middleNeurons = 8; // +random.nextInt(15);
 			TrainUsingOfflineProvider trainOfflineProvider = new TrainUsingOfflineProvider(numberOfIters, middleNeurons);
@@ -53,8 +53,8 @@ public class OptimizeMLP {
 			}
 			
 			System.out.println ("Average value = " + calculateAverage (accuracies) * 100 + " %, calculated from " + accuracies.size() + " samples.");
-			
-			
+
+
 		}
 		
 		

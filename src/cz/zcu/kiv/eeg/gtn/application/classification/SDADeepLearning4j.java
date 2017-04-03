@@ -1,54 +1,56 @@
 package cz.zcu.kiv.eeg.gtn.application.classification;
 
+import cz.zcu.kiv.eeg.gtn.application.featureextraction.IFeatureExtraction;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.math3.util.IterationListener;
 import org.deeplearning4j.eval.Evaluation;
 import org.deeplearning4j.nn.api.Layer;
 import org.deeplearning4j.nn.api.OptimizationAlgorithm;
-import org.deeplearning4j.nn.conf.GradientNormalization;
 import org.deeplearning4j.nn.conf.MultiLayerConfiguration;
 import org.deeplearning4j.nn.conf.NeuralNetConfiguration;
 import org.deeplearning4j.nn.conf.Updater;
 import org.deeplearning4j.nn.conf.layers.AutoEncoder;
-import org.deeplearning4j.nn.conf.layers.DenseLayer;
 import org.deeplearning4j.nn.conf.layers.OutputLayer;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.deeplearning4j.nn.weights.WeightInit;
-import org.deeplearning4j.optimize.listeners.ScoreIterationListener;
-import org.deeplearning4j.ui.weights.HistogramIterationListener;
+import org.deeplearning4j.optimize.api.IterationListener;
+import org.deeplearning4j.util.ModelSerializer;
+import org.deeplearning4j.ui.api.UIServer;
+import org.deeplearning4j.api.storage.StatsStorage;
+import org.deeplearning4j.ui.stats.StatsListener;
+import org.deeplearning4j.ui.storage.InMemoryStatsStorage;
+import org.deeplearning4j.optimize.listeners.*;
+import org.nd4j.linalg.activations.Activation;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.dataset.DataSet;
 import org.nd4j.linalg.dataset.SplitTestAndTrain;
 import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.lossfunctions.LossFunctions;
-
-import cz.zcu.kiv.eeg.gtn.application.featureextraction.IFeatureExtraction;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 /**
  * Created by lukasvareka on 27. 6. 2016.
  */
-public class SDAClassifierNoEarlyStop  implements IERPClassifier  {
+public class SDADeepLearning4j implements IERPClassifier {
     private final int NEURON_COUNT_DEFAULT = 30;    //default number of neurons
     private IFeatureExtraction fe;                //type of feature extraction (MatchingPursuit, FilterAndSubampling or WaveletTransform)
     private MultiLayerNetwork model;            //multi layer neural network with a logistic output layer and multiple hidden neuralNets
     private int neuronCount;                    // Number of neurons
     private int iterations;                    //Iterations used to classify
-    private Random random = new Random();
+
 
     /*Default constructor*/
-    public SDAClassifierNoEarlyStop () {
+    public SDADeepLearning4j() {
         this.neuronCount = NEURON_COUNT_DEFAULT; // sets count of neurons in layer(0) to default number
     }
 
     /*Parametric constructor */
-    public SDAClassifierNoEarlyStop (int neuronCount) {
+    public SDADeepLearning4j(int neuronCount) {
         this.neuronCount = neuronCount; // sets count of neurons in layer(0) to param
     }
 
@@ -67,7 +69,7 @@ public class SDAClassifierNoEarlyStop  implements IERPClassifier  {
         final int numRows = fe.getFeatureDimension();   // number of targets on a line
         final int numColumns = 2;   // number of labels needed for classifying
         this.iterations = numberOfiter; // number of iteration in the learning phase
-        int listenerFreq = numberOfiter / 10; // frequency of output strings
+        int listenerFreq = numberOfiter / 500; // frequency of output strings
         int seed = 123; //  seed - one of parameters. For more info check http://deeplearning4j.org/iris-flower-dataset-tutorial
 
         //Load Data - when target is 0, label[0] is 0 and label[1] is 1.
@@ -87,7 +89,7 @@ public class SDAClassifierNoEarlyStop  implements IERPClassifier  {
         INDArray output_data = Nd4j.create(labels); // Create INDArray with labels(targets)
         INDArray input_data = Nd4j.create(features_matrix); // Create INDArray with features(data)
         DataSet dataSet = new DataSet(input_data, output_data); // Create dataSet with features and labels
-        SplitTestAndTrain tat = dataSet.splitTestAndTrain(0.85);
+        SplitTestAndTrain tat = dataSet.splitTestAndTrain(0.8);
         Nd4j.ENFORCE_NUMERICAL_STABILITY = true; // Setting to enforce numerical stability
 
         // Building a neural net
@@ -95,49 +97,65 @@ public class SDAClassifierNoEarlyStop  implements IERPClassifier  {
 
         System.out.println("Train model....");
         model.fit(tat.getTrain()); // Learning of neural net with training data
-
+        model.finetune();
 
         Evaluation eval = new Evaluation(numColumns);
-        eval.eval(tat.getTest().getLabels(), model.output(tat.getTest().getFeatureMatrix(), Layer.TrainingMode.TEST));
+        eval.eval(dataSet.getLabels(), model.output(dataSet.getFeatureMatrix(), Layer.TrainingMode.TEST));
         System.out.println(eval.stats());
     }
 
     //  initialization of neural net with params. For more info check http://deeplearning4j.org/iris-flower-dataset-tutorial where is more about params
     private void build(int numRows, int outputNum, int seed, int listenerFreq) {
-        System.out.print("Build model....");
-
+        System.out.print("Build model....SDA");
         MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder()
                 //.seed(seed)
-                .iterations(1500)
+                .iterations(1200)
                 .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
-                .learningRate(0.005)
+                .learningRate(0.008)
                 .updater(Updater.NESTEROVS).momentum(0.9)
                 //.regularization(true).dropOut(0.99)
-               // .regularization(true).l2(1e-4)
-                .list(3)
-                .layer(0, new AutoEncoder.Builder().nIn(numRows).nOut(24)
+                // .regularization(true).l2(1e-4)
+                .list()
+                .layer(0, new AutoEncoder.Builder()
+                        .nIn(numRows)
+                        .nOut(48)
                         .weightInit(WeightInit.XAVIER)
-                        .activation("relu")
-                        //.corruptionLevel(0.2) // Set level of corruption
-                        .lossFunction(LossFunctions.LossFunction.RMSE_XENT)
+                        .activation(Activation.LEAKYRELU)
+                        .corruptionLevel(0.2) // Set level of corruption
+                        .lossFunction(LossFunctions.LossFunction.XENT)
                         .build())
-                .layer(1, new AutoEncoder.Builder().nIn(24).nOut(12)
+                .layer(1, new AutoEncoder.Builder().nOut(24).nIn(48)
                         .weightInit(WeightInit.XAVIER)
-                        .activation("relu")
-                        //.corruptionLevel(0.2) // Set level of corruption
-                        .lossFunction(LossFunctions.LossFunction.RMSE_XENT)
+                        .activation(Activation.LEAKYRELU)
+                        //.corruptionLevel(0.1) // Set level of corruption
+                        .lossFunction(LossFunctions.LossFunction.MCXENT)
                         .build())
-                .layer(2, new OutputLayer.Builder(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
+                .layer(2, new AutoEncoder.Builder().nOut(12).nIn(24)
                         .weightInit(WeightInit.XAVIER)
-                        .activation("softmax").weightInit(WeightInit.XAVIER)
-                        .nIn(12).nOut(outputNum).build())
-                .pretrain(true).backprop(true).build();
-
-
+                        .activation(Activation.RELU)
+                        //.corruptionLevel(0.1) // Set level of corruption
+                        .lossFunction(LossFunctions.LossFunction.MCXENT)
+                        .build())
+                .layer(3, new OutputLayer.Builder(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
+                        .weightInit(WeightInit.XAVIER)
+                        .activation(Activation.SOFTMAX)
+                       .nOut(outputNum).nIn(12).build())
+                .pretrain(false).backprop(true).build();
         model = new MultiLayerNetwork(conf); // Passing built configuration to instance of multilayer network
         model.init(); // Initialize mode
-        model.setListeners(new ScoreIterationListener(100));// Setting listeners
-        // model.setListeners(new HistogramIterationListener(10));
+
+
+        UIServer uiServer = UIServer.getInstance();
+        StatsStorage statsStorage = new InMemoryStatsStorage();         //Alternative: new FileStatsStorage(File), for saving and loading later
+        //Attach the StatsStorage instance to the UI: this allows the contents of the StatsStorage to be visualized
+        uiServer.attach(statsStorage);
+
+        ArrayList listenery = new ArrayList();
+        listenery.add(new ScoreIterationListener(500));
+        listenery.add(new StatsListener(statsStorage));
+        model.setListeners(listenery);
+        //model.setListeners(new ScoreIterationListener(listenerFreq));// Setting listeners
+        //model.setListeners(new HistogramIterationListener(10));
     }
 
     // method for testing the classifier.
@@ -154,17 +172,52 @@ public class SDAClassifierNoEarlyStop  implements IERPClassifier  {
     // method not implemented. For loading use load(String file)
     @Override
     public void load(InputStream is) {
-
+        throw new NotImplementedException();
     }
 
     // method not implemented. For saving use method save(String file)
     @Override
     public void save(OutputStream dest) {
+        throw new NotImplementedException();
+    }
+
+    /**
+     * Save Model to file
+     * uses save methods from library deeplearning4j
+     *
+     * @param pathname path name and file name with archive name without .zip
+     */
+    public void save(String pathname) {
+        File locationToSave = new File(pathname + ".zip");      //Where to save the network. Note: the file is in .zip format - can be opened externally
+        boolean saveUpdater = true;   //Updater: i.e., the state for Momentum, RMSProp, Adagrad etc. Save this if you want to train your network more in the future
+        try {
+            ModelSerializer.writeModel(model, locationToSave, saveUpdater);
+            System.out.println("Saved network params " + model.params());
+            System.out.println("Saved");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
     }
 
-    @Override
-    public void save(String file) {
+    /**
+     * Loads Model from file
+     * uses load methods from library deepalerning4j
+     *
+     * @param pathname pathname and file name of loaded Model without .zip
+     */
+    public void load(String pathname) {
+        File locationToLoad = new File(pathname + ".zip");
+        try {
+            model = ModelSerializer.restoreMultiLayerNetwork(locationToLoad);
+            System.out.println("Loaded");
+            System.out.println("Loaded network params " + model.params());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void saveOld(String file) {
         OutputStream fos;
         // Choose the name of classifier and coefficient file to save based on the feature extraction, which is used
         String coefficientsName = "wrong.bin";
@@ -188,8 +241,7 @@ public class SDAClassifierNoEarlyStop  implements IERPClassifier  {
         }
     }
 
-    @Override
-    public void load(String file) {
+    public void loadOld(String file) {
         MultiLayerConfiguration confFromJson = null;
         INDArray newParams = null;
         // Choose the name of coefficient file to load based on the feature extraction, which is used

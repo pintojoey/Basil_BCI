@@ -43,7 +43,6 @@ public class FilterAndSubsamplingFeatureExtraction implements IFeatureExtraction
 		//Random r = new Random(System.nanoTime());
 		//this.SKIP_SAMPLES = r.nextInt(150);
 		//this.filter = new ButterWorthFilter(r.nextDouble(), 8 + r.nextInt(10), Const.SAMPLING_FQ);
-		// TODO Auto-generated constructor stub
 	}
 
 

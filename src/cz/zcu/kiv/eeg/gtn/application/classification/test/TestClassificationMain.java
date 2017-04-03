@@ -46,11 +46,13 @@ public class TestClassificationMain {
 		
 		TrainingSetParser trainingParser = new TrainingSetParser();
 		TrainingSetParser testingParser = new TrainingSetParser();
-		
+
 		System.out.println("Data loaded.");
+
 		try {
 			// open source data streams and load data
 			int counter = 0;
+			/*
 			System.out.println("Training data.");
 			for (Integer channel: trainingSourceFiles.keySet() ) {
 				isTrainData[counter] = new BufferedInputStream(new FileInputStream(trainingSourceFiles.get(channel)));
@@ -66,6 +68,7 @@ public class TestClassificationMain {
 				testingParser.join(epochs, channel);
 				counter++;
 			}
+			*/
 			isTrainTargets = new BufferedInputStream(new FileInputStream(targetsTrainFileName));
 			List<Double> trainingTargets = trainingParser.readTargets(isTrainTargets);
 			List<double[][]> trainingEpochs = trainingParser.getEpochs();
@@ -81,7 +84,12 @@ public class TestClassificationMain {
 			int outputNeurons 	     = 1;
 			ArrayList<Integer> nnStructure = new ArrayList<Integer>();
 			nnStructure.add(numberOfInputNeurons); nnStructure.add(middleNeurons); nnStructure.add(outputNeurons);
-			IERPClassifier classifier = new DBNClassifier();//MLPClassifier(nnStructure);
+
+
+			IERPClassifier classifier = new SDADeepLearning4j();//MLPClassifier(nnStructure);
+			//IERPClassifier classifier = new MLPDeepLearning4j();
+			//IERPClassifier classifier = new DBNDeepLearning4j();//MLPClassifier(nnStructure);
+			//IERPClassifier classifier = new DBNDeepLearning4j();
 			
 			// training
 			System.out.println("Training started.");
@@ -98,10 +106,8 @@ public class TestClassificationMain {
 			
 			classifier.save("data/classifier.txt");
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
 			

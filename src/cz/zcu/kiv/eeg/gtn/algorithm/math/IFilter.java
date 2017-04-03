@@ -6,5 +6,5 @@ package cz.zcu.kiv.eeg.gtn.algorithm.math;
  *
  */
 public interface IFilter {
-    public double getOutputSample(double inputSample);
+    double getOutputSample(double inputSample);
 }

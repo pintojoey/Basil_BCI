@@ -54,7 +54,6 @@ public class TrainUsingOfflineProvider implements Observer {
 	            e.printStackTrace();
 	        }
 		} catch (IOException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
         
@@ -68,7 +67,10 @@ public class TrainUsingOfflineProvider implements Observer {
         numberOfNonTargets = 0;
         this.iters = iters;
         this.middleNeurons = middleNeurons;
-        classifier = null; 
+        classifier = null;
+
+
+
 
        // OffLineDataProvider offLineData = new OffLineDataProvider(new File(
        //         Const.TRAINING_RAW_DATA_FILE_NAME), this);
@@ -90,6 +92,7 @@ public class TrainUsingOfflineProvider implements Observer {
         } else {
             TrainUsingOfflineProvider train = new TrainUsingOfflineProvider(fe,
                     classifier, file, new ButterWorthFilter());
+            System.out.print("train regular");
         }
     }
 
@@ -191,14 +194,15 @@ public class TrainUsingOfflineProvider implements Observer {
         chart2.setVisible(true);*/
 
         // training
-        System.out.println("Training started.");
         //fe = new FilterAndSubsamplingFeatureExtraction();
         classifier.train(this.epochs, this.targets, this.iters, fe);
+
         if (file == null || file.equals("")) {
             classifier.save(Const.TRAINING_FILE_NAME);
         } else {
             classifier.save(file);
         }
+
         System.out.println("Training finished.");
         
      
@@ -223,16 +227,20 @@ public class TrainUsingOfflineProvider implements Observer {
         nnStructure.add(numberOfInputNeurons);
         nnStructure.add(middleNeurons);
         nnStructure.add(outputNeurons);
+
+        //TODO clasifikatory
         //classifier = new MLPClassifier(nnStructure);
-        classifier = new SDAClassifierNoEarlyStop();
+        //classifier = new SDADeepLearning4j();
+        classifier = new SDADeepLearning4jEarlyStop();
+        //classifier = new MLPDeepLearning4jEarlyStop();
         //classifier = new MLPDeepLearning4j();
-        //classifier = new DBNClassifier();
+        //classifier = new DBNDeepLearning4j();
         //classifier = new SVMClassifier();
         classifier.setFeatureExtraction(fe);
     }
 
     public IERPClassifier getClassifier() {
-        return this.classifier;
+        return classifier;
     }
 
     /**

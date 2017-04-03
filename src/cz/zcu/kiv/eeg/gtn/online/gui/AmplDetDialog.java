@@ -104,9 +104,9 @@ public class AmplDetDialog extends JDialog{
 				}
 				
 				if(amplBT.isSelected())
-					mainFrame.artifactDetection = new AmplitudeArtifactDet(border);
+					MainFrame.artifactDetection = new AmplitudeArtifactDet(border);
 				else if(gradBT.isSelected())
-					mainFrame.artifactDetection = new GradientArtifactDet(border);
+					MainFrame.artifactDetection = new GradientArtifactDet(border);
 
 				AmplDetDialog.this.dispose();
 			}

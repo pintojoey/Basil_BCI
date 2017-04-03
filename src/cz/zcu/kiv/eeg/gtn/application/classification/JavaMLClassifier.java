@@ -78,8 +78,7 @@ public class JavaMLClassifier implements IERPClassifier {
 		double[] feature = fe.extractFeatures(epoch);
 		Instance instance = new DenseInstance(feature);
 		Object predictedClassValue = classifier.classify(instance);
-		
-		// TODO Auto-generated method stub
+
 		return (Double)predictedClassValue;
 	}
 
@@ -107,10 +106,8 @@ public class JavaMLClassifier implements IERPClassifier {
 		      output.writeObject(classifier);
 		      output.close();
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 			     
@@ -138,8 +135,8 @@ public class JavaMLClassifier implements IERPClassifier {
 	}
 	
 	private Dataset createDataset(List<double[][]> epochs, List<Double> targets) {
-		Dataset dataset= new DefaultDataset();;
-		for (int i = 0; i < epochs.size(); i++ ) {
+		Dataset dataset= new DefaultDataset();
+        for (int i = 0; i < epochs.size(); i++ ) {
 			double[][] epoch = epochs.get(i);
 			double[] features = fe.extractFeatures(epoch);
 			Instance instance = new DenseInstance(features, targets.get(i));

@@ -207,8 +207,8 @@ public class ScriptDialog extends JDialog {
         applyBT.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-               stm = new StimuliTableModel(countID);
-
+              // stm = new StimuliTableModel(countID);
+                xml.save(NamesTF,Files1TF,Files2TF);
             }
         });
 

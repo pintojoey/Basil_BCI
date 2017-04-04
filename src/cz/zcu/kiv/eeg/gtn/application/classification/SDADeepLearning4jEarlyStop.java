@@ -63,7 +63,7 @@ public class SDADeepLearning4jEarlyStop implements IERPClassifier {
     private int neuronCount;                    // Number of neurons
     private int iterations;                    //Iterations used to classify
     private String directory = "C:\\Temp\\";
-    private int maxTime =10; //max time in minutes
+    private int maxTime =5; //max time in minutes
     private int maxEpochs = 10000;
     private EarlyStoppingResult result;
     private int noImprovementEpochs = 10;
@@ -130,8 +130,8 @@ public class SDADeepLearning4jEarlyStop implements IERPClassifier {
 
         List<EpochTerminationCondition> list = new ArrayList<>(2);
         list.add(new MaxEpochsTerminationCondition(maxEpochs));
-        list.add(new ScoreImprovementEpochTerminationCondition(noImprovementEpochs, 0.001));
-        //list.add(new ScoreImprovementEpochTerminationCondition(noImprovementEpochs));
+        //list.add(new ScoreImprovementEpochTerminationCondition(noImprovementEpochs, 0.001));
+        list.add(new ScoreImprovementEpochTerminationCondition(noImprovementEpochs));
 
         MultiLayerNetwork net = new MultiLayerNetwork(conf);
         //DataSetIterator testData= new TestDataSetIterator(dataSet);

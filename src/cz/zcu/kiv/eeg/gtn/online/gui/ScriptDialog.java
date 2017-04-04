@@ -209,6 +209,7 @@ public class ScriptDialog extends JDialog {
             public void actionPerformed(ActionEvent e) {
               // stm = new StimuliTableModel(countID);
                 xml.save(NamesTF,Files1TF,Files2TF);
+                ScriptDialog.this.dispose();
             }
         });
 

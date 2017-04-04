@@ -4,6 +4,7 @@ import com.sun.org.apache.xml.internal.serialize.OutputFormat;
 import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -123,4 +124,44 @@ public class Xml {
         }
 
     }
+
+    public ArrayList<Stimul> load(File file)
+    {    ArrayList<Stimul>stimuls = new ArrayList<>();
+
+        String name = null;
+        String file1 = null;
+        String file2 = null;
+        try {
+            File inputFile = new File(String.valueOf(file));
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+            Document doc = dBuilder.parse(inputFile);
+            doc.getDocumentElement().normalize();
+            NodeList nList = doc.getElementsByTagName("STIMUL");
+
+            for (int temp = 0; temp < nList.getLength(); temp++) {
+                org.w3c.dom.Node nNode = nList.item(temp);
+
+                if (nNode.getNodeType() == org.w3c.dom.Node.ELEMENT_NODE) {
+                    Element eElement = (Element) nNode;
+
+                    String id = eElement.getAttribute("id");
+
+                    name = eElement.getElementsByTagName("name").item(0).getTextContent();
+                    file1 = eElement.getElementsByTagName("file1").item(0).getTextContent();
+                    file2 = eElement.getElementsByTagName("file2").item(0).getTextContent();
+
+                    Stimul stimul = new Stimul(temp+1,name,file1,file2);
+                    stimuls.add(temp,stimul);
+                }
+            }
+
+        } catch (Exception e) {
+            System.out.println("Chyba při načítání souboru!");
+            e.printStackTrace();
+        }
+
+        return stimuls;
+    }
+
 }

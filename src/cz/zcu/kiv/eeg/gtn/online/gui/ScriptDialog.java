@@ -1,6 +1,7 @@
 package cz.zcu.kiv.eeg.gtn.online.gui;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -20,6 +21,7 @@ public class ScriptDialog extends JDialog {
     Xml xml = new Xml();
     private int id = 1;
     private int countID = 0;
+    ArrayList<Stimul>stimuls = new ArrayList<>();
     ArrayList<TextField>NamesTF = new ArrayList<>();
     ArrayList<TextField>Files1TF = new ArrayList<>();
     ArrayList<TextField>Files2TF = new ArrayList<>();
@@ -200,6 +202,7 @@ public class ScriptDialog extends JDialog {
         cancelBT.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+
                 ScriptDialog.this.dispose();
             }
         });
@@ -210,6 +213,26 @@ public class ScriptDialog extends JDialog {
               // stm = new StimuliTableModel(countID);
                 xml.save(NamesTF,Files1TF,Files2TF);
                 ScriptDialog.this.dispose();
+            }
+        });
+        importBT.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                FileNameExtensionFilter filter = new FileNameExtensionFilter("XML Files","xml");
+                JFileChooser fc = new JFileChooser();
+                fc.setFileFilter(filter);
+                int f = fc.showOpenDialog(ScriptDialog.this);
+                if (f == JFileChooser.APPROVE_OPTION) {
+                    File file = fc.getSelectedFile();
+                    stimuls=xml.load(file);
+                    for (int i = 0; i < NamesTF.size(); i++) {
+                      NamesTF.get(i).setText(stimuls.get(i).name);
+                      Files1TF.get(i).setText(stimuls.get(i).file1);
+                      Files2TF.get(i).setText(stimuls.get(i).file2);
+                    }
+                }
+
+
             }
         });
 

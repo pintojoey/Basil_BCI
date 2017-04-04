@@ -17,6 +17,7 @@ public class ScriptDialog extends JDialog {
     MainFrame mf;
     StimuliTableModel stm;
     JFrame scriptFrame;
+    Xml xml = new Xml();
     private int id = 1;
     private int countID = 0;
     ArrayList<TextField>NamesTF = new ArrayList<>();
@@ -36,7 +37,7 @@ public class ScriptDialog extends JDialog {
         this.setModal(true);
         this.setTitle("Script menu");
         this.getContentPane().add(createScriptPanel());
-        this.setPreferredSize(new Dimension(420,180));
+        this.setMinimumSize(new Dimension(420,180));
         this.pack();
         this.setLocationRelativeTo(null);
         this.setVisible(true);
@@ -166,7 +167,6 @@ public class ScriptDialog extends JDialog {
         g.gridy = 6;
         g.gridx = 0;
         itemJP.add(new JSeparator(JSeparator.HORIZONTAL),g);
-
 
         scriptPanel.revalidate();
 

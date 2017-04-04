@@ -131,6 +131,7 @@ public class SDADeepLearning4jEarlyStop implements IERPClassifier {
         List<EpochTerminationCondition> list = new ArrayList<>(2);
         list.add(new MaxEpochsTerminationCondition(maxEpochs));
         list.add(new ScoreImprovementEpochTerminationCondition(noImprovementEpochs, 0.001));
+        //list.add(new ScoreImprovementEpochTerminationCondition(noImprovementEpochs));
 
         MultiLayerNetwork net = new MultiLayerNetwork(conf);
         //DataSetIterator testData= new TestDataSetIterator(dataSet);
@@ -149,19 +150,18 @@ public class SDADeepLearning4jEarlyStop implements IERPClassifier {
                 .epochTerminationConditions(list)
                 .build();
 
-
+        //create Estop trainer
         EarlyStoppingTrainer trainer = new EarlyStoppingTrainer(esConf, net, new ListDataSetIterator(testAndTrain.getTrain().asList(), 100));
+        //prepare UI
         UIServer uiServer = UIServer.getInstance();
-
         //Configure where the network information (gradients, score vs. time etc) is to be stored. Here: store in memory.
         StatsStorage statsStorage = new InMemoryStatsStorage();         //Alternative: new FileStatsStorage(File), for saving and loading later
-
         //Attach the StatsStorage instance to the UI: this allows the contents of the StatsStorage to be visualized
         uiServer.attach(statsStorage);
 
         //Then add the StatsListener to collect this information from the network, as it trains
         ArrayList listeners = new ArrayList();
-        //listeners.add(new ScoreIterationListener(100));
+        listeners.add(new ScoreIterationListener(100));
         listeners.add(new StatsListener(statsStorage));
         net.setListeners(listeners);
         result = trainer.fit();
@@ -186,7 +186,7 @@ public class SDADeepLearning4jEarlyStop implements IERPClassifier {
                 //.weightInit(WeightInit.XAVIER)
                 //.activation(Activation.LEAKYRELU)
                 .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
-                .learningRate(0.005)
+                .learningRate(0.01)
                 .iterations(1)
                 //.momentum(0.5) // Momentum rate
                 //.momentumAfter(Collections.singletonMap(3, 0.9)) //Map of the iteration to the momentum rate to apply at that iteration
@@ -244,9 +244,13 @@ public class SDADeepLearning4jEarlyStop implements IERPClassifier {
 
     }
 
+    /**
+     * save model in file
+     * @param file path + filename without extension
+     */
     @Override
     public void save(String file) {
-        File locationToSave = new File(pathname + ".zip");      //Where to save the network. Note: the file is in .zip format - can be opened externally
+        File locationToSave = new File(file + ".zip");      //Where to save the network. Note: the file is in .zip format - can be opened externally
         boolean saveUpdater = true;   //Updater: i.e., the state for Momentum, RMSProp, Adagrad etc. Save this if you want to train your network more in the future
         try {
             ModelSerializer.writeModel(result.getBestModel(), locationToSave, saveUpdater);
@@ -257,9 +261,13 @@ public class SDADeepLearning4jEarlyStop implements IERPClassifier {
         }
     }
 
+    /**
+     * load model in file
+     * @param file path + filename without extension
+     */
     @Override
     public void load(String file) {
-        File locationToLoad = new File(pathname + ".zip");
+        File locationToLoad = new File(file +".zip");
         try {
             result.setBestModel(ModelSerializer.restoreMultiLayerNetwork(locationToLoad));
             System.out.println("Loaded");

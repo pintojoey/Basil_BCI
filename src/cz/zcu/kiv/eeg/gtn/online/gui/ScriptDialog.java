@@ -37,7 +37,7 @@ public class ScriptDialog extends JDialog {
         this.setModal(true);
         this.setTitle("Script menu");
         this.getContentPane().add(createScriptPanel());
-        this.setMinimumSize(new Dimension(420,180));
+        this.setMinimumSize(new Dimension(420,280));
         this.pack();
         this.setLocationRelativeTo(null);
         this.setVisible(true);
@@ -50,6 +50,7 @@ public class ScriptDialog extends JDialog {
 
         boxPanel = new JPanel();
         boxPanel.setLayout(new BoxLayout(boxPanel,BoxLayout.PAGE_AXIS));
+        boxPanel.add(scriptMain(),BorderLayout.CENTER);
         boxPanel.add(scriptMain(),BorderLayout.CENTER);
         sP = new JScrollPane(boxPanel);
         scriptPanel.add(sP,BorderLayout.CENTER);
@@ -206,7 +207,6 @@ public class ScriptDialog extends JDialog {
         applyBT.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
                stm = new StimuliTableModel(countID);
 
             }

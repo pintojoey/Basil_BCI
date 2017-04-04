@@ -82,7 +82,6 @@ public class Xml {
             }
             xmlDoc.appendChild(rootElement);
 
-
             OutputFormat outFormat = new OutputFormat(xmlDoc);
             outFormat.setIndenting(true);
             File xmlFile = new File("configs/"+konfigName+"/"+konfigName+".xml");

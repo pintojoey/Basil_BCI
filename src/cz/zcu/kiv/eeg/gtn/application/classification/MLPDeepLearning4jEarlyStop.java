@@ -4,6 +4,7 @@ import cz.zcu.kiv.eeg.gtn.application.featureextraction.IFeatureExtraction;
 import org.apache.commons.io.FileUtils;
 import org.deeplearning4j.datasets.iterator.impl.ListDataSetIterator;
 import org.deeplearning4j.earlystopping.EarlyStoppingModelSaver;
+import org.deeplearning4j.earlystopping.saver.InMemoryModelSaver;
 import org.deeplearning4j.earlystopping.saver.LocalFileModelSaver;
 import org.deeplearning4j.earlystopping.termination.EpochTerminationCondition;
 import org.deeplearning4j.earlystopping.termination.MaxEpochsTerminationCondition;
@@ -125,7 +126,8 @@ public class MLPDeepLearning4jEarlyStop implements IERPClassifier {
         MultiLayerConfiguration conf = build(numRows, numColumns, seed, listenerFreq);
         SplitTestAndTrain testAndTrain = dataSet.splitTestAndTrain(80);
 
-        EarlyStoppingModelSaver saver = new LocalFileModelSaver(directory);
+        //EarlyStoppingModelSaver saver = new LocalFileModelSaver(directory);
+        EarlyStoppingModelSaver saver = new InMemoryModelSaver();
 
         List<EpochTerminationCondition> list = new ArrayList<EpochTerminationCondition>(2);
         list.add(new MaxEpochsTerminationCondition(maxEpochs));
@@ -135,7 +137,8 @@ public class MLPDeepLearning4jEarlyStop implements IERPClassifier {
                 //.epochTerminationConditions(new MaxEpochsTerminationCondition(maxEpochs))
                 //.epochTerminationConditions(new ScoreImprovementEpochTerminationCondition(noImprovementEpochs))
                 .iterationTerminationConditions(new MaxTimeIterationTerminationCondition(maxTime, TimeUnit.MINUTES))
-                .scoreCalculator(new DataSetLossCalculator(new ListDataSetIterator(testAndTrain.getTest().asList(), 100), true))
+                //.scoreCalculator(new DataSetLossCalculator(new ListDataSetIterator(testAndTrain.getTest().asList(), 100), true))
+                .scoreCalculator(new DataSetLossCalculator(new ListDataSetIterator(testAndTrain.getTrain().asList(), 100), true))
                 .evaluateEveryNEpochs(3)
                 .modelSaver(saver)
                 .epochTerminationConditions(list)
@@ -215,10 +218,13 @@ public class MLPDeepLearning4jEarlyStop implements IERPClassifier {
     public void save(OutputStream dest) {
         throw new NotImplementedException();
     }
-
+    /**
+     * save model in file
+     * @param file path + filename without extension
+     */
     @Override
     public void save(String file) {
-        File locationToSave = new File(pathname + ".zip");      //Where to save the network. Note: the file is in .zip format - can be opened externally
+        File locationToSave = new File(file + ".zip");      //Where to save the network. Note: the file is in .zip format - can be opened externally
         boolean saveUpdater = true;   //Updater: i.e., the state for Momentum, RMSProp, Adagrad etc. Save this if you want to train your network more in the future
         try {
             ModelSerializer.writeModel(result.getBestModel(), locationToSave, saveUpdater);
@@ -228,10 +234,13 @@ public class MLPDeepLearning4jEarlyStop implements IERPClassifier {
             e.printStackTrace();
         }
     }
-
+    /**
+     * load model in file
+     * @param file path + filename without extension
+     */
     @Override
     public void load(String file) {
-        File locationToLoad = new File(pathname + ".zip");
+        File locationToLoad = new File(file + ".zip");
         try {
             result.setBestModel(ModelSerializer.restoreMultiLayerNetwork(locationToLoad));
             System.out.println("Loaded");

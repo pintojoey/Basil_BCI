@@ -63,10 +63,10 @@ public class SDADeepLearning4jEarlyStop implements IERPClassifier {
     private int neuronCount;                    // Number of neurons
     private int iterations;                    //Iterations used to classify
     private String directory = "C:\\Temp\\";
-    private int maxTime =10; //max time in minutes
+    private int maxTime =5; //max time in minutes
     private int maxEpochs = 10000;
     private EarlyStoppingResult result;
-    private int noImprovementEpochs = 10;
+    private int noImprovementEpochs = 20;
     private EarlyStoppingConfiguration esConf;
     private String pathname = "C:\\Temp\\SDAEStop"; //pathname+file name for saving model
 
@@ -123,14 +123,15 @@ public class SDADeepLearning4jEarlyStop implements IERPClassifier {
         //model.setListeners(Collections.singletonList((IterationListener) new ScoreIterationListener(listenerFreq))); // Setting listeners
         //model.setListeners(new ScoreIterationListener(100));
 
-        SplitTestAndTrain testAndTrain = dataSet.splitTestAndTrain(0.3);
+        SplitTestAndTrain testAndTrain = dataSet.splitTestAndTrain(0.35);
         //EarlyStoppingModelSaver saver = new LocalFileModelSaver(directory);
         InMemoryModelSaver <MultiLayerNetwork> saver = new InMemoryModelSaver();
 
 
         List<EpochTerminationCondition> list = new ArrayList<>(2);
         list.add(new MaxEpochsTerminationCondition(maxEpochs));
-        list.add(new ScoreImprovementEpochTerminationCondition(noImprovementEpochs, 0.001));
+        list.add(new ScoreImprovementEpochTerminationCondition(noImprovementEpochs, 0.00001));
+        //list.add(new ScoreImprovementEpochTerminationCondition(noImprovementEpochs));
 
         MultiLayerNetwork net = new MultiLayerNetwork(conf);
         //DataSetIterator testData= new TestDataSetIterator(dataSet);
@@ -142,26 +143,25 @@ public class SDADeepLearning4jEarlyStop implements IERPClassifier {
                 .iterationTerminationConditions(new MaxTimeIterationTerminationCondition(maxTime, TimeUnit.MINUTES))
                 //.epochTerminationConditions(new ScoreImprovementEpochTerminationCondition(noImprovementEpochs))
                 //
-                //.scoreCalculator(new DataSetLossCalculator(testData,true))
-                        .scoreCalculator(new DataSetLossCalculator(new ListDataSetIterator(testAndTrain.getTest().asList(), 100), true))
-                //.evaluateEveryNEpochs(5)
+                //.scoreCalculator(new DataSetLossCalculator(new ListDataSetIterator(dataSet.asList()),true))
+                .scoreCalculator(new DataSetLossCalculator(new ListDataSetIterator(testAndTrain.getTest().asList(), 100), true))
+                .evaluateEveryNEpochs(3)
                 .modelSaver(saver)
                 .epochTerminationConditions(list)
                 .build();
 
-
+        //create Estop trainer
         EarlyStoppingTrainer trainer = new EarlyStoppingTrainer(esConf, net, new ListDataSetIterator(testAndTrain.getTrain().asList(), 100));
+        //prepare UI
         UIServer uiServer = UIServer.getInstance();
-
         //Configure where the network information (gradients, score vs. time etc) is to be stored. Here: store in memory.
         StatsStorage statsStorage = new InMemoryStatsStorage();         //Alternative: new FileStatsStorage(File), for saving and loading later
-
         //Attach the StatsStorage instance to the UI: this allows the contents of the StatsStorage to be visualized
         uiServer.attach(statsStorage);
 
         //Then add the StatsListener to collect this information from the network, as it trains
         ArrayList listeners = new ArrayList();
-        //listeners.add(new ScoreIterationListener(100));
+        listeners.add(new ScoreIterationListener(100));
         listeners.add(new StatsListener(statsStorage));
         net.setListeners(listeners);
         result = trainer.fit();
@@ -186,32 +186,32 @@ public class SDADeepLearning4jEarlyStop implements IERPClassifier {
                 //.weightInit(WeightInit.XAVIER)
                 //.activation(Activation.LEAKYRELU)
                 .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
-                .learningRate(0.005)
+                .learningRate(0.05)
                 .iterations(1)
                 //.momentum(0.5) // Momentum rate
                 //.momentumAfter(Collections.singletonMap(3, 0.9)) //Map of the iteration to the momentum rate to apply at that iteration
                 .list() // # NN layers (doesn't count input layer)
                 .layer(0, new AutoEncoder.Builder()
                         .nIn(numRows)
-                        .nOut(48)
+                        .nOut(96)
                         .weightInit(WeightInit.XAVIER)
-                        .activation(Activation.RELU)
+                        .activation(Activation.LEAKYRELU)
                         //.corruptionLevel(0.2) // Set level of corruption
                         .lossFunction(LossFunctions.LossFunction.MCXENT)
                         .build())
-                .layer(1, new AutoEncoder.Builder().nOut(24).nIn(48)
+                .layer(1, new AutoEncoder.Builder().nOut(48).nIn(96)
                         .weightInit(WeightInit.XAVIER)
                         .activation(Activation.LEAKYRELU)
                         //.corruptionLevel(0.1) // Set level of corruption
                         .lossFunction(LossFunctions.LossFunction.MCXENT)
                         .build())
-                .layer(2, new AutoEncoder.Builder().nOut(12).nIn(24)
+                .layer(2, new AutoEncoder.Builder().nOut(12).nIn(48)
                         .weightInit(WeightInit.XAVIER)
                         .activation(Activation.RELU)
                         //.corruptionLevel(0.1) // Set level of corruption
-                        .lossFunction(LossFunctions.LossFunction.MCXENT)
+                        .lossFunction(LossFunction.MCXENT)
                         .build())
-                .layer(3, new OutputLayer.Builder(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
+                .layer(3, new OutputLayer.Builder(LossFunction.MCXENT)
                         .weightInit(WeightInit.XAVIER)
                         .activation(Activation.SOFTMAX)
                         .nOut(outputNum).nIn(12).build())
@@ -244,9 +244,13 @@ public class SDADeepLearning4jEarlyStop implements IERPClassifier {
 
     }
 
+    /**
+     * save model in file
+     * @param file path + filename without extension
+     */
     @Override
     public void save(String file) {
-        File locationToSave = new File(pathname + ".zip");      //Where to save the network. Note: the file is in .zip format - can be opened externally
+        File locationToSave = new File(file + ".zip");      //Where to save the network. Note: the file is in .zip format - can be opened externally
         boolean saveUpdater = true;   //Updater: i.e., the state for Momentum, RMSProp, Adagrad etc. Save this if you want to train your network more in the future
         try {
             ModelSerializer.writeModel(result.getBestModel(), locationToSave, saveUpdater);
@@ -257,9 +261,13 @@ public class SDADeepLearning4jEarlyStop implements IERPClassifier {
         }
     }
 
+    /**
+     * load model in file
+     * @param file path + filename without extension
+     */
     @Override
     public void load(String file) {
-        File locationToLoad = new File(pathname + ".zip");
+        File locationToLoad = new File(file +".zip");
         try {
             result.setBestModel(ModelSerializer.restoreMultiLayerNetwork(locationToLoad));
             System.out.println("Loaded");

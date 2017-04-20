@@ -18,15 +18,15 @@ import java.util.ArrayList;
  * Created by Marek on 4. 4. 2017.
  */
 public class Xml {
-    private static String konfigName;
+    private static String configName;
 
     private ArrayList<TextField> names;
 
     public static void save(ArrayList<TextField> names, ArrayList<TextField>files1, ArrayList<TextField>files2)
     {
-        konfigName="vystup";
+        configName ="vystup";
 
-        File file = new File("configs/"+konfigName);
+        File file = new File("configs/"+ configName);
         if (!file.exists()) {
             if (file.mkdir()) {
                 System.out.println("Directory is created!");
@@ -54,8 +54,8 @@ public class Xml {
                 File file1= new File(url1);
                 File file2= new File(url2);
                 try {
-                    copyFile(file1,new File("configs/"+konfigName+"/"+file1.getName()));
-                    copyFile(file2,new File("configs/"+konfigName+"/"+file2.getName()));
+                    copyFile(file1,new File("configs/"+ configName +"/"+file1.getName()));
+                    copyFile(file2,new File("configs/"+ configName +"/"+file2.getName()));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -85,7 +85,7 @@ public class Xml {
 
             OutputFormat outFormat = new OutputFormat(xmlDoc);
             outFormat.setIndenting(true);
-            File xmlFile = new File("configs/"+konfigName+"/"+konfigName+".xml");
+            File xmlFile = new File("configs/"+ configName +"/"+ configName +".xml");
             try {
                 FileOutputStream outStream = new FileOutputStream(xmlFile);
                 XMLSerializer serializer = new XMLSerializer(outStream,outFormat);

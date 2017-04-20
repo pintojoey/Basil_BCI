@@ -157,7 +157,8 @@ public class ScriptDialog extends JDialog {
         itemJP.add(file1TF,g);
         g.gridx = 3;
         itemJP.add(chooseFile1BT,g);
-        g.gridy = 5;
+        g.gridy = 2;
+        g.gridx = 6;
         itemJP.add(removeBT,g);
         g.gridy = 2;
         g.gridx = 2;

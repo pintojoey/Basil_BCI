@@ -33,8 +33,11 @@ public class ScriptDialog extends JDialog {
     private JPanel boxPanel;
 
 
-    public ScriptDialog(JFrame frame) {
+    public ScriptDialog(MainFrame frame) {
         super(frame);
+        this.mf=frame;
+    }
+    public void createDialog(JFrame frame){
         this.scriptFrame = frame;
         this.setModal(true);
         this.setTitle("Script menu");
@@ -212,7 +215,10 @@ public class ScriptDialog extends JDialog {
             @Override
             public void actionPerformed(ActionEvent e) {
               // stm = new StimuliTableModel(countID);
-                xml.save(NamesTF,Files1TF,Files2TF);
+                stimuls=xml.save(NamesTF,Files1TF,Files2TF);
+                mf.setStimuls(stimuls);
+                mf.createContentJP();
+                mf.repaint();
                 ScriptDialog.this.dispose();
             }
         });
@@ -222,10 +228,14 @@ public class ScriptDialog extends JDialog {
                 FileNameExtensionFilter filter = new FileNameExtensionFilter("XML Files","xml");
                 JFileChooser fc = new JFileChooser();
                 fc.setFileFilter(filter);
+                fc.setCurrentDirectory(new File(System
+                        .getProperty("user.dir")));
                 int f = fc.showOpenDialog(ScriptDialog.this);
+
                 if (f == JFileChooser.APPROVE_OPTION) {
                     File file = fc.getSelectedFile();
                     stimuls=xml.load(file);
+                    mf.setStimuls(stimuls);
                     for (int i = 0; i < NamesTF.size(); i++) {
                       NamesTF.get(i).setText(stimuls.get(i).name);
                       Files1TF.get(i).setText(stimuls.get(i).file1);
@@ -247,5 +257,9 @@ public class ScriptDialog extends JDialog {
         optionPanel.add(cancelBT);
 
         return optionPanel;
+    }
+
+    public void setMf(MainFrame mf) {
+        this.mf = mf;
     }
 }

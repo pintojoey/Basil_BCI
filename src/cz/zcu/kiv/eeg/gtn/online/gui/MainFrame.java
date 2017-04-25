@@ -39,6 +39,10 @@ public class MainFrame extends JFrame implements Observer {
 
     private AbstractTableModel data;
 
+    private ArrayList<Stimul> stimuls = new ArrayList<>();
+
+    private ScriptDialog scriptDialog;
+
     private JTextPane winnerJTA;
 
     private JFileChooser chooser;
@@ -84,7 +88,6 @@ public class MainFrame extends JFrame implements Observer {
 
         BasicConfigurator.configure();
         log = Logger.getLogger(MainFrame.class);
-
         epochCharts = new ShowChart(this);
 
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -489,7 +492,8 @@ public class MainFrame extends JFrame implements Observer {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                new ScriptDialog(mf);
+                ScriptDialog sd = new ScriptDialog(mf);
+                sd.createDialog(mf);
                 //mf.getContentPane().add(createStatusBar(), BorderLayout.SOUTH);
                 revalidate();
 
@@ -520,10 +524,12 @@ public class MainFrame extends JFrame implements Observer {
         return menuBar;
     }
 
-    private JPanel createContentJP() {
+    public JPanel createContentJP() {
         GridLayout mainLayout = new GridLayout(0, 2);
         JPanel contentJP = new JPanel(mainLayout);
-        contentJP.add(createStimuliJT(9));
+        int count = stimuls.size();
+        System.out.println(count + "createContentJp count");
+        contentJP.add(createStimuliJT(count));
         contentJP.add(createWinnerJTA());
         return contentJP;
     }
@@ -544,6 +550,7 @@ public class MainFrame extends JFrame implements Observer {
     }
 
     public JScrollPane createStimuliJT(int id) {
+        System.out.println("jsem tu");
         data = new StimuliTableModel(id);
         JTable stimuliJT = new JTable(data) {
             public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
@@ -564,7 +571,6 @@ public class MainFrame extends JFrame implements Observer {
         };
         JScrollPane jsp = new JScrollPane(stimuliJT);
         stimuliJT.setFillsViewportHeight(true);
-
         return jsp;
     }
 
@@ -887,5 +893,8 @@ public class MainFrame extends JFrame implements Observer {
 
         }
 
+    }
+    public void setStimuls(ArrayList<Stimul> stimuls) {
+        this.stimuls = stimuls;
     }
 }

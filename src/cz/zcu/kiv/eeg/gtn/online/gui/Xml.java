@@ -19,12 +19,13 @@ import java.util.ArrayList;
  */
 public class Xml {
     private static String configName;
+    private static ArrayList<Stimul> stimuls;
 
-    private ArrayList<TextField> names;
-
-    public static void save(ArrayList<TextField> names, ArrayList<TextField>files1, ArrayList<TextField>files2)
+    //Osetrit, kdy to vrati stimuls a kdy to vrati null
+    public static ArrayList<Stimul> save(ArrayList<TextField> names, ArrayList<TextField>files1, ArrayList<TextField>files2)
     {
-        configName ="vystup";
+        configName ="vystup9";
+        stimuls = new ArrayList<>();
 
         File file = new File("configs/"+ configName);
         if (!file.exists()) {
@@ -50,6 +51,9 @@ public class Xml {
                 String name =names.get(i).getText();
                 String url1 =files1.get(i).getText();
                 String url2 =files2.get(i).getText();
+
+                Stimul stimul = new Stimul(i+1,name,url1,url2);
+                stimuls.add(i,stimul);
 
                 File file1= new File(url1);
                 File file2= new File(url2);
@@ -101,6 +105,7 @@ public class Xml {
         } catch (ParserConfigurationException e) {
             e.printStackTrace();
         }
+        return stimuls;
     }
     private static void copyFile(File sourceFile, File destFile)throws IOException {
         if (!sourceFile.exists()) {

@@ -11,7 +11,6 @@ class StimuliTableModel extends AbstractTableModel {
 
     StimuliTableModel(int count) {
         data = new Object[count][4];
-
         for (int i = 0; i < data.length; i++) {
             data[i][0] = i + 1;
         }

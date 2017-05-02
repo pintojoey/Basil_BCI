@@ -16,5 +16,19 @@ public class Stimul {
         this.file2 = file2;
     }
 
+    public int getId() {
+        return id;
+    }
 
+    public String getName() {
+        return name;
+    }
+
+    public String getFile1() {
+        return file1;
+    }
+
+    public String getFile2() {
+        return file2;
+    }
 }

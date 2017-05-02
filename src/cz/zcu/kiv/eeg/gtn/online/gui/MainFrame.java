@@ -528,6 +528,9 @@ public class MainFrame extends JFrame implements Observer {
         GridLayout mainLayout = new GridLayout(0, 2);
         JPanel contentJP = new JPanel(mainLayout);
         int count = stimuls.size();
+
+        if (stimuls.size() == 0) count = 9;
+
         System.out.println(count + "createContentJp count");
         contentJP.add(createStimuliJT(count));
         contentJP.add(createWinnerJTA());
@@ -558,7 +561,7 @@ public class MainFrame extends JFrame implements Observer {
                 //  Color row based on a cell value
                 c.setBackground(getBackground());
                 int modelRow = convertRowIndexToModel(row);
-                Double weight = (Double) getModel().getValueAt(modelRow, 1);
+                Double weight = (Double) getModel().getValueAt(modelRow, 2);
                 if (weight == null || weight == 0) {
                     c.setBackground(Color.WHITE);
                 } else {
@@ -568,6 +571,7 @@ public class MainFrame extends JFrame implements Observer {
                 return c;
             }
         };
+
         JScrollPane jsp = new JScrollPane(stimuliJT);
         stimuliJT.setFillsViewportHeight(true);
         return jsp;
@@ -896,5 +900,13 @@ public class MainFrame extends JFrame implements Observer {
     public void setStimuls(ArrayList<Stimul> stimuls) {
         this.stimuls = stimuls;
         getContentPane().add(createContentJP(), BorderLayout.CENTER);
+        getNames(stimuls);
+    }
+
+    public void getNames(ArrayList<Stimul>stimuls){
+        for (int i = 0; i < stimuls.size(); i++) {
+            data.setValueAt(stimuls.get(i).getName(),i,1);
+
+        }
     }
 }

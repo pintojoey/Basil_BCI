@@ -14,11 +14,11 @@ import static javax.swing.JOptionPane.showMessageDialog;
 /**
  * Created by Jamape on 16.03.2017.
  */
-public class ScriptDialog extends JDialog {
+public class ScenarioDialog extends JDialog {
     MainFrame mf;
     StimuliTableModel stm;
     JFrame scriptFrame;
-    Xml xml = new Xml();
+    ImportExportScenarios importExportScenarios = new ImportExportScenarios();
     private int id = 1;
     private int countID = 0;
     ArrayList<Stimul>stimuls = new ArrayList<>();
@@ -33,7 +33,7 @@ public class ScriptDialog extends JDialog {
     private JPanel boxPanel;
 
 
-    public ScriptDialog(MainFrame frame) {
+    public ScenarioDialog(MainFrame frame) {
         super(frame);
         this.mf=frame;
     }
@@ -102,7 +102,7 @@ public class ScriptDialog extends JDialog {
             @Override
             public void actionPerformed(ActionEvent arg0) {
                 JFileChooser fc = new JFileChooser();
-                int f = fc.showOpenDialog(ScriptDialog.this);
+                int f = fc.showOpenDialog(ScenarioDialog.this);
                 if (f == JFileChooser.APPROVE_OPTION) {
                     File file = fc.getSelectedFile();
                     file1TF.setText(file.getAbsolutePath());
@@ -114,7 +114,7 @@ public class ScriptDialog extends JDialog {
             @Override
             public void actionPerformed(ActionEvent arg0) {
                 JFileChooser fc = new JFileChooser();
-                int f = fc.showOpenDialog(ScriptDialog.this);
+                int f = fc.showOpenDialog(ScenarioDialog.this);
                 if (f == JFileChooser.APPROVE_OPTION) {
                     File file = fc.getSelectedFile();
                     file2TF.setText(file.getAbsolutePath());
@@ -131,14 +131,14 @@ public class ScriptDialog extends JDialog {
                         JOptionPane.OK_CANCEL_OPTION);
                 if (JOptionPane.OK_OPTION == dRes) {
                     if (countID == 1) {
-                        showMessageDialog(ScriptDialog.this,
+                        showMessageDialog(ScenarioDialog.this,
                                 "You can't delete last two stimuls", "Error",
                                 JOptionPane.ERROR_MESSAGE);
                         countID++;
                     } else {
 
                         itemJP.removeAll();
-                        ScriptDialog.this.setSize(ScriptDialog.this.getWidth(), ScriptDialog.this.getHeight() - 100);
+                        ScenarioDialog.this.setSize(ScenarioDialog.this.getWidth(), ScenarioDialog.this.getHeight() - 100);
                     }
                 }
             }
@@ -200,14 +200,14 @@ public class ScriptDialog extends JDialog {
             @Override
             public void actionPerformed(ActionEvent e) {
                 boxPanel.add(scriptMain());
-                if (ScriptDialog.this.getHeight() <= 500)ScriptDialog.this.setSize(ScriptDialog.this.getWidth(),ScriptDialog.this.getHeight()+100);
+                if (ScenarioDialog.this.getHeight() <= 500)ScenarioDialog.this.setSize(ScenarioDialog.this.getWidth(),ScenarioDialog.this.getHeight()+100);
             }
         });
         cancelBT.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                ScriptDialog.this.dispose();
+                ScenarioDialog.this.dispose();
             }
         });
 
@@ -215,11 +215,11 @@ public class ScriptDialog extends JDialog {
             @Override
             public void actionPerformed(ActionEvent e) {
               // stm = new StimuliTableModel(countID);
-                stimuls=xml.save(NamesTF,Files1TF,Files2TF);
+                stimuls= importExportScenarios.save(NamesTF,Files1TF,Files2TF);
                 mf.setStimuls(stimuls);
                 mf.createContentJP();
                 mf.repaint();
-                ScriptDialog.this.dispose();
+                ScenarioDialog.this.dispose();
             }
         });
         importBT.addActionListener(new ActionListener() {
@@ -230,11 +230,11 @@ public class ScriptDialog extends JDialog {
                 fc.setFileFilter(filter);
                 fc.setCurrentDirectory(new File(System
                         .getProperty("user.dir")));
-                int f = fc.showOpenDialog(ScriptDialog.this);
+                int f = fc.showOpenDialog(ScenarioDialog.this);
 
                 if (f == JFileChooser.APPROVE_OPTION) {
                     File file = fc.getSelectedFile();
-                    stimuls=xml.load(file);
+                    stimuls= importExportScenarios.load(file);
                     mf.setStimuls(stimuls);
                     for (int i = 0; i < NamesTF.size(); i++) {
                       NamesTF.get(i).setText(stimuls.get(i).name);

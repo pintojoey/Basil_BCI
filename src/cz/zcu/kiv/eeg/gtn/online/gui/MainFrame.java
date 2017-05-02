@@ -41,7 +41,7 @@ public class MainFrame extends JFrame implements Observer {
 
     private ArrayList<Stimul> stimuls = new ArrayList<>();
 
-    private ScriptDialog scriptDialog;
+    private ScenarioDialog scenarioDialog;
 
     private JTextPane winnerJTA;
 
@@ -492,7 +492,7 @@ public class MainFrame extends JFrame implements Observer {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                ScriptDialog sd = new ScriptDialog(mf);
+                ScenarioDialog sd = new ScenarioDialog(mf);
                 sd.createDialog(mf);
                 //mf.getContentPane().add(createStatusBar(), BorderLayout.SOUTH);
                 revalidate();

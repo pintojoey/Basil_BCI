@@ -17,14 +17,14 @@ import java.util.ArrayList;
 /**
  * Created by Marek on 4. 4. 2017.
  */
-public class Xml {
+public class ImportExportScenarios {
     private static String configName;
     private static ArrayList<Stimul> stimuls;
 
     //Osetrit, kdy to vrati stimuls a kdy to vrati null
     public static ArrayList<Stimul> save(ArrayList<TextField> names, ArrayList<TextField>files1, ArrayList<TextField>files2)
     {
-        configName ="vystup9";
+        configName ="vystupNew";
         stimuls = new ArrayList<>();
 
         File file = new File("configs/"+ configName);

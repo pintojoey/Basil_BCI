@@ -550,7 +550,6 @@ public class MainFrame extends JFrame implements Observer {
     }
 
     public JScrollPane createStimuliJT(int id) {
-        System.out.println("jsem tu");
         data = new StimuliTableModel(id);
         JTable stimuliJT = new JTable(data) {
             public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
@@ -896,5 +895,6 @@ public class MainFrame extends JFrame implements Observer {
     }
     public void setStimuls(ArrayList<Stimul> stimuls) {
         this.stimuls = stimuls;
+        getContentPane().add(createContentJP(), BorderLayout.CENTER);
     }
 }

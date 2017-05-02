@@ -214,14 +214,12 @@ public class ScenarioDialog extends JDialog {
         applyBT.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-              // stm = new StimuliTableModel(countID);
                 stimuls= importExportScenarios.save(NamesTF,Files1TF,Files2TF);
                 mf.setStimuls(stimuls);
-                mf.createContentJP();
-                mf.repaint();
                 ScenarioDialog.this.dispose();
             }
         });
+
         importBT.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

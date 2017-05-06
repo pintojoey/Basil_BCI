@@ -24,7 +24,7 @@ public class ImportExportScenarios {
     //Osetrit, kdy to vrati stimuls a kdy to vrati null
     public static ArrayList<Stimul> save(ArrayList<TextField> names, ArrayList<TextField>files1, ArrayList<TextField>files2)
     {
-        configName ="vystupNew";
+        configName ="NEW";
         stimuls = new ArrayList<>();
 
         File file = new File("configs/"+ configName);

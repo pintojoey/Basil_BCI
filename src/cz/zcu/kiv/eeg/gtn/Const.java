@@ -60,7 +60,7 @@ public class Const {
 
     public static final String RESULT_FONT_NAME = "Arial";
 
-    public static final int RESULT_FONT_SIZE = 250;
+    public static final int RESULT_FONT_SIZE = 50;
 
     public static final int RESULT_FONT_STYLE = Font.BOLD;
 

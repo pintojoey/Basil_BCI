@@ -45,6 +45,8 @@ public class MainFrame extends JFrame implements Observer {
 
     private JTextPane winnerJTA;
 
+    private JPanel winnerJP;
+
     private JFileChooser chooser;
 
     private Observer detection;
@@ -533,7 +535,8 @@ public class MainFrame extends JFrame implements Observer {
 
         System.out.println(count + "createContentJp count");
         contentJP.add(createStimuliJT(count));
-        contentJP.add(createWinnerJTA());
+      //  contentJP.add(createWinnerJTA());
+        contentJP.add(createWinnerJP());
         return contentJP;
     }
 
@@ -552,6 +555,11 @@ public class MainFrame extends JFrame implements Observer {
         return winnerJTA;
     }
 
+    private JPanel createWinnerJP(){
+        winnerJP = new JPanel();
+        winnerJP.setBackground(Color.black);
+        return winnerJP;
+    }
     public JScrollPane createStimuliJT(int id) {
         data = new StimuliTableModel(id);
         JTable stimuliJT = new JTable(data) {
@@ -585,16 +593,23 @@ public class MainFrame extends JFrame implements Observer {
         Comparator<Integer> gc = new ProbabilityComparator(probabilities);
         Arrays.sort(ranks, gc);
 
-        winnerJTA.setText(String.valueOf(ranks[0] + 1));
-        for (int i = 0; i < probabilities.length; i++) {
-            data.setValueAt(probabilities[ranks[i]], i, 1);
-            data.setValueAt(ranks[i] + 1, i, 0);
-            data.setValueAt(counts[ranks[i]], i, 2);
-        }
+       // winnerJTA.setText(String.valueOf(ranks[0] + 1));
+        //winnerJTA.setText(String.valueOf(stimuls.get(ranks[0]).file1));
 
+        ImageIcon image = new ImageIcon(stimuls.get(ranks[0]).file1);
+        JLabel label = new JLabel("", image, JLabel.CENTER);
+
+
+        for (int i = 0; i < probabilities.length; i++) {
+            data.setValueAt(probabilities[ranks[i]], i, 2);
+            data.setValueAt(ranks[i] + 1, i, 0);
+            data.setValueAt(counts[ranks[i]], i, 3);
+        }
+        winnerJP.add( label, BorderLayout.CENTER );
         this.validate();
         this.repaint();
     }
+
 
     @Override
     public void update(Observable sender, Object message)
@@ -899,7 +914,7 @@ public class MainFrame extends JFrame implements Observer {
     }
     public void setStimuls(ArrayList<Stimul> stimuls) {
         this.stimuls = stimuls;
-        getContentPane().add(createContentJP(), BorderLayout.CENTER);
+        //getContentPane().add(createContentJP(), BorderLayout.CENTER);
         getNames(stimuls);
     }
 

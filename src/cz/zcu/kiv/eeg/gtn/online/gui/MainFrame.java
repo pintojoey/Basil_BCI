@@ -594,11 +594,12 @@ public class MainFrame extends JFrame implements Observer {
         Comparator<Integer> gc = new ProbabilityComparator(probabilities);
         Arrays.sort(ranks, gc);
 
-       // winnerJTA.setText(String.valueOf(ranks[0] + 1));
-        //winnerJTA.setText(String.valueOf(stimuls.get(ranks[0]).file1));
         JLabel label = new JLabel();
-            ImageIcon imgThisImg = new ImageIcon(stimuls.get(ranks[0]).file1);
-            label.setIcon(imgThisImg);
+        ImageIcon imgThisImg = new ImageIcon(stimuls.get(ranks[0]).file1);
+        Image img = imgThisImg.getImage() ;
+        Image newimg = img.getScaledInstance( winnerJP.getWidth(), winnerJP.getHeight(),  java.awt.Image.SCALE_SMOOTH ) ;
+        imgThisImg = new ImageIcon( newimg );
+        label.setIcon(imgThisImg);
 
         for (int i = 0; i < probabilities.length; i++) {
             data.setValueAt(probabilities[ranks[i]], i, 2);

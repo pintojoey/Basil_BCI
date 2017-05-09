@@ -28,6 +28,7 @@ public class ScenarioDialog extends JDialog {
     ArrayList<JButton> ChooseFile1BT = new ArrayList<>();
     ArrayList<JButton> ChooseFile2BT = new ArrayList<>();
     ArrayList<JButton> RemoveBT = new ArrayList<>();
+    ArrayList<JPanel> ItemJP = new ArrayList<>();
     private JScrollPane sP;
     private JPanel scriptPanel;
     private JPanel boxPanel;
@@ -178,7 +179,7 @@ public class ScenarioDialog extends JDialog {
         itemJP.add(new JSeparator(JSeparator.HORIZONTAL),g);
 
         scriptPanel.revalidate();
-
+        ItemJP.add(itemJP);
         return itemJP;
     }
 
@@ -245,7 +246,6 @@ public class ScenarioDialog extends JDialog {
                 fc.setCurrentDirectory(new File(System
                         .getProperty("user.dir")));
                 int f = fc.showOpenDialog(ScenarioDialog.this);
-
                 if (f == JFileChooser.APPROVE_OPTION) {
                     File file = fc.getSelectedFile();
                     stimuls= importExportScenarios.load(file);
@@ -255,7 +255,28 @@ public class ScenarioDialog extends JDialog {
                       Files2TF.get(i).setText(stimuls.get(i).file2);
                     }
                 }
+                int value = countID - stimuls.size();
+                System.out.println(stimuls.size());
+                System.out.println(value);
+                if (value < 0){
+                    countID = stimuls.size();
+                    for (int i = 0; i < value+1; i++) {
+                        boxPanel.add(scriptMain());
+                        if (ScenarioDialog.this.getHeight() <= 500)ScenarioDialog.this.setSize(ScenarioDialog.this.getWidth(),ScenarioDialog.this.getHeight()+100);
+                        repaint();
+                    }
+                }else if (value > 0){
+                    countID = stimuls.size();
+                    int v = value;
+                    for (int i = 0; i < value+1; i++){
+                        ItemJP.get(v).removeAll();
+                        ItemJP.remove(v);
+                        ScenarioDialog.this.setSize(ScenarioDialog.this.getWidth(), ScenarioDialog.this.getHeight() - 100);
+                        v--;
 
+                    }
+
+                }
 
             }
         });
@@ -275,7 +296,5 @@ public class ScenarioDialog extends JDialog {
         return optionPanel;
     }
 
-    public void setMf(MainFrame mf) {
-        this.mf = mf;
-    }
+
 }

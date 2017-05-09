@@ -586,6 +586,7 @@ public class MainFrame extends JFrame implements Observer {
     }
 
     private void initProbabilities(double[] probabilities, int[] counts) {
+        winnerJP.removeAll();
         Integer[] ranks = new Integer[probabilities.length];
         for (int i = 0; i < ranks.length; ++i) {
             ranks[i] = i;
@@ -595,13 +596,13 @@ public class MainFrame extends JFrame implements Observer {
 
        // winnerJTA.setText(String.valueOf(ranks[0] + 1));
         //winnerJTA.setText(String.valueOf(stimuls.get(ranks[0]).file1));
-
-        ImageIcon image = new ImageIcon(stimuls.get(ranks[0]).file1);
-        JLabel label = new JLabel("", image, JLabel.CENTER);
-
+        JLabel label = new JLabel();
+            ImageIcon imgThisImg = new ImageIcon(stimuls.get(ranks[0]).file1);
+            label.setIcon(imgThisImg);
 
         for (int i = 0; i < probabilities.length; i++) {
             data.setValueAt(probabilities[ranks[i]], i, 2);
+            data.setValueAt(stimuls.get(ranks[i]).name,i,1);
             data.setValueAt(ranks[i] + 1, i, 0);
             data.setValueAt(counts[ranks[i]], i, 3);
         }
@@ -636,7 +637,7 @@ public class MainFrame extends JFrame implements Observer {
         Arrays.fill(zeros, 0);
         Arrays.fill(intZeros, 0);
         initProbabilities(zeros, intZeros);
-        winnerJTA.setText(Const.UNKNOWN_RESULT);
+       // winnerJTA.setText(Const.UNKNOWN_RESULT);
     }
 
     private void stopRunningThread() {

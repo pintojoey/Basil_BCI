@@ -21,10 +21,12 @@ public class ImportExportScenarios {
     private static String configName;
     private static ArrayList<Stimul> stimuls;
 
+
+
     //Osetrit, kdy to vrati stimuls a kdy to vrati null
     public static ArrayList<Stimul> save(ArrayList<TextField> names, ArrayList<TextField>files1, ArrayList<TextField>files2)
     {
-        configName ="NEW";
+        //configName = "new";
         stimuls = new ArrayList<>();
 
         File file = new File("configs/"+ configName);
@@ -160,7 +162,6 @@ public class ImportExportScenarios {
                     stimuls.add(temp,stimul);
                 }
             }
-
         } catch (Exception e) {
             System.out.println("Chyba při načítání souboru!");
             e.printStackTrace();
@@ -169,4 +170,8 @@ public class ImportExportScenarios {
         return stimuls;
     }
 
+
+    public static void setConfigName(String configName) {
+        ImportExportScenarios.configName = configName;
+    }
 }

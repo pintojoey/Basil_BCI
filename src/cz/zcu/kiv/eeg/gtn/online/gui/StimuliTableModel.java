@@ -7,10 +7,12 @@ import javax.swing.table.AbstractTableModel;
 @SuppressWarnings("serial")
 class StimuliTableModel extends AbstractTableModel {
 
-    private final Object[][] data;
+    private Object[][] data;
+    private int count;
 
     StimuliTableModel(int count) {
-        data = new Object[count][4];
+        this.count = count;
+        data = new Object[this.count][4];
         for (int i = 0; i < data.length; i++) {
             data[i][0] = i + 1;
         }
@@ -40,5 +42,9 @@ class StimuliTableModel extends AbstractTableModel {
     public void setValueAt(Object value, int row, int column) {
         data[row][column] = value;
         fireTableCellUpdated(row, column);
+    }
+
+    public void setCount(int count){
+        this.count = count;
     }
 }

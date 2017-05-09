@@ -31,6 +31,8 @@ public class ScenarioDialog extends JDialog {
     private JScrollPane sP;
     private JPanel scriptPanel;
     private JPanel boxPanel;
+    String scenarioName;
+    TextField fileTF;
 
 
     public ScenarioDialog(MainFrame frame) {
@@ -193,6 +195,8 @@ public class ScenarioDialog extends JDialog {
 
         JButton addBT = new JButton("+");
         JButton importBT = new JButton("Import data");
+        JLabel fileLB = new JLabel("Scenario name:");
+        fileTF = new TextField(6);
         JButton applyBT = new JButton("Apply");
         JButton cancelBT = new JButton("Cancel");
 
@@ -214,9 +218,21 @@ public class ScenarioDialog extends JDialog {
         applyBT.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                stimuls= importExportScenarios.save(NamesTF,Files1TF,Files2TF);
-                mf.setStimuls(stimuls);
-                ScenarioDialog.this.dispose();
+                scenarioName = fileTF.getText().toString();
+                System.out.println(fileTF.getText());
+                if(fileTF.getText()==""){
+                    showMessageDialog(ScenarioDialog.this,
+                            "Scenario does not have name!", "Error",
+                            JOptionPane.ERROR_MESSAGE);
+                }
+                else{
+                    importExportScenarios.setConfigName(scenarioName);
+                    stimuls= importExportScenarios.save(NamesTF,Files1TF,Files2TF);
+                    mf.setStimuls(stimuls);
+                    ScenarioDialog.this.dispose();
+                }
+
+
             }
         });
 
@@ -248,7 +264,10 @@ public class ScenarioDialog extends JDialog {
         optionPanel.add(addBT);
         optionPanel.add(Box.createRigidArea(new Dimension(10,0)));
         optionPanel.add(importBT);
-        optionPanel.add(Box.createRigidArea(new Dimension(95,0)));
+        optionPanel.add(Box.createRigidArea(new Dimension(10,0)));
+        optionPanel.add(fileLB);
+        optionPanel.add(fileTF);
+        optionPanel.add(Box.createRigidArea(new Dimension(10,0)));
         optionPanel.add(applyBT);
         optionPanel.add(Box.createRigidArea(new Dimension(5,0)));
         optionPanel.add(cancelBT);

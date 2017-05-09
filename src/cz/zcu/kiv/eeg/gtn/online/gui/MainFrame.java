@@ -915,7 +915,10 @@ public class MainFrame extends JFrame implements Observer {
     }
     public void setStimuls(ArrayList<Stimul> stimuls) {
         this.stimuls = stimuls;
-        //getContentPane().add(createContentJP(), BorderLayout.CENTER);
+        this.setLayout(new BorderLayout());
+
+        getContentPane().removeAll();
+        getContentPane().add(createContentJP(), BorderLayout.CENTER);
         getNames(stimuls);
     }
 

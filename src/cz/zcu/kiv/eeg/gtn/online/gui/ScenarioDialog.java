@@ -233,7 +233,6 @@ public class ScenarioDialog extends JDialog {
                 if (f == JFileChooser.APPROVE_OPTION) {
                     File file = fc.getSelectedFile();
                     stimuls= importExportScenarios.load(file);
-                    mf.setStimuls(stimuls);
                     for (int i = 0; i < NamesTF.size(); i++) {
                       NamesTF.get(i).setText(stimuls.get(i).name);
                       Files1TF.get(i).setText(stimuls.get(i).file1);

@@ -16,6 +16,7 @@ public class Stimul {
         this.file2 = file2;
     }
 
+
     public int getId() {
         return id;
     }

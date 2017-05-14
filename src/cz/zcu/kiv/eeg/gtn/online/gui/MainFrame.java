@@ -15,6 +15,7 @@ import cz.zcu.kiv.eeg.gtn.utils.ColorUtils;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.AbstractTableModel;
@@ -26,6 +27,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -533,7 +535,7 @@ public class MainFrame extends JFrame implements Observer {
 
         if (stimuls.size() == 0) count = 9;
 
-        System.out.println(count + "createContentJp count");
+        //System.out.println(count + "createContentJp count");
         contentJP.add(createStimuliJT(count));
       //  contentJP.add(createWinnerJTA());
         contentJP.add(createWinnerJP());
@@ -556,8 +558,13 @@ public class MainFrame extends JFrame implements Observer {
     }
 
     private JPanel createWinnerJP(){
-        winnerJP = new JPanel();
-        winnerJP.setBackground(Color.black);
+        GridLayout gridLayout = new GridLayout(2,0);
+        winnerJP = new JPanel(gridLayout);
+        Font font = new Font(Const.RESULT_FONT_NAME, Const.RESULT_FONT_STYLE,
+                Const.RESULT_FONT_SIZE);
+        winnerJP.setFont(font);
+        winnerJP.setBackground(Color.WHITE);
+        //winnerJP.setForeground(Color.WHITE);
         return winnerJP;
     }
     public JScrollPane createStimuliJT(int id) {
@@ -593,13 +600,23 @@ public class MainFrame extends JFrame implements Observer {
         }
         Comparator<Integer> gc = new ProbabilityComparator(probabilities);
         Arrays.sort(ranks, gc);
-
         JLabel label = new JLabel();
-        ImageIcon imgThisImg = new ImageIcon(stimuls.get(ranks[0]).file1);
-        Image img = imgThisImg.getImage() ;
-        Image newimg = img.getScaledInstance( winnerJP.getWidth(), winnerJP.getHeight(),  java.awt.Image.SCALE_SMOOTH ) ;
-        imgThisImg = new ImageIcon( newimg );
-        label.setIcon(imgThisImg);
+        JLabel label2;
+
+        try {
+            BufferedImage img = ImageIO.read(new File(stimuls.get(ranks[0]).file1));
+            ImageIcon icon = new ImageIcon(img);
+            Image image = icon.getImage(); // transform it
+            Image newimg = image.getScaledInstance(120, 120,  Image.SCALE_SMOOTH);
+            icon = new ImageIcon(newimg);
+            label2 = new JLabel(icon);
+            winnerJP.add(label2,BorderLayout.CENTER);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        label.setText(stimuls.get(ranks[0]).getName());
+
 
         for (int i = 0; i < probabilities.length; i++) {
             data.setValueAt(probabilities[ranks[i]], i, 2);
@@ -611,7 +628,6 @@ public class MainFrame extends JFrame implements Observer {
         this.validate();
         this.repaint();
     }
-
 
     @Override
     public void update(Observable sender, Object message)

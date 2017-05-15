@@ -131,6 +131,7 @@ public class ScenarioDialog extends JDialog {
             @Override
             public void actionPerformed(ActionEvent arg0) {
                 countID--;
+                System.out.println(countID);
                 int dRes = JOptionPane.showConfirmDialog(null,
                         "Do you want delete this stimul? ", nameTF.getText(),
                         JOptionPane.OK_CANCEL_OPTION);
@@ -263,32 +264,39 @@ public class ScenarioDialog extends JDialog {
                 if (f == JFileChooser.APPROVE_OPTION) {
                     File file = fc.getSelectedFile();
                     stimuls= importExportScenarios.load(file);
-                    int value = countID - stimuls.size();
-                    System.out.println(stimuls.size());
-                    System.out.println(value);
-                    if (value < 0){
-                        countID = stimuls.size();
-                        value = Math.abs(value);
-                        for (int i = 0; i < value+1; i++) {
+                    if (countID<(stimuls.size())) {
+                        for (; countID < stimuls.size(); countID++) {
                             boxPanel.add(scriptMain());
-                            System.out.println("JSEM TU");
-                            if (ScenarioDialog.this.getHeight() <= 500)ScenarioDialog.this.setSize(ScenarioDialog.this.getWidth(),ScenarioDialog.this.getHeight()+100);
+                            if (ScenarioDialog.this.getHeight() <= 500)
+                                ScenarioDialog.this.setSize(ScenarioDialog.this.getWidth(), ScenarioDialog.this.getHeight() + 100);
                             repaint();
                         }
-                    }else if (value > 0){
                         countID = stimuls.size();
-                        int v = value;
-                        for (int i = 0; i < value+1; i++){
-                            ItemJP.get(v).removeAll();
-                            ItemJP.remove(v);
-                            ScenarioDialog.this.setSize(ScenarioDialog.this.getWidth(), ScenarioDialog.this.getHeight() - 100);
-                            v--;
+                    }
+                    else if (stimuls.size()< countID) {
 
+                        for (; stimuls.size() < countID; countID--) {
+                            ItemJP.get(countID - 1).removeAll();
+                            ItemJP.remove(countID - 1);
+                            NamesTF.remove(countID - 1);
+                            Files1TF.remove(countID - 1);
+                            Files2TF.remove(countID - 1);
+                            ChooseFile1BT.remove(countID - 1);
+                            ChooseFile2BT.remove(countID - 1);
+                            RemoveBT.remove(countID - 1);
+                            DescTF.remove(countID - 1);
+                            ScenarioDialog.this.setSize(ScenarioDialog.this.getWidth(), ScenarioDialog.this.getHeight() - 100);
                         }
-                    for (int i = 0; i < NamesTF.size(); i++) {
+                        countID = stimuls.size();
+
+                    }
+
+                   for (int i = 0; i < NamesTF.size(); i++) {
                         NamesTF.get(i).setText(stimuls.get(i).name);
                         Files1TF.get(i).setText(stimuls.get(i).file1);
                         Files2TF.get(i).setText(stimuls.get(i).file2);
+                        DescTF.get(i).setText(stimuls.get(i).desc);
+                        fileTF.setText(file.getName().split("\\.")[0]);
                     }
                 }
 
@@ -297,7 +305,6 @@ public class ScenarioDialog extends JDialog {
 
                 }
 
-            }
         });
 
         optionPanel.add(Box.createRigidArea(new Dimension(10,0)));

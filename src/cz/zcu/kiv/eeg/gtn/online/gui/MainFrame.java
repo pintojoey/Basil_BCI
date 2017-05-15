@@ -592,44 +592,39 @@ public class MainFrame extends JFrame implements Observer {
 
     private void initProbabilities(double[] probabilities, int[] counts) {
         winnerJP.removeAll();
+        JLabel label;
+        JLabel label2;
         Integer[] ranks = new Integer[probabilities.length];
         for (int i = 0; i < ranks.length; ++i) {
             ranks[i] = i;
         }
         Comparator<Integer> gc = new ProbabilityComparator(probabilities);
         Arrays.sort(ranks, gc);
-        JLabel label = new JLabel();
-        JLabel label2;
 
         if (stimuls.get(ranks[0]).isImgFile1 == true) {
             ImageIcon icon = new ImageIcon(stimuls.get(ranks[0]).image1);
             Image image = icon.getImage(); // transform it
             Image newimg = image.getScaledInstance(200, 200,  Image.SCALE_SMOOTH);
             icon = new ImageIcon(newimg);
-            label2 = new JLabel(icon);
+            label = new JLabel(icon);
+            winnerJP.add(label,BorderLayout.CENTER);
+        }
+        else{
+            TextField textField = new TextField(stimuls.get(ranks[0]).getName());
+            winnerJP.add(textField,BorderLayout.CENTER);
+        }
+        if (stimuls.get(ranks[0]).isImgFile2 == true) {
+            ImageIcon icon2 = new ImageIcon(stimuls.get(ranks[0]).image1);
+            Image image = icon2.getImage(); // transform it
+            Image newimg = image.getScaledInstance(200, 200,  Image.SCALE_SMOOTH);
+            icon2 = new ImageIcon(newimg);
+            label2 = new JLabel(icon2);
             winnerJP.add(label2,BorderLayout.CENTER);
         }
         else{
             TextField textField = new TextField(stimuls.get(ranks[0]).getName());
-            winnerJP.add(textField);
-        }/*
-        try {
-            BufferedImage img = ImageIO.read(new File(stimuls.get(ranks[0]).url1));
-            ImageIcon icon = new ImageIcon(img);
-            Image image = icon.getImage(); // transform it
-
-            Image newimg = image.getScaledInstance(120, 120,  Image.SCALE_SMOOTH);
-            icon = new ImageIcon(newimg);
-            label2 = new JLabel(icon);
-            winnerJP.add(label2,BorderLayout.CENTER);
-        } catch (IOException e) {
-            TextField textField = new TextField(stimuls.get(ranks[0]).getName());
-            winnerJP.add(textField);
-            e.printStackTrace();
-        }*/
-
-        label.setText(stimuls.get(ranks[0]).getName());
-
+            winnerJP.add(textField,BorderLayout.CENTER);
+        }
 
         for (int i = 0; i < probabilities.length; i++) {
             data.setValueAt(probabilities[ranks[i]], i, 2);
@@ -637,7 +632,6 @@ public class MainFrame extends JFrame implements Observer {
             data.setValueAt(ranks[i] + 1, i, 0);
             data.setValueAt(counts[ranks[i]], i, 3);
         }
-        winnerJP.add( label, BorderLayout.CENTER );
         this.validate();
         this.repaint();
     }

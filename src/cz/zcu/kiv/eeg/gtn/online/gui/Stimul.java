@@ -19,6 +19,7 @@ public class Stimul {
     boolean isImgFile2=false;
 
     Image image1;
+    Image image2;
 
     public Stimul(int id, String name, String url1, String url2, String description) {
         this.id = id;
@@ -41,6 +42,20 @@ public class Stimul {
         } catch(IOException ex) {
             isImgFile1 = false;
             System.out.println("The file"+url1+"could not be opened , an error occurred.");
+        }
+        try {
+            Image image2 = ImageIO.read(new File(url2));
+            if (image2 == null) {
+                isImgFile2 = false;
+                System.out.println("The file"+url2+"could not be opened , it is not an image");
+            }
+            else{
+                this.image2=image2;
+                isImgFile2=true;
+            }
+        } catch(IOException ex) {
+            isImgFile2 = false;
+            System.out.println("The file"+url2+"could not be opened , an error occurred.");
         }
 
     }

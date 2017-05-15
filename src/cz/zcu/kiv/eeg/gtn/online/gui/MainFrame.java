@@ -15,7 +15,6 @@ import cz.zcu.kiv.eeg.gtn.utils.ColorUtils;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.AbstractTableModel;
@@ -27,7 +26,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -603,8 +601,20 @@ public class MainFrame extends JFrame implements Observer {
         JLabel label = new JLabel();
         JLabel label2;
 
+        if (stimuls.get(ranks[0]).isImgFile1 == true) {
+            ImageIcon icon = new ImageIcon(stimuls.get(ranks[0]).image1);
+            Image image = icon.getImage(); // transform it
+            Image newimg = image.getScaledInstance(200, 200,  Image.SCALE_SMOOTH);
+            icon = new ImageIcon(newimg);
+            label2 = new JLabel(icon);
+            winnerJP.add(label2,BorderLayout.CENTER);
+        }
+        else{
+            TextField textField = new TextField(stimuls.get(ranks[0]).getName());
+            winnerJP.add(textField);
+        }/*
         try {
-            BufferedImage img = ImageIO.read(new File(stimuls.get(ranks[0]).file1));
+            BufferedImage img = ImageIO.read(new File(stimuls.get(ranks[0]).url1));
             ImageIcon icon = new ImageIcon(img);
             Image image = icon.getImage(); // transform it
             Image newimg = image.getScaledInstance(120, 120,  Image.SCALE_SMOOTH);
@@ -612,8 +622,10 @@ public class MainFrame extends JFrame implements Observer {
             label2 = new JLabel(icon);
             winnerJP.add(label2,BorderLayout.CENTER);
         } catch (IOException e) {
+            TextField textField = new TextField(stimuls.get(ranks[0]).getName());
+            winnerJP.add(textField);
             e.printStackTrace();
-        }
+        }*/
 
         label.setText(stimuls.get(ranks[0]).getName());
 
@@ -639,7 +651,8 @@ public class MainFrame extends JFrame implements Observer {
             initProbabilities(probabilities, counts);
 
             this.epochCharts.update(((OnlineDetection) message).getPzAvg());
-        } /*
+        }
+        /*
          * else { log.error(MainFrame.class.toString() +
          * ": Expencted online detection, but received something else."); throw
          * new IllegalArgumentException(
@@ -932,6 +945,9 @@ public class MainFrame extends JFrame implements Observer {
     }
     public void setStimuls(ArrayList<Stimul> stimuls) {
         this.stimuls = stimuls;
+        for (int i = 0; i < stimuls.size(); i++) {
+            stimuls.get(i).loadImages();
+        }
         this.setLayout(new BorderLayout());
 
         getContentPane().removeAll();

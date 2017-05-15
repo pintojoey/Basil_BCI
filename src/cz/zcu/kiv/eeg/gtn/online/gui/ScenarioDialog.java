@@ -293,9 +293,9 @@ public class ScenarioDialog extends JDialog {
 
                    for (int i = 0; i < NamesTF.size(); i++) {
                         NamesTF.get(i).setText(stimuls.get(i).name);
-                        Files1TF.get(i).setText(stimuls.get(i).file1);
-                        Files2TF.get(i).setText(stimuls.get(i).file2);
-                        DescTF.get(i).setText(stimuls.get(i).desc);
+                        Files1TF.get(i).setText(stimuls.get(i).url1);
+                        Files2TF.get(i).setText(stimuls.get(i).url2);
+                        DescTF.get(i).setText(stimuls.get(i).description);
                         fileTF.setText(file.getName().split("\\.")[0]);
                     }
                 }

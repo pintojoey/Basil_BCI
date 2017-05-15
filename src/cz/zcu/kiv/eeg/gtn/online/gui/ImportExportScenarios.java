@@ -76,12 +76,12 @@ public class ImportExportScenarios {
                 mainElement.appendChild(itemName);
 
                 org.w3c.dom.Text elementFile1 =  xmlDoc.createTextNode(url1);
-                Element itemFile1 = xmlDoc.createElement("file1");
+                Element itemFile1 = xmlDoc.createElement("url1");
                 itemFile1.appendChild(elementFile1);
                 mainElement.appendChild(itemFile1);
 
                 org.w3c.dom.Text elementFile2 =  xmlDoc.createTextNode(url2);
-                Element itemFile2 = xmlDoc.createElement("file2");
+                Element itemFile2 = xmlDoc.createElement("url2");
                 itemFile2.appendChild(elementFile2);
                 mainElement.appendChild(itemFile2);
 
@@ -160,8 +160,8 @@ public class ImportExportScenarios {
                     Element eElement = (Element) nNode;
 
                     name = eElement.getElementsByTagName("name").item(0).getTextContent();
-                    file1 = eElement.getElementsByTagName("file1").item(0).getTextContent();
-                    file2 = eElement.getElementsByTagName("file2").item(0).getTextContent();
+                    file1 = eElement.getElementsByTagName("url1").item(0).getTextContent();
+                    file2 = eElement.getElementsByTagName("url2").item(0).getTextContent();
                     desc = eElement.getElementsByTagName("description").item(0).getTextContent();
 
                     Stimul stimul = new Stimul(temp+1,name,file1,file2,desc);

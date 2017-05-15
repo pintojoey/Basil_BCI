@@ -17,7 +17,7 @@ import static javax.swing.JOptionPane.showMessageDialog;
 public class ScenarioDialog extends JDialog {
     MainFrame mf;
     StimuliTableModel stm;
-    JFrame scriptFrame;
+    JFrame scenarioFrame;
     ImportExportScenarios importExportScenarios = new ImportExportScenarios();
     private int id = 1;
     private int countID = 0;
@@ -31,7 +31,7 @@ public class ScenarioDialog extends JDialog {
     ArrayList<JButton> RemoveBT = new ArrayList<>();
     ArrayList<JPanel> ItemJP = new ArrayList<>();
     private JScrollPane sP;
-    private JPanel scriptPanel;
+    private JPanel scenarioPanel;
     private JPanel boxPanel;
     String scenarioName;
     TextField fileTF;
@@ -42,36 +42,36 @@ public class ScenarioDialog extends JDialog {
         this.mf=frame;
     }
     public void createDialog(JFrame frame){
-        this.scriptFrame = frame;
+        this.scenarioFrame = frame;
         this.setModal(true);
-        this.setTitle("Script menu");
-        this.getContentPane().add(createScriptPanel());
+        this.setTitle("Scenario menu");
+        this.getContentPane().add(createScenarioPanel());
         this.setMinimumSize(new Dimension(420,280));
         this.pack();
         this.setLocationRelativeTo(null);
         this.setVisible(true);
     }
 
-    private JPanel createScriptPanel(){
+    private JPanel createScenarioPanel(){
 
-        scriptPanel = new JPanel();
-        scriptPanel.setLayout(new BorderLayout());
+        scenarioPanel = new JPanel();
+        scenarioPanel.setLayout(new BorderLayout());
 
         boxPanel = new JPanel();
         boxPanel.setLayout(new BoxLayout(boxPanel,BoxLayout.PAGE_AXIS));
-        boxPanel.add(scriptMain(),BorderLayout.CENTER);
-        boxPanel.add(scriptMain(),BorderLayout.CENTER);
+        boxPanel.add(scenarioMain(),BorderLayout.CENTER);
+        boxPanel.add(scenarioMain(),BorderLayout.CENTER);
         sP = new JScrollPane(boxPanel);
-        scriptPanel.add(sP,BorderLayout.CENTER);
-        scriptPanel.add(scriptOption(),BorderLayout.PAGE_END);
+        scenarioPanel.add(sP,BorderLayout.CENTER);
+        scenarioPanel.add(scenarioOption(),BorderLayout.PAGE_END);
 
-       return scriptPanel;
+       return scenarioPanel;
 
 
     }
 
 
-    private JPanel scriptMain(){
+    private JPanel scenarioMain(){
         GridBagLayout gb = new GridBagLayout();
         GridBagConstraints g = new GridBagConstraints();
         final JPanel itemJP = new JPanel(gb);
@@ -195,7 +195,7 @@ public class ScenarioDialog extends JDialog {
         g.gridx = 0;
         itemJP.add(new JSeparator(JSeparator.HORIZONTAL),g);
 
-        scriptPanel.revalidate();
+        scenarioPanel.revalidate();
         ItemJP.add(itemJP);
         return itemJP;
     }
@@ -207,7 +207,7 @@ public class ScenarioDialog extends JDialog {
         return idText;
     }
 
-    private JPanel scriptOption(){
+    private JPanel scenarioOption(){
         JPanel optionPanel = new JPanel();
         optionPanel.setLayout(new BoxLayout(optionPanel,BoxLayout.LINE_AXIS));
 
@@ -221,7 +221,7 @@ public class ScenarioDialog extends JDialog {
         addBT.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                boxPanel.add(scriptMain());
+                boxPanel.add(scenarioMain());
                 if (ScenarioDialog.this.getHeight() <= 500)ScenarioDialog.this.setSize(ScenarioDialog.this.getWidth(),ScenarioDialog.this.getHeight()+100);
             }
         });
@@ -269,7 +269,7 @@ public class ScenarioDialog extends JDialog {
                     stimuls= importExportScenarios.load(file);
                     if (countID<(stimuls.size())) {
                         for (; countID < stimuls.size(); countID++) {
-                            boxPanel.add(scriptMain());
+                            boxPanel.add(scenarioMain());
                             if (ScenarioDialog.this.getHeight() <= 500)
                                 ScenarioDialog.this.setSize(ScenarioDialog.this.getWidth(), ScenarioDialog.this.getHeight() + 100);
                             repaint();

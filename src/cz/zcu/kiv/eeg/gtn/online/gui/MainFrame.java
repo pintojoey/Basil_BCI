@@ -487,10 +487,10 @@ public class MainFrame extends JFrame implements Observer {
             }
         });
 
-        JMenuItem addScript = new JMenuItem("New Script");
-        addScript.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
+        JMenuItem addScenario = new JMenuItem("New Scenario");
+        addScenario.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
                 ActionEvent.CTRL_MASK));
-        addScript.addActionListener(new ActionListener() {
+        addScenario.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -508,7 +508,7 @@ public class MainFrame extends JFrame implements Observer {
         fileMenu.add(testAllMenuItem);
         fileMenu.add(loadConfigAndClassifierItem);
         fileMenu.add(chartMenuItem);
-        fileMenu.add(addScript);
+        fileMenu.add(addScenario);
         fileMenu.addSeparator();
         fileMenu.add(endMenuItem);
 
@@ -617,6 +617,7 @@ public class MainFrame extends JFrame implements Observer {
             BufferedImage img = ImageIO.read(new File(stimuls.get(ranks[0]).url1));
             ImageIcon icon = new ImageIcon(img);
             Image image = icon.getImage(); // transform it
+
             Image newimg = image.getScaledInstance(120, 120,  Image.SCALE_SMOOTH);
             icon = new ImageIcon(newimg);
             label2 = new JLabel(icon);

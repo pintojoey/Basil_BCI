@@ -76,7 +76,7 @@ public class ScenarioDialog extends JDialog {
         GridBagConstraints g = new GridBagConstraints();
         final JPanel itemJP = new JPanel(gb);
 
-        String p = setID();
+        String p = ""+ItemJP.size();
 
         final JLabel idLabel = new JLabel(p);
 
@@ -130,6 +130,7 @@ public class ScenarioDialog extends JDialog {
         removeBT.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent arg0) {
+                countID = ItemJP.size();
                 countID--;
                 System.out.println(countID);
                 int dRes = JOptionPane.showConfirmDialog(null,
@@ -144,6 +145,7 @@ public class ScenarioDialog extends JDialog {
                     } else {
 
                         itemJP.removeAll();
+                        ItemJP.remove(countID-1);
                         NamesTF.remove(countID-1);
                         Files1TF.remove(countID-1);
                         Files2TF.remove(countID-1);
@@ -255,6 +257,7 @@ public class ScenarioDialog extends JDialog {
         importBT.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                countID = ItemJP.size();
                 FileNameExtensionFilter filter = new FileNameExtensionFilter("XML Files","xml");
                 JFileChooser fc = new JFileChooser();
                 fc.setFileFilter(filter);
@@ -276,8 +279,8 @@ public class ScenarioDialog extends JDialog {
                     else if (stimuls.size()< countID) {
 
                         for (; stimuls.size() < countID; countID--) {
-                            ItemJP.get(countID - 1).removeAll();
-                            ItemJP.remove(countID - 1);
+                            ItemJP.get(countID-1).removeAll();
+                            ItemJP.remove(countID-1);
                             NamesTF.remove(countID - 1);
                             Files1TF.remove(countID - 1);
                             Files2TF.remove(countID - 1);
@@ -286,6 +289,7 @@ public class ScenarioDialog extends JDialog {
                             RemoveBT.remove(countID - 1);
                             DescTF.remove(countID - 1);
                             ScenarioDialog.this.setSize(ScenarioDialog.this.getWidth(), ScenarioDialog.this.getHeight() - 100);
+                            repaint();
                         }
                         countID = stimuls.size();
 

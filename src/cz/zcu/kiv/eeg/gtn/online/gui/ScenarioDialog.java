@@ -25,6 +25,7 @@ public class ScenarioDialog extends JDialog {
     ArrayList<TextField>NamesTF = new ArrayList<>();
     ArrayList<TextField>Files1TF = new ArrayList<>();
     ArrayList<TextField>Files2TF = new ArrayList<>();
+    ArrayList<TextField>DescTF = new ArrayList<>();
     ArrayList<JButton> ChooseFile1BT = new ArrayList<>();
     ArrayList<JButton> ChooseFile2BT = new ArrayList<>();
     ArrayList<JButton> RemoveBT = new ArrayList<>();
@@ -80,12 +81,12 @@ public class ScenarioDialog extends JDialog {
         final JLabel idLabel = new JLabel(p);
 
         final TextField nameTF = new TextField(10);
-
+        final TextField descTF = new TextField(10);
         final TextField file1TF = new TextField(15);
         final TextField file2TF = new TextField(15);
 
         JButton chooseFile2BT = new JButton("Choose a file");
-        JButton chooseFile1BT = new JButton("Choose a file");
+        final JButton chooseFile1BT = new JButton("Choose a file");
 
         JButton removeBT = new JButton("Remove");
 
@@ -100,6 +101,7 @@ public class ScenarioDialog extends JDialog {
 
         RemoveBT.add(removeBT);
 
+        DescTF.add(descTF);
 
         chooseFile1BT.addActionListener(new ActionListener(){
             @Override
@@ -141,6 +143,13 @@ public class ScenarioDialog extends JDialog {
                     } else {
 
                         itemJP.removeAll();
+                        NamesTF.remove(countID-1);
+                        Files1TF.remove(countID-1);
+                        Files2TF.remove(countID-1);
+                        ChooseFile1BT.remove(countID-1);
+                        ChooseFile2BT.remove(countID-1);
+                        RemoveBT.remove(countID-1);
+                        DescTF.remove(countID-1);
                         ScenarioDialog.this.setSize(ScenarioDialog.this.getWidth(), ScenarioDialog.this.getHeight() - 100);
                     }
                 }
@@ -159,6 +168,11 @@ public class ScenarioDialog extends JDialog {
         itemJP.add(idLabel,g);
         g.gridx = 1;
         itemJP.add(nameTF,g);
+        g.gridy = 2;
+        itemJP.add(new JLabel("Description"),g);
+        g.gridy = 3;
+        itemJP.add(descTF,g);
+        g.gridy = 1;
         g.gridx = 2;
         itemJP.add(file1TF,g);
         g.gridx = 3;
@@ -228,7 +242,7 @@ public class ScenarioDialog extends JDialog {
                 }
                 else{
                     importExportScenarios.setConfigName(scenarioName);
-                    stimuls= importExportScenarios.save(NamesTF,Files1TF,Files2TF);
+                    stimuls= importExportScenarios.save(NamesTF,Files1TF,Files2TF,DescTF);
                     mf.setStimuls(stimuls);
                     ScenarioDialog.this.dispose();
                 }
@@ -249,32 +263,37 @@ public class ScenarioDialog extends JDialog {
                 if (f == JFileChooser.APPROVE_OPTION) {
                     File file = fc.getSelectedFile();
                     stimuls= importExportScenarios.load(file);
+                    int value = countID - stimuls.size();
+                    System.out.println(stimuls.size());
+                    System.out.println(value);
+                    if (value < 0){
+                        countID = stimuls.size();
+                        value = Math.abs(value);
+                        for (int i = 0; i < value+1; i++) {
+                            boxPanel.add(scriptMain());
+                            System.out.println("JSEM TU");
+                            if (ScenarioDialog.this.getHeight() <= 500)ScenarioDialog.this.setSize(ScenarioDialog.this.getWidth(),ScenarioDialog.this.getHeight()+100);
+                            repaint();
+                        }
+                    }else if (value > 0){
+                        countID = stimuls.size();
+                        int v = value;
+                        for (int i = 0; i < value+1; i++){
+                            ItemJP.get(v).removeAll();
+                            ItemJP.remove(v);
+                            ScenarioDialog.this.setSize(ScenarioDialog.this.getWidth(), ScenarioDialog.this.getHeight() - 100);
+                            v--;
+
+                        }
                     for (int i = 0; i < NamesTF.size(); i++) {
-                      NamesTF.get(i).setText(stimuls.get(i).name);
-                      Files1TF.get(i).setText(stimuls.get(i).file1);
-                      Files2TF.get(i).setText(stimuls.get(i).file2);
+                        NamesTF.get(i).setText(stimuls.get(i).name);
+                        Files1TF.get(i).setText(stimuls.get(i).file1);
+                        Files2TF.get(i).setText(stimuls.get(i).file2);
                     }
                 }
-                int value = countID - stimuls.size();
-                System.out.println(stimuls.size());
-                System.out.println(value);
-                if (value < 0){
-                    countID = stimuls.size();
-                    for (int i = 0; i < value+1; i++) {
-                        boxPanel.add(scriptMain());
-                        if (ScenarioDialog.this.getHeight() <= 500)ScenarioDialog.this.setSize(ScenarioDialog.this.getWidth(),ScenarioDialog.this.getHeight()+100);
-                        repaint();
-                    }
-                }else if (value > 0){
-                    countID = stimuls.size();
-                    int v = value;
-                    for (int i = 0; i < value+1; i++){
-                        ItemJP.get(v).removeAll();
-                        ItemJP.remove(v);
-                        ScenarioDialog.this.setSize(ScenarioDialog.this.getWidth(), ScenarioDialog.this.getHeight() - 100);
-                        v--;
 
-                    }
+
+
 
                 }
 

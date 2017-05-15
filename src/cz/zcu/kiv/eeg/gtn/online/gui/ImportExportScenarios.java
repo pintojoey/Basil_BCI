@@ -24,7 +24,7 @@ public class ImportExportScenarios {
 
 
     //Osetrit, kdy to vrati stimuls a kdy to vrati null
-    public static ArrayList<Stimul> save(ArrayList<TextField> names, ArrayList<TextField>files1, ArrayList<TextField>files2)
+    public static ArrayList<Stimul> save(ArrayList<TextField> names, ArrayList<TextField>files1, ArrayList<TextField>files2,ArrayList<TextField>desc)
     {
         //configName = "new";
         stimuls = new ArrayList<>();
@@ -53,8 +53,9 @@ public class ImportExportScenarios {
                 String name =names.get(i).getText();
                 String url1 =files1.get(i).getText();
                 String url2 =files2.get(i).getText();
+                String descrip = desc.get(i).getText();
 
-                Stimul stimul = new Stimul(i+1,name,url1,url2);
+                Stimul stimul = new Stimul(i+1,name,url1,url2,descrip);
                 stimuls.add(i,stimul);
 
                 File file1= new File(url1);
@@ -83,6 +84,11 @@ public class ImportExportScenarios {
                 Element itemFile2 = xmlDoc.createElement("file2");
                 itemFile2.appendChild(elementFile2);
                 mainElement.appendChild(itemFile2);
+
+                org.w3c.dom.Text elementDescription =  xmlDoc.createTextNode(descrip);
+                Element itemDescription = xmlDoc.createElement("description");
+                itemDescription.appendChild(elementDescription);
+                mainElement.appendChild(itemDescription);
 
                 rootElement.appendChild(mainElement);
 
@@ -138,6 +144,7 @@ public class ImportExportScenarios {
         String name = null;
         String file1 = null;
         String file2 = null;
+        String desc = null;
         try {
             File inputFile = new File(String.valueOf(file));
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -152,13 +159,12 @@ public class ImportExportScenarios {
                 if (nNode.getNodeType() == org.w3c.dom.Node.ELEMENT_NODE) {
                     Element eElement = (Element) nNode;
 
-                    String id = eElement.getAttribute("id");
-
                     name = eElement.getElementsByTagName("name").item(0).getTextContent();
                     file1 = eElement.getElementsByTagName("file1").item(0).getTextContent();
                     file2 = eElement.getElementsByTagName("file2").item(0).getTextContent();
+                    desc = eElement.getElementsByTagName("description").item(0).getTextContent();
 
-                    Stimul stimul = new Stimul(temp+1,name,file1,file2);
+                    Stimul stimul = new Stimul(temp+1,name,file1,file2,desc);
                     stimuls.add(temp,stimul);
                 }
             }

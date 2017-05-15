@@ -84,6 +84,7 @@ public class MainFrame extends JFrame implements Observer {
     private String configurationFile;
 
     private final SetupDialogContent content = new SetupDialogContent();
+    private boolean existScenario = false;
 
     public MainFrame() {
         super(Const.APP_NAME);
@@ -496,7 +497,6 @@ public class MainFrame extends JFrame implements Observer {
             public void actionPerformed(ActionEvent e) {
                 ScenarioDialog sd = new ScenarioDialog(mf);
                 sd.createDialog(mf);
-                //mf.getContentPane().add(createStatusBar(), BorderLayout.SOUTH);
                 revalidate();
 
             }
@@ -797,9 +797,12 @@ public class MainFrame extends JFrame implements Observer {
 
         @Override
         public void actionPerformed(ActionEvent actionevent) {
-            if (!isTrained()) {
+            if (!isExistScenario()) {
+                scenarioDialog();
+
+            }else if (!isTrained()){
                 trainingDialog();
-            } else {
+            }else {
                 initGui();
                 chooser = new JFileChooser();
                 FileNameExtensionFilter filter = new FileNameExtensionFilter(
@@ -842,9 +845,14 @@ public class MainFrame extends JFrame implements Observer {
 
         @Override
         public void actionPerformed(ActionEvent actionevent) {
-            if (!isTrained()) {
+            if (!isExistScenario()) {
+                scenarioDialog();
+
+            }else if (!isTrained()){
                 trainingDialog();
-            } else {
+            }
+            else
+                {
                 initGui();
 
                 //SetupDialogContent content = new SetupDialogContent();
@@ -921,7 +929,10 @@ public class MainFrame extends JFrame implements Observer {
         @Override
         public void actionPerformed(ActionEvent e) {
 
-            if (!isTrained()) {
+            if (!isExistScenario()) {
+                scenarioDialog();
+
+            }else if (!isTrained()){
                 trainingDialog();
             } else {
                 try {
@@ -955,5 +966,30 @@ public class MainFrame extends JFrame implements Observer {
             data.setValueAt(stimuls.get(i).getName(),i,1);
 
         }
+    }
+
+    public boolean isExistScenario() {
+        return existScenario;
+    }
+
+    public void setExistScenario(boolean existScenario) {
+        this.existScenario = existScenario;
+    }
+
+    private void scenarioDialog() {
+        if (isExistScenario() == false) {
+            int dialogResult = JOptionPane.showConfirmDialog(null,
+                    "You have to create stimuls scenario",
+                    "Scenario is not created", JOptionPane.OK_CANCEL_OPTION);
+            if (dialogResult == JOptionPane.OK_OPTION) {
+                ScenarioDialog sd = new ScenarioDialog(this);
+                sd.createDialog(this);
+                revalidate();
+                }
+            } else {
+                JOptionPane.showMessageDialog(this,
+                        "You have to create stimuls scenario first", "Error",
+                        JOptionPane.ERROR_MESSAGE);
+            }
     }
 }

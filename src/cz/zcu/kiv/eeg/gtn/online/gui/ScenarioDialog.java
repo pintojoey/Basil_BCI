@@ -238,17 +238,12 @@ public class ScenarioDialog extends JDialog {
             public void actionPerformed(ActionEvent e) {
                 scenarioName = fileTF.getText().toString();
                 System.out.println(fileTF.getText());
-                if(fileTF.getText()==""){
-                    showMessageDialog(ScenarioDialog.this,
-                            "Scenario does not have name!", "Error",
-                            JOptionPane.ERROR_MESSAGE);
-                }
-                else{
-                    importExportScenarios.setConfigName(scenarioName);
-                    stimuls= importExportScenarios.save(NamesTF,Files1TF,Files2TF,DescTF);
-                    mf.setStimuls(stimuls);
-                    ScenarioDialog.this.dispose();
-                }
+                importExportScenarios.setConfigName(scenarioName);
+                stimuls= importExportScenarios.save(NamesTF,Files1TF,Files2TF,DescTF);
+                mf.setStimuls(stimuls);
+                boolean created = true;
+                mf.setExistScenario(created);
+                ScenarioDialog.this.dispose();
 
 
             }
@@ -300,7 +295,7 @@ public class ScenarioDialog extends JDialog {
                         Files1TF.get(i).setText(stimuls.get(i).url1);
                         Files2TF.get(i).setText(stimuls.get(i).url2);
                         DescTF.get(i).setText(stimuls.get(i).description);
-                        fileTF.setText(file.getName().split("\\.")[0]);
+                        fileTF.setText(file.getName().split("\\.xml")[0]);
                     }
                 }
 

@@ -28,7 +28,9 @@ public class ImportExportScenarios {
     {
         //configName = "new";
         stimuls = new ArrayList<>();
-
+        if (configName.equals("")){
+            configName="Unnamed";
+        }
         File file = new File("configs/"+ configName);
         if (!file.exists()) {
             if (file.mkdir()) {
@@ -39,10 +41,12 @@ public class ImportExportScenarios {
                 System.out.println("Failed to create directory!");
             }
         }else {
-            System.out.println("The name of directory is existing!");
+            System.out.println("Directory is exist!");
+
         }
 
         try {
+
             DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
             Document xmlDoc = docBuilder.newDocument();

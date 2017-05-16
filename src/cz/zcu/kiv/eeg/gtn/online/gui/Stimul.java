@@ -6,7 +6,7 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * Created by Marek on 4. 4. 2017.
+ * Reprezentuje jednotlivý stimul s potřebnými atributy
  */
 public class Stimul {
     int id;
@@ -15,12 +15,21 @@ public class Stimul {
     String url2;
     String description;
 
-    boolean isImgFile1=false;
-    boolean isImgFile2=false;
+    boolean isImgFile1 = false;
+    boolean isImgFile2 = false;
 
     Image image1;
     Image image2;
 
+    /**
+     * Konstruktor třídy Stimul
+     *
+     * @param id          - id stimulu
+     * @param name        - název stimulu
+     * @param url1        - adresa k souboru 1
+     * @param url2        - adresa k souboru 2
+     * @param description - popis stimulu
+     */
     public Stimul(int id, String name, String url1, String url2, String description) {
         this.id = id;
         this.name = name;
@@ -28,34 +37,33 @@ public class Stimul {
         this.url2 = url2;
         this.description = description;
     }
+
+    /**
+     * Načítání obrázků
+     * Zjištování, zda je soubor obrázek
+     */
     public void loadImages() {
         try {
             Image image = ImageIO.read(new File(url1));
             if (image == null) {
                 isImgFile1 = false;
-               // System.out.println("The file"+url1+"could not be opened , it is not an image");
+            } else {
+                this.image1 = image;
+                isImgFile1 = true;
             }
-            else{
-                this.image1=image;
-                isImgFile1=true;
-            }
-        } catch(IOException ex) {
+        } catch (IOException ex) {
             isImgFile1 = false;
-           // System.out.println("The file"+url1+"could not be opened , an error occurred.");
         }
         try {
             Image image2 = ImageIO.read(new File(url2));
             if (image2 == null) {
                 isImgFile2 = false;
-              //  System.out.println("The file"+url2+"could not be opened , it is not an image");
+            } else {
+                this.image2 = image2;
+                isImgFile2 = true;
             }
-            else{
-                this.image2=image2;
-                isImgFile2=true;
-            }
-        } catch(IOException ex) {
+        } catch (IOException ex) {
             isImgFile2 = false;
-           // System.out.println("The file"+url2+"could not be opened , an error occurred.");
         }
 
     }
@@ -69,14 +77,8 @@ public class Stimul {
         return name;
     }
 
-    public String getUrl1() {
-        return url1;
+    public String getDescription() {
+        return description;
     }
-
-    public String getUrl2() {
-        return url2;
-    }
-
-    public String getDescription() {return description;}
 
 }

@@ -15,18 +15,22 @@ import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 
 /**
- * Created by Marek on 4. 4. 2017.
+ * Ukládání a načítání soborů s nastavením
  */
 public class ImportExportScenarios {
     private static String configName;
     private static ArrayList<Stimul> stimuls;
 
-
-
-    //Osetrit, kdy to vrati stimuls a kdy to vrati null
+    /**
+     * Ukládání do Xml soboru a vytvoření nového adresáře
+     * @param names - název stimulu
+     * @param files1 - adresa k souboru 1
+     * @param files2 - adresa k souboru 2
+     * @param desc - popis stimulu
+     * @return
+     */
     public static ArrayList<Stimul> save(ArrayList<TextField> names, ArrayList<TextField>files1, ArrayList<TextField>files2,ArrayList<TextField>desc)
     {
-        //configName = "new";
         stimuls = new ArrayList<>();
         if (configName.equals("")){
             configName="Unnamed";
@@ -119,6 +123,13 @@ public class ImportExportScenarios {
         }
         return stimuls;
     }
+
+    /**
+     * Překopírování souborů do adresáře
+     * @param sourceFile - původní soubor
+     * @param destFile - překopírovaný soubor
+     * @throws IOException
+     */
     private static void copyFile(File sourceFile, File destFile)throws IOException {
         if (!sourceFile.exists()) {
             return;
@@ -142,6 +153,11 @@ public class ImportExportScenarios {
 
     }
 
+    /**
+     * Načítání nastavení ze souboru
+     * @param file - vstupní soubor formátu xml
+     * @return - stimuly načtené ze souboru
+     */
     public ArrayList<Stimul> load(File file)
     {    ArrayList<Stimul>stimuls = new ArrayList<>();
 
@@ -180,7 +196,10 @@ public class ImportExportScenarios {
         return stimuls;
     }
 
-
+    /**
+     * Nastavení názvu soboru a adresáře
+     * @param configName - uživatelem zadaný název
+     */
     public static void setConfigName(String configName) {
         ImportExportScenarios.configName = configName;
     }

@@ -13,6 +13,8 @@ import static javax.swing.JOptionPane.showMessageDialog;
 
 /**
  * Created by Jamape on 16.03.2017.
+ * Trida pro vytvoreni dialogoveho okna,
+ * ktere slouzi pro tvorbu scenaru
  */
 public class ScenarioDialog extends JDialog {
     MainFrame mf;
@@ -36,11 +38,20 @@ public class ScenarioDialog extends JDialog {
     String scenarioName;
     TextField fileTF;
 
+    /**
+     * Konstruktor
+     * @param frame
+     */
 
     public ScenarioDialog(MainFrame frame) {
         super(frame);
         this.mf=frame;
     }
+
+    /**
+     * Vytvoreni okna
+     * @param frame JFrame
+     */
     public void createDialog(JFrame frame){
         this.scenarioFrame = frame;
         this.setModal(true);
@@ -52,6 +63,10 @@ public class ScenarioDialog extends JDialog {
         this.setVisible(true);
     }
 
+    /**
+     * Vytvori panel s komponentami
+     * @return panel s pozadovanym poctem stimul panelu a ovladacim panelem
+     */
     private JPanel createScenarioPanel(){
 
         scenarioPanel = new JPanel();
@@ -70,7 +85,10 @@ public class ScenarioDialog extends JDialog {
 
     }
 
-
+    /**
+     * JPanel, ktery slouzi jako jeden samotny stimul
+     * @return panel s komponentami pro parametry stimulu a jeho manipulaci
+     */
     private JPanel scenarioMain(){
         GridBagLayout gb = new GridBagLayout();
         GridBagConstraints g = new GridBagConstraints();
@@ -200,13 +218,10 @@ public class ScenarioDialog extends JDialog {
         return itemJP;
     }
 
-    private String setID(){
-        String idText = Integer.toString(id);
-        id++;
-        countID++;
-        return idText;
-    }
-
+    /**
+     * Ovladaci panel scenare
+     * @return JPanel s ovladanim
+     */
     private JPanel scenarioOption(){
         JPanel optionPanel = new JPanel();
         optionPanel.setLayout(new BoxLayout(optionPanel,BoxLayout.LINE_AXIS));

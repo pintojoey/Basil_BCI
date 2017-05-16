@@ -952,6 +952,11 @@ public class MainFrame extends JFrame implements Observer {
         }
 
     }
+
+    /**
+     * Nastavení aktuálníh stimulů
+     * @param stimuls - stimuly
+     */
     public void setStimuls(ArrayList<Stimul> stimuls) {
         this.stimuls = stimuls;
         for (int i = 0; i < stimuls.size(); i++) {
@@ -979,6 +984,9 @@ public class MainFrame extends JFrame implements Observer {
         this.existScenario = existScenario;
     }
 
+    /**
+     * Ošetření pokud není vytvořený scénář
+     */
     private void scenarioDialog() {
         if (isExistScenario() == false) {
             int dialogResult = JOptionPane.showConfirmDialog(null,

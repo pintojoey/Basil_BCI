@@ -33,7 +33,7 @@ public class Stimul {
             Image image = ImageIO.read(new File(url1));
             if (image == null) {
                 isImgFile1 = false;
-                System.out.println("The file"+url1+"could not be opened , it is not an image");
+               // System.out.println("The file"+url1+"could not be opened , it is not an image");
             }
             else{
                 this.image1=image;
@@ -41,13 +41,13 @@ public class Stimul {
             }
         } catch(IOException ex) {
             isImgFile1 = false;
-            System.out.println("The file"+url1+"could not be opened , an error occurred.");
+           // System.out.println("The file"+url1+"could not be opened , an error occurred.");
         }
         try {
             Image image2 = ImageIO.read(new File(url2));
             if (image2 == null) {
                 isImgFile2 = false;
-                System.out.println("The file"+url2+"could not be opened , it is not an image");
+              //  System.out.println("The file"+url2+"could not be opened , it is not an image");
             }
             else{
                 this.image2=image2;
@@ -55,7 +55,7 @@ public class Stimul {
             }
         } catch(IOException ex) {
             isImgFile2 = false;
-            System.out.println("The file"+url2+"could not be opened , an error occurred.");
+           // System.out.println("The file"+url2+"could not be opened , an error occurred.");
         }
 
     }

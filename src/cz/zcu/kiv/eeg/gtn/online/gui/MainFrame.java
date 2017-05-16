@@ -591,6 +591,8 @@ public class MainFrame extends JFrame implements Observer {
     }
 
     private void initProbabilities(double[] probabilities, int[] counts) {
+        System.out.println(probabilities.length);
+        System.out.println(counts.length);
         winnerJP.removeAll();
         JLabel label;
         JLabel label2;
@@ -814,7 +816,7 @@ public class MainFrame extends JFrame implements Observer {
                 int i = chooser.showDialog(mainFrame, "Open");
                 if (i == 0) {
                     eegFile = chooser.getSelectedFile();
-                    detection = new OnlineDetection(classifier, mainFrame);
+                    detection = new OnlineDetection(classifier, mainFrame,stimuls.size());
                     stopRunningThread();
 
                     try {
@@ -890,7 +892,8 @@ public class MainFrame extends JFrame implements Observer {
                 if (isOk) {
                     stopRunningThread();
 
-                    detection = new OnlineDetection(classifier, mainFrame);
+                    detection = new OnlineDetection(classifier, mainFrame,stimuls.size());
+
                     try {
                         dp = new OnLineDataProvider(recorderIPAddress, port,
                                 detection);

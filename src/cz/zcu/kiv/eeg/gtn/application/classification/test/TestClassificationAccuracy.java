@@ -1,5 +1,16 @@
 package cz.zcu.kiv.eeg.gtn.application.classification.test;
 
+import cz.zcu.kiv.eeg.gtn.Const;
+import cz.zcu.kiv.eeg.gtn.application.classification.IERPClassifier;
+import cz.zcu.kiv.eeg.gtn.application.classification.MLPClassifier;
+import cz.zcu.kiv.eeg.gtn.application.featureextraction.IFeatureExtraction;
+import cz.zcu.kiv.eeg.gtn.application.featureextraction.WaveletTransformFeatureExtraction;
+import cz.zcu.kiv.eeg.gtn.online.app.DataObjects.MessageType;
+import cz.zcu.kiv.eeg.gtn.online.app.DataObjects.ObserverMessage;
+import cz.zcu.kiv.eeg.gtn.online.app.OffLineDataProvider;
+import cz.zcu.kiv.eeg.gtn.online.app.OnlineDetection;
+import cz.zcu.kiv.eeg.gtn.online.gui.ProbabilityComparator;
+
 import java.io.*;
 import java.util.*;
 import java.util.Map.Entry;
@@ -7,17 +18,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-
-import cz.zcu.kiv.eeg.gtn.Const;
-import cz.zcu.kiv.eeg.gtn.application.classification.IERPClassifier;
-import cz.zcu.kiv.eeg.gtn.application.classification.MLPClassifier;
-import cz.zcu.kiv.eeg.gtn.application.featureextraction.IFeatureExtraction;
-import cz.zcu.kiv.eeg.gtn.application.featureextraction.WaveletTransformFeatureExtraction;
-import cz.zcu.kiv.eeg.gtn.online.app.OffLineDataProvider;
-import cz.zcu.kiv.eeg.gtn.online.app.OnlineDetection;
-import cz.zcu.kiv.eeg.gtn.online.app.DataObjects.MessageType;
-import cz.zcu.kiv.eeg.gtn.online.app.DataObjects.ObserverMessage;
-import cz.zcu.kiv.eeg.gtn.online.gui.ProbabilityComparator;
 
 /**
  * Created by stebjan on 20.1.2015.
@@ -32,6 +32,7 @@ public class TestClassificationAccuracy implements Observer {
     private boolean end;
     private Map<String, Statistics> stats;
     private Double humanAccuracy = null;
+    public int sizeofStimuls;
 
     public static void main(String[] args) throws InterruptedException, IOException {
         TestClassificationAccuracy testClassificationAccuracy = new TestClassificationAccuracy();
@@ -77,7 +78,7 @@ public class TestClassificationAccuracy implements Observer {
                         }
                         
 
-                        OnlineDetection detection = new OnlineDetection(classifier, this);
+                        OnlineDetection detection = new OnlineDetection(classifier, this,sizeofStimuls);
                         OffLineDataProvider offLineData = new OffLineDataProvider(f, detection);
                         //submits task for execution. Calling get() method blocks thread until work is done.
                         service.submit(offLineData).get(); 
@@ -269,4 +270,7 @@ public class TestClassificationAccuracy implements Observer {
         return stats;
     }
 
+    public void setSizeofStimuls(int sizeofStimuls) {
+        this.sizeofStimuls = sizeofStimuls;
+    }
 }

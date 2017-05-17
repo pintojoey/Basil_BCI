@@ -46,7 +46,6 @@ public class ImportExportScenarios {
             if (file.mkdir()) {
                 isCreated = true;
                 save(names,files1,files2,desc);
-                System.out.println("Directory is created!");
             } else {
                 JOptionPane.showMessageDialog(null,
                         "Failed to create directory!", "Error",

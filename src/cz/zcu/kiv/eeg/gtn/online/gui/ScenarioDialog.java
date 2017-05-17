@@ -55,7 +55,7 @@ public class ScenarioDialog extends JDialog {
     public void createDialog(JFrame frame){
         this.scenarioFrame = frame;
         this.setModal(true);
-        this.setTitle("Scenario menu");
+        this.setTitle("New scenario");
         this.getContentPane().add(createScenarioPanel());
         this.setMinimumSize(new Dimension(420,280));
         this.pack();
@@ -180,7 +180,7 @@ public class ScenarioDialog extends JDialog {
         g.fill = GridBagConstraints.HORIZONTAL;
         itemJP.add(new JLabel("ID"),g);
         g.gridx = 1;
-        itemJP.add(new JLabel("Name"),g);
+        itemJP.add(new JLabel("Name*"),g);
         g.gridx = 2;
         itemJP.add(new JLabel("File 1"),g);
         g.gridx = 0;
@@ -250,14 +250,23 @@ public class ScenarioDialog extends JDialog {
         applyBT.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                if (requiredField() == true) {
                 scenarioName = fileTF.getText().toString();
-                System.out.println(fileTF.getText());
+                requiredField();
                 importExportScenarios.setConfigName(scenarioName);
-                stimuls= importExportScenarios.save(NamesTF,Files1TF,Files2TF,DescTF);
-                mf.setStimuls(stimuls);
-                boolean created = true;
-                mf.setExistScenario(created);
-                ScenarioDialog.this.dispose();
+                stimuls= importExportScenarios.createDirectory(NamesTF,Files1TF,Files2TF,DescTF);
+                    if (importExportScenarios.isCreated){
+                        mf.setStimuls(stimuls);
+                        boolean created = true;
+                        mf.setExistScenario(created);
+                        ScenarioDialog.this.dispose();
+                    }
+                }
+                else {
+                    showMessageDialog(ScenarioDialog.this,
+                            "You have to name all the stimuli", "Error",
+                            JOptionPane.ERROR_MESSAGE);
+                }
 
 
             }
@@ -333,6 +342,19 @@ public class ScenarioDialog extends JDialog {
         optionPanel.add(cancelBT);
 
         return optionPanel;
+    }
+
+    /**
+     *
+     * @return
+     */
+    boolean requiredField(){
+        for (int i = 0; i < NamesTF.size(); i++) {
+            if (NamesTF.get(i).getText().equals("")){
+                    return false;
+            }
+        }
+        return true;
     }
 
 

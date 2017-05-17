@@ -111,7 +111,7 @@ public class LinearDiscriminantAnalysisAlgorithms {
 	 * Saves data needed for classification
 	 * 
 	 * @param file
-	 *            - name of the file to save into
+	 *            - name of the file to createDirectory into
 	 */
 	public void save(String file) {
 		try {

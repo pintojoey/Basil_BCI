@@ -489,7 +489,7 @@ public class MainFrame extends JFrame implements Observer {
         });
 
         JMenuItem addScenario = new JMenuItem("New Scenario");
-        addScenario.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
+        addScenario.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N,
                 ActionEvent.CTRL_MASK));
         addScenario.addActionListener(new ActionListener() {
 

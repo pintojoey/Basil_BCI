@@ -6,6 +6,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import javax.swing.*;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -20,6 +21,7 @@ import java.util.ArrayList;
 public class ImportExportScenarios {
     private static String configName;
     private static ArrayList<Stimul> stimuls;
+    public static boolean isCreated = false;
 
     /**
      * Ukládání do Xml soboru a vytvoření nového adresáře
@@ -29,26 +31,49 @@ public class ImportExportScenarios {
      * @param desc - popis stimulu
      * @return
      */
-    public static ArrayList<Stimul> save(ArrayList<TextField> names, ArrayList<TextField>files1, ArrayList<TextField>files2,ArrayList<TextField>desc)
+    public static ArrayList<Stimul> createDirectory(ArrayList<TextField> names, ArrayList<TextField>files1, ArrayList<TextField>files2, ArrayList<TextField>desc)
     {
         stimuls = new ArrayList<>();
         if (configName.equals("")){
             configName="Unnamed";
         }
+        File root = new File("configs");
+        if (!root.exists() && !root.isDirectory()) {
+            root.mkdir();
+        }
         File file = new File("configs/"+ configName);
         if (!file.exists()) {
             if (file.mkdir()) {
+                isCreated = true;
+                save(names,files1,files2,desc);
                 System.out.println("Directory is created!");
-
-
             } else {
-                System.out.println("Failed to create directory!");
+                JOptionPane.showMessageDialog(null,
+                        "Failed to create directory!", "Error",
+                        JOptionPane.ERROR_MESSAGE);
+                isCreated = false;
             }
         }else {
-            System.out.println("Directory is exist!");
+                int dRes = JOptionPane.showConfirmDialog(null,
+                        "Do you want to replace it? ", "The file already exists",
+                        JOptionPane.OK_CANCEL_OPTION);
+                if (JOptionPane.OK_OPTION == dRes) {
+                    isCreated = true;
+                    save(names,files1,files2,desc);
+                }else isCreated = false;
 
         }
+        return stimuls;
+    }
 
+    /**
+     *
+     * @param names
+     * @param files1
+     * @param files2
+     * @param desc
+     */
+   public static void save(ArrayList<TextField> names, ArrayList<TextField> files1, ArrayList<TextField> files2, ArrayList<TextField> desc){
         try {
 
             DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
@@ -121,9 +146,7 @@ public class ImportExportScenarios {
         } catch (ParserConfigurationException e) {
             e.printStackTrace();
         }
-        return stimuls;
     }
-
     /**
      * Překopírování souborů do adresáře
      * @param sourceFile - původní soubor

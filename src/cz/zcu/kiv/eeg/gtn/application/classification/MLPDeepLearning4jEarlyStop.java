@@ -177,7 +177,7 @@ public class MLPDeepLearning4jEarlyStop implements IERPClassifier {
 
     }
 
-    // method not implemented. For saving use method save(String file)
+    // method not implemented. For saving use method createDirectory(String file)
     @Override
     public void save(OutputStream dest) {
 
@@ -186,7 +186,7 @@ public class MLPDeepLearning4jEarlyStop implements IERPClassifier {
     @Override
     public void save(String file) {
         OutputStream fos;
-        // Choose the name of classifier and coefficient file to save based on the feature extraction, which is used
+        // Choose the name of classifier and coefficient file to createDirectory based on the feature extraction, which is used
         String coefficientsName = "wrong.bin";
         if (fe.getClass().getSimpleName().equals("FilterAndSubsamplingFeatureExtraction")) {
             coefficientsName = "coefficients19.bin";

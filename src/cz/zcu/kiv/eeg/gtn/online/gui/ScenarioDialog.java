@@ -13,8 +13,7 @@ import static javax.swing.JOptionPane.showMessageDialog;
 
 /**
  * Created by Jamape on 16.03.2017.
- * Trida pro vytvoreni dialogoveho okna,
- * ktere slouzi pro tvorbu scenaru
+ * Create new scenario window
  */
 public class ScenarioDialog extends JDialog {
     MainFrame mf;
@@ -39,7 +38,7 @@ public class ScenarioDialog extends JDialog {
     TextField fileTF;
 
     /**
-     * Konstruktor
+     * Constructor
      * @param frame
      */
 
@@ -49,7 +48,7 @@ public class ScenarioDialog extends JDialog {
     }
 
     /**
-     * Vytvoreni okna
+     * Create frame
      * @param frame JFrame
      */
     public void createDialog(JFrame frame){
@@ -64,8 +63,8 @@ public class ScenarioDialog extends JDialog {
     }
 
     /**
-     * Vytvori panel s komponentami
-     * @return panel s pozadovanym poctem stimul panelu a ovladacim panelem
+     * Create panel with all components
+     * @return panel with the required panel stimulus count and a control panel
      */
     private JPanel createScenarioPanel(){
 
@@ -86,8 +85,8 @@ public class ScenarioDialog extends JDialog {
     }
 
     /**
-     * JPanel, ktery slouzi jako jeden samotny stimul
-     * @return panel s komponentami pro parametry stimulu a jeho manipulaci
+     * JPanel, which serves as a single stimulus
+     * @return panel with components for stimulus parameters and manipulation
      */
     private JPanel scenarioMain(){
         GridBagLayout gb = new GridBagLayout();
@@ -218,8 +217,8 @@ public class ScenarioDialog extends JDialog {
     }
 
     /**
-     * Ovladaci panel scenare
-     * @return JPanel s ovladanim
+     * Control panel
+     * @return JPanel with controls
      */
     private JPanel scenarioOption(){
         JPanel optionPanel = new JPanel();
@@ -345,8 +344,8 @@ public class ScenarioDialog extends JDialog {
     }
 
     /**
-     *
-     * @return
+     * Checks if all required fields are filled in
+     * @return true if yes, false if not
      */
     boolean requiredField(){
         for (int i = 0; i < NamesTF.size(); i++) {

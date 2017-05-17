@@ -6,7 +6,7 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * Reprezentuje jednotlivý stimul s potřebnými atributy
+ * Represents a single stimulus with the necessary attributes
  */
 public class Stimul {
     int id;
@@ -22,13 +22,13 @@ public class Stimul {
     Image image2;
 
     /**
-     * Konstruktor třídy Stimul
+     * Constructor
      *
-     * @param id          - id stimulu
-     * @param name        - název stimulu
-     * @param url1        - adresa k souboru 1
-     * @param url2        - adresa k souboru 2
-     * @param description - popis stimulu
+     * @param id          - id stimulus
+     * @param name        - name of stimulus
+     * @param url1        - url to file 1
+     * @param url2        - url to file 2
+     * @param description - description of stimulus
      */
     public Stimul(int id, String name, String url1, String url2, String description) {
         this.id = id;
@@ -39,8 +39,8 @@ public class Stimul {
     }
 
     /**
-     * Načítání obrázků
-     * Zjištování, zda je soubor obrázek
+     * Loading images
+     * Determine if the file is a picture
      */
     public void loadImages() {
         try {

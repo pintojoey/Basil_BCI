@@ -16,7 +16,7 @@ import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 
 /**
- * Ukládání a načítání soborů s nastavením
+ * Saving and loading settings files
  */
 public class ImportExportScenarios {
     private static String configName;
@@ -24,11 +24,11 @@ public class ImportExportScenarios {
     public static boolean isCreated = false;
 
     /**
-     * Ukládání do Xml soboru a vytvoření nového adresáře
-     * @param names - název stimulu
-     * @param files1 - adresa k souboru 1
-     * @param files2 - adresa k souboru 2
-     * @param desc - popis stimulu
+     * Creating a new directory
+     * @param names - name of stimulus
+     * @param files1 - url to file 1
+     * @param files2 - url to file 2
+     * @param desc - description of stimulus
      * @return
      */
     public static ArrayList<Stimul> createDirectory(ArrayList<TextField> names, ArrayList<TextField>files1, ArrayList<TextField>files2, ArrayList<TextField>desc)
@@ -67,11 +67,12 @@ public class ImportExportScenarios {
     }
 
     /**
-     *
-     * @param names
-     * @param files1
-     * @param files2
-     * @param desc
+     * Saving to a XML file
+     * @param names - name of stimulus
+     * @param files1 - url to file 1
+     * @param files2 - url to file 2
+     * @param desc - description of stimulus
+     * @return
      */
    public static void save(ArrayList<TextField> names, ArrayList<TextField> files1, ArrayList<TextField> files2, ArrayList<TextField> desc){
         try {
@@ -148,9 +149,9 @@ public class ImportExportScenarios {
         }
     }
     /**
-     * Překopírování souborů do adresáře
-     * @param sourceFile - původní soubor
-     * @param destFile - překopírovaný soubor
+     * Copy the files to the directory
+     * @param sourceFile - original file
+     * @param destFile - copy file
      * @throws IOException
      */
     private static void copyFile(File sourceFile, File destFile)throws IOException {
@@ -178,9 +179,9 @@ public class ImportExportScenarios {
     }
 
     /**
-     * Načítání nastavení ze souboru
-     * @param file - vstupní soubor formátu xml
-     * @return - stimuly načtené ze souboru
+     * Loading settings from file
+     * @param file - xml input file
+     * @return - stimuli retrieved from the file
      */
     public ArrayList<Stimul> load(File file)
     {    ArrayList<Stimul>stimuls = new ArrayList<>();
@@ -221,8 +222,8 @@ public class ImportExportScenarios {
     }
 
     /**
-     * Nastavení názvu soboru a adresáře
-     * @param configName - uživatelem zadaný název
+     * Set the file name and directory
+     * @param configName - user specified name
      */
     public static void setConfigName(String configName) {
         ImportExportScenarios.configName = configName;

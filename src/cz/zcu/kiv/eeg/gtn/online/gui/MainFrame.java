@@ -952,8 +952,8 @@ public class MainFrame extends JFrame implements Observer {
     }
 
     /**
-     * Nastavení aktuálníh stimulů
-     * @param stimuls - stimuly
+     * Set current stimuli
+     * @param stimuls - stimuli
      */
     public void setStimuls(ArrayList<Stimul> stimuls) {
         this.stimuls = stimuls;
@@ -967,6 +967,10 @@ public class MainFrame extends JFrame implements Observer {
         getNames(stimuls);
     }
 
+    /**
+     * Fills the table with the name of the stimulus
+     * @param stimuls - stimuli
+     */
     public void getNames(ArrayList<Stimul>stimuls){
         for (int i = 0; i < stimuls.size(); i++) {
             data.setValueAt(stimuls.get(i).getName(),i,1);
@@ -983,7 +987,7 @@ public class MainFrame extends JFrame implements Observer {
     }
 
     /**
-     * Ošetření pokud není vytvořený scénář
+     * If the scenario is not created
      */
     private void scenarioDialog() {
         if (isExistScenario() == false) {

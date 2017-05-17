@@ -24,14 +24,9 @@ public class OnlineDetection extends Observable implements Observer {
         this.sizeOfStimuls=sizeOfStimuls;
         this.addObserver(observer);
         this.classifier = classifier;
-        //this.classificationCounters = new int[Const.GUESSED_NUMBERS];
         this.classificationCounters = new int[sizeOfStimuls];
-        //System.out.println(getSizeOfStimuls()+" sizeofstimuls");
-        //this.classificationResults = new double[Const.GUESSED_NUMBERS];
         this.classificationResults = new double[sizeOfStimuls];
-       // this.sumEpoch = new double[Const.USED_CHANNELS][Const.GUESSED_NUMBERS][Const.POSTSTIMULUS_VALUES];
         this.sumEpoch = new double[Const.USED_CHANNELS][sizeOfStimuls][Const.POSTSTIMULUS_VALUES];
-        //this.avgEpoch = new double[Const.USED_CHANNELS][Const.GUESSED_NUMBERS][Const.POSTSTIMULUS_VALUES];
         this.avgEpoch = new double[Const.USED_CHANNELS][sizeOfStimuls][Const.POSTSTIMULUS_VALUES];
 
         Arrays.fill(classificationCounters, 0);
@@ -49,7 +44,7 @@ public class OnlineDetection extends Observable implements Observer {
         if (arg instanceof EpochMessenger) {
             EpochMessenger epochMsg = (EpochMessenger) arg;
             int stimulusID = epochMsg.getStimulusIndex();
-            //if (stimulusID < Const.GUESSED_NUMBERS) {
+
             if (stimulusID < sizeOfStimuls) {
                 classificationCounters[stimulusID]++;
                 for (int i = 0; i < Const.USED_CHANNELS; i++) {
@@ -59,15 +54,11 @@ public class OnlineDetection extends Observable implements Observer {
                     }
                 }
                 double[][] avgEpochStimulus = getAvgEpochWithStimulus(stimulusID, avgEpoch);
-                //double classificationResult = this.classifier.classify(avgEpochStimulus);
-                
                 
                 double classificationResult = this.classifier.classify(epochMsg.getEpoch());
-                
-                //double P300relativeEnergy = calcEnergy(epochStimulus, 250, 500) / calcEnergy(epochStimulus, 0, Const.POSTSTIMULUS_VALUES);
+
                 
                 classificationResults[stimulusID] += classificationResult;
-             //   classificationResults[stimulusID] += P300relativeEnergy;
                 this.weightedResults = this.calcClassificationResults();
                 setChanged();
                 notifyObservers(this);

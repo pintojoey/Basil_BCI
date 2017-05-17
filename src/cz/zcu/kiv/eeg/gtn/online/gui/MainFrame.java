@@ -591,8 +591,6 @@ public class MainFrame extends JFrame implements Observer {
     }
 
     private void initProbabilities(double[] probabilities, int[] counts) {
-        System.out.println(probabilities.length);
-        System.out.println(counts.length);
         winnerJP.removeAll();
         JLabel label;
         JLabel label2;

@@ -142,6 +142,7 @@ public class ImportExportScenarios {
         source = new FileInputStream(sourceFile).getChannel();
         destination = new FileOutputStream(destFile).getChannel();
         if (destination != null && source != null) {
+            destFile.renameTo(sourceFile);
             destination.transferFrom(source, 0, source.size());
         }
         if (source != null) {

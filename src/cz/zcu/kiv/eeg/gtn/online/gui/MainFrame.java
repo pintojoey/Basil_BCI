@@ -616,7 +616,7 @@ public class MainFrame extends JFrame implements Observer {
             winnerJP.add(textField,BorderLayout.CENTER);
         }
         if (stimuls.get(ranks[0]).isImgFile2 == true) {
-            ImageIcon icon2 = new ImageIcon(stimuls.get(ranks[0]).image1);
+            ImageIcon icon2 = new ImageIcon(stimuls.get(ranks[0]).image2);
             Image image = icon2.getImage(); // transform it
             Image newimg = image.getScaledInstance(200, 200,  Image.SCALE_SMOOTH);
             icon2 = new ImageIcon(newimg);

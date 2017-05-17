@@ -103,7 +103,7 @@ public class ScenarioDialog extends JDialog {
         final TextField file1TF = new TextField(15);
         final TextField file2TF = new TextField(15);
 
-        JButton chooseFile2BT = new JButton("Choose a file");
+        final JButton chooseFile2BT = new JButton("Choose a file");
         final JButton chooseFile1BT = new JButton("Choose a file");
 
         JButton removeBT = new JButton("Remove");
@@ -161,16 +161,15 @@ public class ScenarioDialog extends JDialog {
                                 JOptionPane.ERROR_MESSAGE);
                         countID++;
                     } else {
-
                         itemJP.removeAll();
-                        ItemJP.remove(countID-1);
-                        NamesTF.remove(countID-1);
-                        Files1TF.remove(countID-1);
-                        Files2TF.remove(countID-1);
-                        ChooseFile1BT.remove(countID-1);
-                        ChooseFile2BT.remove(countID-1);
-                        RemoveBT.remove(countID-1);
-                        DescTF.remove(countID-1);
+                        ItemJP.remove(Integer.parseInt(idLabel.getText()));
+                        NamesTF.remove(Integer.parseInt(idLabel.getText()));
+                        Files1TF.remove(Integer.parseInt(idLabel.getText()));
+                        Files2TF.remove(Integer.parseInt(idLabel.getText()));
+                        ChooseFile1BT.remove(Integer.parseInt(idLabel.getText()));
+                        ChooseFile2BT.remove(Integer.parseInt(idLabel.getText()));
+                        RemoveBT.remove(Integer.parseInt(idLabel.getText()));
+                        DescTF.remove(Integer.parseInt(idLabel.getText()));
                         ScenarioDialog.this.setSize(ScenarioDialog.this.getWidth(), ScenarioDialog.this.getHeight() - 100);
                     }
                 }

@@ -27,10 +27,7 @@ public class Main {
         new MainFrame();
     }
 
-    private static void runOpt() {
-
-    }
-
+   
     private static void printHelp(PrintStream out) {
         out.println("Guess the number - A demo BCI application." );
         out.println("Call with parameters:" );

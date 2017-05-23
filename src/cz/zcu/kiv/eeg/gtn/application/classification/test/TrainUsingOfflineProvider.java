@@ -16,6 +16,15 @@ import cz.zcu.kiv.eeg.gtn.online.app.OffLineDataProvider;
 import cz.zcu.kiv.eeg.gtn.online.app.DataObjects.MessageType;
 import cz.zcu.kiv.eeg.gtn.online.app.DataObjects.ObserverMessage;
 
+
+
+/**
+ * 
+ * Trains the classifier using the collected off-line (stored) data
+ * 
+ * @author lvareka
+ *
+ */
 public class TrainUsingOfflineProvider implements Observer {
 
     private final List<double[][]> epochs;
@@ -28,7 +37,9 @@ public class TrainUsingOfflineProvider implements Observer {
     private static IERPClassifier classifier;
     private static String file;
     private IFilter filter;
+    private int receivedEpochsCounter = 0;
 
+    
     public TrainUsingOfflineProvider(IFeatureExtraction fe,
             IERPClassifier classifier, String file, IFilter filter)  {
         TrainUsingOfflineProvider.fe = fe;
@@ -36,10 +47,10 @@ public class TrainUsingOfflineProvider implements Observer {
         TrainUsingOfflineProvider.file = file;
 
         this.filter = filter;
-        epochs = new ArrayList<double[][]>();
-        targets = new ArrayList<Double>();
-        numberOfTargets = 0;
-        numberOfNonTargets = 0;
+        this.epochs = new ArrayList<double[][]>();
+        this.targets = new ArrayList<Double>();
+        this.numberOfTargets = 0;
+        this.numberOfNonTargets = 0;
         this.iters = 2000;
         this.middleNeurons = 8;
 
@@ -56,25 +67,18 @@ public class TrainUsingOfflineProvider implements Observer {
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
-        
     }
 
     public TrainUsingOfflineProvider(int iters, int middleNeurons) throws IOException {
-
-        epochs = new ArrayList<double[][]>();
-        targets = new ArrayList<Double>();
-        numberOfTargets = 0;
-        numberOfNonTargets = 0;
+        this.epochs = new ArrayList<double[][]>();
+        this.targets = new ArrayList<Double>();
+        this.numberOfTargets = 0;
+        this.numberOfNonTargets = 0;
         this.iters = iters;
         this.middleNeurons = middleNeurons;
-        classifier = null;
+        this.classifier = null;
 
-
-
-
-       // OffLineDataProvider offLineData = new OffLineDataProvider(new File(
-       //         Const.TRAINING_RAW_DATA_FILE_NAME), this);
-      // OffLineDataProvider offLineData = new OffLineDataProvider("C:\\Users\\lukasvareka\\Documents\\guess_the_number\\data\\numbers\\17ZS", this);
+        // used to open the thread for collecting single epochs from continuous EEG
         OffLineDataProvider offLineData = new OffLineDataProvider(Const.INFO_DIR, this);
         Thread t = new Thread(offLineData);
         t.start();
@@ -96,12 +100,20 @@ public class TrainUsingOfflineProvider implements Observer {
         }
     }
 
+    /**
+     * Receives the EEG epoch from data collection observable class. Also 
+     * can receive a message declaring the end of the epoch list and this will be
+     * interpreted as a signal to start training.
+     * 
+     */
     @Override
     public void update(Observable sender, Object message) {
         if (message instanceof ObserverMessage) {
             ObserverMessage msg = (ObserverMessage) message;
             if (msg.getMsgType() == MessageType.END) {
                 try {
+                	// currently writes the epochs into a CSV
+                	// TODO: evaluate its present benefits and possibly remove
                     writeCSV(epochs);
                 } catch (Exception ex) {
                     Logger.getLogger(TrainUsingOfflineProvider.class.getName()).log(Level.SEVERE, null, ex);
@@ -111,8 +123,8 @@ public class TrainUsingOfflineProvider implements Observer {
         }
         if (message instanceof EpochMessenger) {
             double[][] epoch = ((EpochMessenger) message).getEpoch();
-            int stimulus = ((EpochMessenger) message).getStimulusIndex();
-
+            receivedEpochsCounter++;
+           
             // 1 = target, 3 = non-target
             if (((EpochMessenger) message).isTarget() && numberOfTargets <= numberOfNonTargets) {
                 epochs.add(epoch);
@@ -179,20 +191,6 @@ public class TrainUsingOfflineProvider implements Observer {
             }
         }
 
-       /* System.out.println("Target cnt: " + tCnt);
-        System.out.println("Non-target cnt: " + nCnt);
-        System.out.println("Total cnt: " + cnt);*/
-
-        /*Chart chart = new Chart("Target training data average");
-        chart.update(tAvg);
-        chart.pack();
-        chart.setVisible(true);
-
-        Chart chart2 = new Chart("Non-target training data average");
-        chart2.update(nAvg);
-        chart2.pack();
-        chart2.setVisible(true);*/
-
         // training
         //fe = new FilterAndSubsamplingFeatureExtraction();
         classifier.train(this.epochs, this.targets, this.iters, fe);
@@ -204,8 +202,6 @@ public class TrainUsingOfflineProvider implements Observer {
         }
 
         System.out.println("Training finished.");
-        
-     
         
     }
 

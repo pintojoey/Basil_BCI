@@ -25,29 +25,14 @@ public class OffLineDataProvider extends Observable implements Runnable, IDataPr
     private int PZIndex;
     private Map<String, Integer> files;
 
-
     private IArtifactDetection artifactDetector;
-
     private boolean running;
 
-//    public OffLineDataProvider(String vhdrFile, String markerFile) {
-//        this.vhdrFile = vhdrFile;
-//        this.vmrkFile = markerFile;
-//
-//        String baseName = vhdrFile.substring(0, vhdrFile.lastIndexOf("."));
-//        this.eegFile = baseName + Const.EEG_EXTENSION;
-//        //this.eegFile = baseName + ".dat";
-//
-//        this.running = true;
-//    }
 
     public OffLineDataProvider(File eegFile, Observer obs) {
         this.addObserver(obs);
-
         files = new HashMap<String, Integer>();
         files.put(eegFile.getAbsolutePath(), 2);
-        //setFileNames(eegFile.getAbsolutePath());
-        //this.eegFile = baseName + ".dat";
         this.running = true;
     }
 
@@ -83,15 +68,13 @@ public class OffLineDataProvider extends Observable implements Runnable, IDataPr
 
     @Override
     public void run() {
-
-
         try {
             for (Map.Entry<String, Integer> fileEntry: files.entrySet()) {
                 DataTransformer dt = new EEGDataTransformer();
                 setFileNames(fileEntry.getKey());
                 File file = new File(fileEntry.getKey());
                 if (!file.exists()) {
-                    System.out.println(file.getAbsolutePath() + " not exists!");
+                    System.out.println(file.getAbsolutePath() + " does not exist!");
                     continue;
                 }
 
@@ -107,22 +90,14 @@ public class OffLineDataProvider extends Observable implements Runnable, IDataPr
                     }
                 }
 
-                //create a File class object and give the file the name employees.csv
-//            java.io.File file = new java.io.File("RawData_BaselineCorrect.csv");
-//            java.io.File pzFile = new java.io.File("RawPzChannel.csv");
-//            //Create a Printwriter text output stream and link it to the CSV File
-//            java.io.PrintWriter outfile = new java.io.PrintWriter(file);
-//            java.io.PrintWriter pzPw = new java.io.PrintWriter(pzFile);
                 ByteOrder order = ByteOrder.LITTLE_ENDIAN;
-                //System.out.println(eegFile);
+                
                 double[] fzChannel = dt.readBinaryData(vhdrFile, eegFile, FZIndex, order);
                 double[] czChannel = dt.readBinaryData(vhdrFile, eegFile, CZIndex, order);
                 double[] pzChannel = dt.readBinaryData(vhdrFile, eegFile, PZIndex, order);
 
-                //writePzIntoCsv(pzChannel, pzPw);
-
                 List<EEGMarker> markers = dt.readMarkerList(vmrkFile);
-                Collections.shuffle(markers);
+                //Collections.shuffle(markers);
                 for (EEGMarker marker : markers) {
                     if (!running) {
                         break;
@@ -148,14 +123,12 @@ public class OffLineDataProvider extends Observable implements Runnable, IDataPr
                         Baseline.correct(fczChannel, Const.PREESTIMULUS_VALUES);
                         Baseline.correct(fpzChannel, Const.PREESTIMULUS_VALUES);
 
-                        //writeCsv(fpzChannel, stimulusNumber, outfile);
-
+ 
                         em.setFZ(ffzChannel, 100);
                         em.setCZ(fczChannel, 100);
                         em.setPZ(fpzChannel, 100);
 
                         if (em.getStimulusIndex() + 1 == fileEntry.getValue()) {
-//                            System.out.println(em.getStimulusIndex());
                             em.setTarget(true);
                         }
 

@@ -1,7 +1,7 @@
 package cz.zcu.kiv.eeg.gtn.application.classification;
 
+import cz.zcu.kiv.eeg.gtn.application.featureextraction.IFeatureExtraction;
 import org.apache.commons.io.FileUtils;
-import org.deeplearning4j.datasets.iterator.DataSetIterator;
 import org.deeplearning4j.datasets.iterator.impl.ListDataSetIterator;
 import org.deeplearning4j.earlystopping.EarlyStoppingConfiguration;
 import org.deeplearning4j.earlystopping.EarlyStoppingResult;
@@ -18,8 +18,6 @@ import org.deeplearning4j.nn.conf.layers.AutoEncoder;
 import org.deeplearning4j.nn.conf.layers.OutputLayer;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.deeplearning4j.nn.weights.WeightInit;
-import org.deeplearning4j.optimize.api.IterationListener;
-import org.deeplearning4j.optimize.listeners.ScoreIterationListener;
 import org.deeplearning4j.ui.weights.HistogramIterationListener;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.dataset.DataSet;
@@ -27,15 +25,11 @@ import org.nd4j.linalg.dataset.SplitTestAndTrain;
 import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.lossfunctions.LossFunctions.LossFunction;
 
-import cz.zcu.kiv.eeg.gtn.application.featureextraction.IFeatureExtraction;
-
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 // creates instance of Stacked Denoising Autoencoder @author Pumprdlici group
@@ -116,7 +110,7 @@ public class SDAClassifierEarlyStop implements IERPClassifier {
 
         //Conduct early stopping training:
         EarlyStoppingResult result = trainer.fit();
-        model = result.getBestModel();
+        model = (MultiLayerNetwork) result.getBestModel();
 
         //model.fit(testAndTrain.getTrain());
     }
@@ -132,7 +126,7 @@ public class SDAClassifierEarlyStop implements IERPClassifier {
                 .momentum(0.5) // Momentum rate
                 .momentumAfter(Collections.singletonMap(3, 0.9)) //Map of the iteration to the momentum rate to apply at that iteration
                 .optimizationAlgo(OptimizationAlgorithm.CONJUGATE_GRADIENT) // Backprop to calculate gradients
-                .list(2) // # NN layers (doesn't count input layer)
+                .list() // # NN layers (doesn't count input layer)
                 .layer(0, new AutoEncoder.Builder().nIn(numRows).nOut(neuronCount) // Setting layer to Autoencoder
                         .weightInit(WeightInit.XAVIER).lossFunction(LossFunction.RMSE_XENT) // Weight initialization
                         .corruptionLevel(0.3) // Set level of corruption

@@ -2,106 +2,212 @@
   "backprop" : true,
   "backpropType" : "Standard",
   "confs" : [ {
+    "iterationCount" : 0,
+    "l1ByParam" : {
+      "b" : 0.0,
+      "W" : 0.0,
+      "vb" : 0.0
+    },
+    "l2ByParam" : {
+      "b" : 0.0,
+      "W" : 0.0,
+      "vb" : 0.0
+    },
     "layer" : {
-      "RBM" : {
-        "activationFunction" : "relu",
-        "adamMeanDecay" : 0.9,
-        "adamVarDecay" : 0.999,
-        "biasInit" : 0.0,
-        "customLossFunction" : null,
-        "dist" : {
-          "normal" : {
-            "mean" : 0.001,
-            "std" : 1.0
-          }
+      "autoEncoder" : {
+        "activationFn" : {
+          "ReLU" : { }
         },
+        "adamMeanDecay" : "NaN",
+        "adamVarDecay" : "NaN",
+        "biasInit" : 0.0,
+        "biasLearningRate" : 0.05,
+        "corruptionLevel" : 0.30000001192092896,
+        "dist" : null,
         "dropOut" : 0.0,
+        "epsilon" : "NaN",
         "gradientNormalization" : "None",
         "gradientNormalizationThreshold" : 1.0,
-        "hiddenUnit" : "GAUSSIAN",
-        "k" : 1,
         "l1" : 0.0,
+        "l1Bias" : 0.0,
         "l2" : 0.0,
-        "layerName" : "genisys",
-        "learningRate" : 0.001,
-        "learningRateAfter" : { },
-        "lossFunction" : "RMSE_XENT",
-        "lrScoreBasedDecay" : 0.0,
-        "momentum" : 0.5,
-        "momentumAfter" : { },
+        "l2Bias" : 0.0,
+        "layerName" : "layer0",
+        "learningRate" : 0.05,
+        "learningRateSchedule" : null,
+        "lossFunction" : "MCXENT",
+        "momentum" : 0.9,
+        "momentumSchedule" : { },
         "nin" : 48,
         "nout" : 24,
-        "rho" : 0.0,
-        "rmsDecay" : 0.95,
+        "preTrainIterations" : 1,
+        "rho" : "NaN",
+        "rmsDecay" : "NaN",
         "sparsity" : 0.0,
-        "updater" : "ADADELTA",
-        "visibleUnit" : "GAUSSIAN",
-        "weightInit" : "RELU"
-      }
-    },
-    "maxNumLineSearchIterations" : 5,
-    "miniBatch" : true,
-    "minimize" : true,
-    "numIterations" : 5000,
-    "optimizationAlgo" : "STOCHASTIC_GRADIENT_DESCENT",
-    "seed" : 1468241027518,
-    "stepFunction" : null,
-    "timeSeriesLength" : 1,
-    "useDropConnect" : false,
-    "useRegularization" : false,
-    "useSchedules" : false,
-    "variables" : [ "W", "b", "vb" ]
-  }, {
-    "layer" : {
-      "output" : {
-        "activationFunction" : "softmax",
-        "adamMeanDecay" : 0.9,
-        "adamVarDecay" : 0.999,
-        "biasInit" : 0.0,
-        "customLossFunction" : null,
-        "dist" : {
-          "normal" : {
-            "mean" : 0.001,
-            "std" : 1.0
-          }
-        },
-        "dropOut" : 0.0,
-        "gradientNormalization" : "None",
-        "gradientNormalizationThreshold" : 1.0,
-        "l1" : 0.0,
-        "l2" : 0.0,
-        "layerName" : "genisys",
-        "learningRate" : 0.001,
-        "learningRateAfter" : { },
-        "lossFunction" : "MCXENT",
-        "lrScoreBasedDecay" : 0.0,
-        "momentum" : 0.5,
-        "momentumAfter" : { },
-        "nin" : 24,
-        "nout" : 2,
-        "rho" : 0.0,
-        "rmsDecay" : 0.95,
-        "updater" : "SGD",
+        "updater" : "NESTEROVS",
+        "visibleBiasInit" : 0.0,
         "weightInit" : "XAVIER"
       }
     },
+    "leakyreluAlpha" : 0.0,
+    "learningRateByParam" : {
+      "b" : 0.05,
+      "W" : 0.05,
+      "vb" : 0.05
+    },
+    "learningRatePolicy" : "None",
+    "lrPolicyDecayRate" : "NaN",
+    "lrPolicyPower" : "NaN",
+    "lrPolicySteps" : "NaN",
     "maxNumLineSearchIterations" : 5,
     "miniBatch" : true,
     "minimize" : true,
-    "numIterations" : 5000,
+    "numIterations" : 1500,
     "optimizationAlgo" : "STOCHASTIC_GRADIENT_DESCENT",
-    "seed" : 1468241027518,
+    "pretrain" : false,
+    "seed" : 123,
     "stepFunction" : null,
-    "timeSeriesLength" : 1,
     "useDropConnect" : false,
     "useRegularization" : false,
-    "useSchedules" : false,
+    "variables" : [ "W", "b", "vb" ]
+  }, {
+    "iterationCount" : 0,
+    "l1ByParam" : {
+      "b" : 0.0,
+      "W" : 0.0,
+      "vb" : 0.0
+    },
+    "l2ByParam" : {
+      "b" : 0.0,
+      "W" : 0.0,
+      "vb" : 0.0
+    },
+    "layer" : {
+      "autoEncoder" : {
+        "activationFn" : {
+          "ReLU" : { }
+        },
+        "adamMeanDecay" : "NaN",
+        "adamVarDecay" : "NaN",
+        "biasInit" : 0.0,
+        "biasLearningRate" : 0.05,
+        "corruptionLevel" : 0.30000001192092896,
+        "dist" : null,
+        "dropOut" : 0.0,
+        "epsilon" : "NaN",
+        "gradientNormalization" : "None",
+        "gradientNormalizationThreshold" : 1.0,
+        "l1" : 0.0,
+        "l1Bias" : 0.0,
+        "l2" : 0.0,
+        "l2Bias" : 0.0,
+        "layerName" : "layer1",
+        "learningRate" : 0.05,
+        "learningRateSchedule" : null,
+        "lossFunction" : "MCXENT",
+        "momentum" : 0.9,
+        "momentumSchedule" : { },
+        "nin" : 24,
+        "nout" : 12,
+        "preTrainIterations" : 1,
+        "rho" : "NaN",
+        "rmsDecay" : "NaN",
+        "sparsity" : 0.0,
+        "updater" : "NESTEROVS",
+        "visibleBiasInit" : 0.0,
+        "weightInit" : "XAVIER"
+      }
+    },
+    "leakyreluAlpha" : 0.0,
+    "learningRateByParam" : {
+      "b" : 0.05,
+      "W" : 0.05,
+      "vb" : 0.05
+    },
+    "learningRatePolicy" : "None",
+    "lrPolicyDecayRate" : "NaN",
+    "lrPolicyPower" : "NaN",
+    "lrPolicySteps" : "NaN",
+    "maxNumLineSearchIterations" : 5,
+    "miniBatch" : true,
+    "minimize" : true,
+    "numIterations" : 1500,
+    "optimizationAlgo" : "STOCHASTIC_GRADIENT_DESCENT",
+    "pretrain" : false,
+    "seed" : 123,
+    "stepFunction" : null,
+    "useDropConnect" : false,
+    "useRegularization" : false,
+    "variables" : [ "W", "b", "vb" ]
+  }, {
+    "iterationCount" : 0,
+    "l1ByParam" : {
+      "b" : 0.0,
+      "W" : 0.0
+    },
+    "l2ByParam" : {
+      "b" : 0.0,
+      "W" : 0.0
+    },
+    "layer" : {
+      "output" : {
+        "activationFn" : {
+          "Softmax" : { }
+        },
+        "adamMeanDecay" : "NaN",
+        "adamVarDecay" : "NaN",
+        "biasInit" : 0.0,
+        "biasLearningRate" : 0.05,
+        "dist" : null,
+        "dropOut" : 0.0,
+        "epsilon" : "NaN",
+        "gradientNormalization" : "None",
+        "gradientNormalizationThreshold" : 1.0,
+        "l1" : 0.0,
+        "l1Bias" : 0.0,
+        "l2" : 0.0,
+        "l2Bias" : 0.0,
+        "layerName" : "layer2",
+        "learningRate" : 0.05,
+        "learningRateSchedule" : null,
+        "lossFn" : {
+          "NegativeLogLikelihood" : { }
+        },
+        "lossFunction" : "NEGATIVELOGLIKELIHOOD",
+        "momentum" : 0.9,
+        "momentumSchedule" : { },
+        "nin" : 12,
+        "nout" : 2,
+        "rho" : "NaN",
+        "rmsDecay" : "NaN",
+        "updater" : "NESTEROVS",
+        "weightInit" : "XAVIER"
+      }
+    },
+    "leakyreluAlpha" : 0.0,
+    "learningRateByParam" : {
+      "b" : 0.05,
+      "W" : 0.05
+    },
+    "learningRatePolicy" : "None",
+    "lrPolicyDecayRate" : "NaN",
+    "lrPolicyPower" : "NaN",
+    "lrPolicySteps" : "NaN",
+    "maxNumLineSearchIterations" : 5,
+    "miniBatch" : true,
+    "minimize" : true,
+    "numIterations" : 1500,
+    "optimizationAlgo" : "STOCHASTIC_GRADIENT_DESCENT",
+    "pretrain" : false,
+    "seed" : 123,
+    "stepFunction" : null,
+    "useDropConnect" : false,
+    "useRegularization" : false,
     "variables" : [ "W", "b" ]
   } ],
-  "dampingFactor" : 100.0,
   "inputPreProcessors" : { },
-  "pretrain" : true,
-  "redistributeParams" : false,
+  "iterationCount" : 36000,
+  "pretrain" : false,
   "tbpttBackLength" : 20,
   "tbpttFwdLength" : 20
 }

@@ -1,12 +1,12 @@
 package cz.zcu.kiv.eeg.gtn.online.app;
 
-import java.util.Arrays;
-import java.util.Observable;
-import java.util.Observer;
-
 import cz.zcu.kiv.eeg.gtn.Const;
 import cz.zcu.kiv.eeg.gtn.application.classification.IERPClassifier;
 import cz.zcu.kiv.eeg.gtn.online.app.DataObjects.ObserverMessage;
+
+import java.util.Arrays;
+import java.util.Observable;
+import java.util.Observer;
 
 public class OnlineDetection extends Observable implements Observer {
 
@@ -15,17 +15,19 @@ public class OnlineDetection extends Observable implements Observer {
     private final int[] classificationCounters;
     private final double[][][] sumEpoch;
     private final double[][][] avgEpoch;
+    public int sizeOfStimuls;
 
     private double[] weightedResults;
 
-    public OnlineDetection(IERPClassifier classifier, Observer observer) {
+    public OnlineDetection(IERPClassifier classifier, Observer observer,int sizeOfStimuls) {
         super();
+        this.sizeOfStimuls=sizeOfStimuls;
         this.addObserver(observer);
         this.classifier = classifier;
-        this.classificationCounters = new int[Const.GUESSED_NUMBERS];
-        this.classificationResults = new double[Const.GUESSED_NUMBERS];
-        this.sumEpoch = new double[Const.USED_CHANNELS][Const.GUESSED_NUMBERS][Const.POSTSTIMULUS_VALUES];
-        this.avgEpoch = new double[Const.USED_CHANNELS][Const.GUESSED_NUMBERS][Const.POSTSTIMULUS_VALUES];
+        this.classificationCounters = new int[sizeOfStimuls];
+        this.classificationResults = new double[sizeOfStimuls];
+        this.sumEpoch = new double[Const.USED_CHANNELS][sizeOfStimuls][Const.POSTSTIMULUS_VALUES];
+        this.avgEpoch = new double[Const.USED_CHANNELS][sizeOfStimuls][Const.POSTSTIMULUS_VALUES];
 
         Arrays.fill(classificationCounters, 0);
         Arrays.fill(classificationResults, 0);
@@ -42,7 +44,8 @@ public class OnlineDetection extends Observable implements Observer {
         if (arg instanceof EpochMessenger) {
             EpochMessenger epochMsg = (EpochMessenger) arg;
             int stimulusID = epochMsg.getStimulusIndex();
-            if (stimulusID < Const.GUESSED_NUMBERS) {
+
+            if (stimulusID < sizeOfStimuls) {
                 classificationCounters[stimulusID]++;
                 for (int i = 0; i < Const.USED_CHANNELS; i++) {
                     for (int j = 0; j < Const.POSTSTIMULUS_VALUES; j++) {
@@ -51,15 +54,11 @@ public class OnlineDetection extends Observable implements Observer {
                     }
                 }
                 double[][] avgEpochStimulus = getAvgEpochWithStimulus(stimulusID, avgEpoch);
-                //double classificationResult = this.classifier.classify(avgEpochStimulus);
-                
                 
                 double classificationResult = this.classifier.classify(epochMsg.getEpoch());
-                
-                //double P300relativeEnergy = calcEnergy(epochStimulus, 250, 500) / calcEnergy(epochStimulus, 0, Const.POSTSTIMULUS_VALUES);
+
                 
                 classificationResults[stimulusID] += classificationResult;
-             //   classificationResults[stimulusID] += P300relativeEnergy;
                 this.weightedResults = this.calcClassificationResults();
                 setChanged();
                 notifyObservers(this);
@@ -90,7 +89,8 @@ public class OnlineDetection extends Observable implements Observer {
     }
 
     private double[] calcClassificationResults() {
-        double[] wResults = new double[Const.GUESSED_NUMBERS];
+      //  double[] wResults = new double[Const.GUESSED_NUMBERS];
+        double[] wResults = new double[sizeOfStimuls];
         for (int i = 0; i < wResults.length; i++) {
             if (classificationCounters[i] == 0) {
                 wResults[i] = 0;
@@ -113,5 +113,11 @@ public class OnlineDetection extends Observable implements Observer {
     public int[] getClassificationCounters() {
         return classificationCounters;
     }
+    public void setSizeOfStimuls(int sizeOfStimuls) {
+        this.sizeOfStimuls = sizeOfStimuls;
+    }
 
+    public int getSizeOfStimuls() {
+        return sizeOfStimuls;
+    }
 }

@@ -196,7 +196,7 @@ public class MLPClassifier extends ERPClassifierAdapter implements LearningEvent
         
         // shuffle the resulting dataset
         
-        //dataset.save("default_training_dataset");
+        //dataset.createDirectory("default_training_dataset");
         dataset.shuffle();
         dataset.save("default_training_dataset");
         trainingTesting = dataset.createTrainingAndTestSubsets(80, 20);

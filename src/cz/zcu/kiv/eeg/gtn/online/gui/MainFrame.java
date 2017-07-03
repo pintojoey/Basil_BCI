@@ -1,12 +1,29 @@
 package cz.zcu.kiv.eeg.gtn.online.gui;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.GridLayout;
-import java.awt.Toolkit;
+import cz.zcu.kiv.eeg.gtn.application.classification.SDADeepLearning4jEarlyStop;
+import cz.zcu.kiv.eeg.gtn.Const;
+import cz.zcu.kiv.eeg.gtn.algorithm.math.IArtifactDetection;
+import cz.zcu.kiv.eeg.gtn.algorithm.math.IFilter;
+import cz.zcu.kiv.eeg.gtn.application.classification.*;
+import cz.zcu.kiv.eeg.gtn.application.classification.test.TestClassificationAccuracy;
+import cz.zcu.kiv.eeg.gtn.application.classification.test.TrainUsingOfflineProvider;
+import cz.zcu.kiv.eeg.gtn.application.featureextraction.*;
+import cz.zcu.kiv.eeg.gtn.online.app.IDataProvider;
+import cz.zcu.kiv.eeg.gtn.online.app.OffLineDataProvider;
+import cz.zcu.kiv.eeg.gtn.online.app.OnLineDataProvider;
+import cz.zcu.kiv.eeg.gtn.online.app.OnlineDetection;
+import cz.zcu.kiv.eeg.gtn.utils.ColorUtils;
+import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.Logger;
+
+import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -14,66 +31,22 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Observable;
-import java.util.Observer;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
-
-import javax.swing.AbstractAction;
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
-import javax.swing.JTable;
-import javax.swing.JTextPane;
-import javax.swing.KeyStroke;
-import javax.swing.SwingConstants;
-import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.table.AbstractTableModel;
-import javax.swing.table.TableCellRenderer;
-import javax.swing.text.SimpleAttributeSet;
-import javax.swing.text.StyleConstants;
-import javax.swing.text.StyledDocument;
-
-import cz.zcu.kiv.eeg.gtn.application.classification.SDADeepLearning4jEarlyStop;
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Logger;
-
-import cz.zcu.kiv.eeg.gtn.Const;
-import cz.zcu.kiv.eeg.gtn.algorithm.math.IArtifactDetection;
-import cz.zcu.kiv.eeg.gtn.algorithm.math.IFilter;
-import cz.zcu.kiv.eeg.gtn.application.classification.*;
-import cz.zcu.kiv.eeg.gtn.application.classification.test.TestClassificationAccuracy;
-import cz.zcu.kiv.eeg.gtn.application.classification.test.TrainUsingOfflineProvider;
-import cz.zcu.kiv.eeg.gtn.application.featureextraction.FilterAndSubsamplingFeatureExtraction;
-import cz.zcu.kiv.eeg.gtn.application.featureextraction.HHTFeatureExtraction;
-import cz.zcu.kiv.eeg.gtn.application.featureextraction.IFeatureExtraction;
-import cz.zcu.kiv.eeg.gtn.application.featureextraction.MatchingPursuitFeatureExtraction;
-import cz.zcu.kiv.eeg.gtn.application.featureextraction.WaveletTransformFeatureExtraction;
-import cz.zcu.kiv.eeg.gtn.online.app.IDataProvider;
-import cz.zcu.kiv.eeg.gtn.online.app.OffLineDataProvider;
-import cz.zcu.kiv.eeg.gtn.online.app.OnLineDataProvider;
-import cz.zcu.kiv.eeg.gtn.online.app.OnlineDetection;
-import cz.zcu.kiv.eeg.gtn.utils.ColorUtils;
 
 @SuppressWarnings("serial")
 public class MainFrame extends JFrame implements Observer {
 
     private AbstractTableModel data;
 
+    private ArrayList<Stimul> stimuls = new ArrayList<>();
+
+    private ScenarioDialog scenarioDialog;
+
     private JTextPane winnerJTA;
+
+    private JPanel winnerJP;
 
     private JFileChooser chooser;
 
@@ -112,13 +85,13 @@ public class MainFrame extends JFrame implements Observer {
     private String configurationFile;
 
     private final SetupDialogContent content = new SetupDialogContent();
+    private boolean existScenario = false;
 
     public MainFrame() {
         super(Const.APP_NAME);
 
         BasicConfigurator.configure();
         log = Logger.getLogger(MainFrame.class);
-
         epochCharts = new ShowChart(this);
 
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -223,14 +196,14 @@ public class MainFrame extends JFrame implements Observer {
             } else if (row.equals("CorrelationClassifier")) {
                 classifier = new CorrelationClassifier();
             } else if (row.equals("DBNDeepLearning4j")) {
-            	try {
+                try {
                     classifier = new DBNDeepLearning4j(Integer.parseInt(br
                             .readLine()));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             } else if (row.equals("SDADeepLearning4jEarlyStop")) {
-            	try {
+                try {
                     classifier = new SDADeepLearning4jEarlyStop(Integer.parseInt(br
                             .readLine()));
                 } catch (Exception e) {
@@ -516,12 +489,27 @@ public class MainFrame extends JFrame implements Observer {
             }
         });
 
+        JMenuItem addScenario = new JMenuItem("New Scenario");
+        addScenario.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N,
+                ActionEvent.CTRL_MASK));
+        addScenario.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ScenarioDialog sd = new ScenarioDialog(mf);
+                sd.createDialog(mf);
+                revalidate();
+
+            }
+        });
+
         menuBar.add(fileMenu);
         fileMenu.add(onlineMenuItem);
         fileMenu.add(offlineMenuItem);
         fileMenu.add(testAllMenuItem);
         fileMenu.add(loadConfigAndClassifierItem);
         fileMenu.add(chartMenuItem);
+        fileMenu.add(addScenario);
         fileMenu.addSeparator();
         fileMenu.add(endMenuItem);
 
@@ -539,11 +527,17 @@ public class MainFrame extends JFrame implements Observer {
         return menuBar;
     }
 
-    private JPanel createContentJP() {
+    public JPanel createContentJP() {
         GridLayout mainLayout = new GridLayout(0, 2);
         JPanel contentJP = new JPanel(mainLayout);
-        contentJP.add(createStimuliJT());
-        contentJP.add(createWinnerJTA());
+        int count = stimuls.size();
+
+        if (stimuls.size() == 0) count = 9;
+
+        //System.out.println(count + "createContentJp count");
+        contentJP.add(createStimuliJT(count));
+      //  contentJP.add(createWinnerJTA());
+        contentJP.add(createWinnerJP());
         return contentJP;
     }
 
@@ -562,8 +556,18 @@ public class MainFrame extends JFrame implements Observer {
         return winnerJTA;
     }
 
-    private JScrollPane createStimuliJT() {
-        data = new StimuliTableModel();
+    private JPanel createWinnerJP(){
+        GridLayout gridLayout = new GridLayout(2,0);
+        winnerJP = new JPanel(gridLayout);
+        Font font = new Font(Const.RESULT_FONT_NAME, Const.RESULT_FONT_STYLE,
+                Const.RESULT_FONT_SIZE);
+        winnerJP.setFont(font);
+        winnerJP.setBackground(Color.WHITE);
+        //winnerJP.setForeground(Color.WHITE);
+        return winnerJP;
+    }
+    public JScrollPane createStimuliJT(int id) {
+        data = new StimuliTableModel(id);
         JTable stimuliJT = new JTable(data) {
             public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
                 Component c = super.prepareRenderer(renderer, row, column);
@@ -571,7 +575,7 @@ public class MainFrame extends JFrame implements Observer {
                 //  Color row based on a cell value
                 c.setBackground(getBackground());
                 int modelRow = convertRowIndexToModel(row);
-                Double weight = (Double) getModel().getValueAt(modelRow, 1);
+                Double weight = (Double) getModel().getValueAt(modelRow, 2);
                 if (weight == null || weight == 0) {
                     c.setBackground(Color.WHITE);
                 } else {
@@ -581,13 +585,16 @@ public class MainFrame extends JFrame implements Observer {
                 return c;
             }
         };
+
         JScrollPane jsp = new JScrollPane(stimuliJT);
         stimuliJT.setFillsViewportHeight(true);
-
         return jsp;
     }
 
     private void initProbabilities(double[] probabilities, int[] counts) {
+        winnerJP.removeAll();
+        JLabel label;
+        JLabel label2;
         Integer[] ranks = new Integer[probabilities.length];
         for (int i = 0; i < ranks.length; ++i) {
             ranks[i] = i;
@@ -595,13 +602,37 @@ public class MainFrame extends JFrame implements Observer {
         Comparator<Integer> gc = new ProbabilityComparator(probabilities);
         Arrays.sort(ranks, gc);
 
-        winnerJTA.setText(String.valueOf(ranks[0] + 1));
-        for (int i = 0; i < probabilities.length; i++) {
-            data.setValueAt(probabilities[ranks[i]], i, 1);
-            data.setValueAt(ranks[i] + 1, i, 0);
-            data.setValueAt(counts[ranks[i]], i, 2);
+        if (stimuls.get(ranks[0]).isImgFile1 == true) {
+            ImageIcon icon = new ImageIcon(stimuls.get(ranks[0]).image1);
+            Image image = icon.getImage(); // transform it
+            Image newimg = image.getScaledInstance(200, 200,  Image.SCALE_SMOOTH);
+            icon = new ImageIcon(newimg);
+            label = new JLabel(icon);
+            winnerJP.add(label,BorderLayout.CENTER);
+        }
+        else{
+            TextField textField = new TextField(stimuls.get(ranks[0]).getName());
+            winnerJP.add(textField,BorderLayout.CENTER);
+        }
+        if (stimuls.get(ranks[0]).isImgFile2 == true) {
+            ImageIcon icon2 = new ImageIcon(stimuls.get(ranks[0]).image2);
+            Image image = icon2.getImage(); // transform it
+            Image newimg = image.getScaledInstance(200, 200,  Image.SCALE_SMOOTH);
+            icon2 = new ImageIcon(newimg);
+            label2 = new JLabel(icon2);
+            winnerJP.add(label2,BorderLayout.CENTER);
+        }
+        else{
+            TextField textField = new TextField(stimuls.get(ranks[0]).getName());
+            winnerJP.add(textField,BorderLayout.CENTER);
         }
 
+        for (int i = 0; i < probabilities.length; i++) {
+            data.setValueAt(probabilities[ranks[i]], i, 2);
+            data.setValueAt(stimuls.get(ranks[i]).name,i,1);
+            data.setValueAt(ranks[i] + 1, i, 0);
+            data.setValueAt(counts[ranks[i]], i, 3);
+        }
         this.validate();
         this.repaint();
     }
@@ -616,7 +647,8 @@ public class MainFrame extends JFrame implements Observer {
             initProbabilities(probabilities, counts);
 
             this.epochCharts.update(((OnlineDetection) message).getPzAvg());
-        } /*
+        }
+        /*
          * else { log.error(MainFrame.class.toString() +
          * ": Expencted online detection, but received something else."); throw
          * new IllegalArgumentException(
@@ -631,7 +663,7 @@ public class MainFrame extends JFrame implements Observer {
         Arrays.fill(zeros, 0);
         Arrays.fill(intZeros, 0);
         initProbabilities(zeros, intZeros);
-        winnerJTA.setText(Const.UNKNOWN_RESULT);
+       // winnerJTA.setText(Const.UNKNOWN_RESULT);
     }
 
     private void stopRunningThread() {
@@ -766,9 +798,12 @@ public class MainFrame extends JFrame implements Observer {
 
         @Override
         public void actionPerformed(ActionEvent actionevent) {
-            if (!isTrained()) {
+            if (!isExistScenario()) {
+                scenarioDialog();
+
+            }else if (!isTrained()){
                 trainingDialog();
-            } else {
+            }else {
                 initGui();
                 chooser = new JFileChooser();
                 FileNameExtensionFilter filter = new FileNameExtensionFilter(
@@ -780,7 +815,7 @@ public class MainFrame extends JFrame implements Observer {
                 int i = chooser.showDialog(mainFrame, "Open");
                 if (i == 0) {
                     eegFile = chooser.getSelectedFile();
-                    detection = new OnlineDetection(classifier, mainFrame);
+                    detection = new OnlineDetection(classifier, mainFrame,stimuls.size());
                     stopRunningThread();
 
                     try {
@@ -811,9 +846,14 @@ public class MainFrame extends JFrame implements Observer {
 
         @Override
         public void actionPerformed(ActionEvent actionevent) {
-            if (!isTrained()) {
+            if (!isExistScenario()) {
+                scenarioDialog();
+
+            }else if (!isTrained()){
                 trainingDialog();
-            } else {
+            }
+            else
+                {
                 initGui();
 
                 //SetupDialogContent content = new SetupDialogContent();
@@ -851,7 +891,8 @@ public class MainFrame extends JFrame implements Observer {
                 if (isOk) {
                     stopRunningThread();
 
-                    detection = new OnlineDetection(classifier, mainFrame);
+                    detection = new OnlineDetection(classifier, mainFrame,stimuls.size());
+
                     try {
                         dp = new OnLineDataProvider(recorderIPAddress, port,
                                 detection);
@@ -890,7 +931,10 @@ public class MainFrame extends JFrame implements Observer {
         @Override
         public void actionPerformed(ActionEvent e) {
 
-            if (!isTrained()) {
+            if (!isExistScenario()) {
+                scenarioDialog();
+
+            }else if (!isTrained()){
                 trainingDialog();
             } else {
                 try {
@@ -906,5 +950,60 @@ public class MainFrame extends JFrame implements Observer {
 
         }
 
+    }
+
+    /**
+     * Set current stimuli
+     * @param stimuls - stimuli
+     */
+    public void setStimuls(ArrayList<Stimul> stimuls) {
+        this.stimuls = stimuls;
+        for (int i = 0; i < stimuls.size(); i++) {
+            stimuls.get(i).loadImages();
+        }
+        this.setLayout(new BorderLayout());
+
+        getContentPane().removeAll();
+        getContentPane().add(createContentJP(), BorderLayout.CENTER);
+        getNames(stimuls);
+    }
+
+    /**
+     * Fills the table with the name of the stimulus
+     * @param stimuls - stimuli
+     */
+    public void getNames(ArrayList<Stimul>stimuls){
+        for (int i = 0; i < stimuls.size(); i++) {
+            data.setValueAt(stimuls.get(i).getName(),i,1);
+
+        }
+    }
+
+    public boolean isExistScenario() {
+        return existScenario;
+    }
+
+    public void setExistScenario(boolean existScenario) {
+        this.existScenario = existScenario;
+    }
+
+    /**
+     * If the scenario is not created
+     */
+    private void scenarioDialog() {
+        if (isExistScenario() == false) {
+            int dialogResult = JOptionPane.showConfirmDialog(null,
+                    "You have to create stimuls scenario",
+                    "Scenario is not created", JOptionPane.OK_CANCEL_OPTION);
+            if (dialogResult == JOptionPane.OK_OPTION) {
+                ScenarioDialog sd = new ScenarioDialog(this);
+                sd.createDialog(this);
+                revalidate();
+                }
+            } else {
+                JOptionPane.showMessageDialog(this,
+                        "You have to create stimuls scenario first", "Error",
+                        JOptionPane.ERROR_MESSAGE);
+            }
     }
 }

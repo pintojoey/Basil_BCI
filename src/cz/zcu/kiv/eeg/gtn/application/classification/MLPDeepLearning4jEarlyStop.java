@@ -213,7 +213,7 @@ public class MLPDeepLearning4jEarlyStop implements IERPClassifier {
         throw new NotImplementedException();
     }
 
-    // method not implemented. For saving use method save(String file)
+    // method not implemented. For saving use method createDirectory(String file)
     @Override
     public void save(OutputStream dest) {
         throw new NotImplementedException();

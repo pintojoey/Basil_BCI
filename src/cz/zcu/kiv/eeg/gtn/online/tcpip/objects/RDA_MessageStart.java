@@ -1,31 +1,31 @@
 package cz.zcu.kiv.eeg.gtn.online.tcpip.objects;
 
 /**
- * Název úlohy: Jednoduché BCI Tøída: RDA_MessageStart
+ * RDA_MessageStart
  *
- * @author Michal Patoèka První verze vytvoøena: 3.3.2010
+ * @author Michal Patocka First version created: 3.3.2010
  * @version 1.0
  *
- * Tento objekt pøichází obecnì pøi zapoèetí komunikace se serverem. Obsahuje
- * informace o poètu kanálù, snímkovací frekvenci pøístroje EEG a seznam
- * jednotlivých kanálù, spoleènì s jejich jmény a voltážemi.
+ * This object is sent when the communication with the server starts. It contains
+ * information about the number of channels, sampling frequency, a list of channels
+ * with their names and voltages.
  */
 public class RDA_MessageStart extends RDA_MessageHeader {
 
     /**
-     * Poèet kanálù pøístroje EEG. *
+     * Number of EEG channels. *
      */
     private final long nChannels;
     /**
-     * Snímkovací frekvence. *
+     * Sampling frequency. *
      */
     private final double dSamplingInterval;
     /**
-     * Voltáže jednotlivých elektrod. *
+     * Channel voltages. *
      */
     private final double[] dResolutions;
     /**
-     * Názvy jednotlivých elektrod. *
+     * Channel names. *
      */
     private final String[] sChannelNames;
 
@@ -42,7 +42,7 @@ public class RDA_MessageStart extends RDA_MessageHeader {
     public String toString() {
 
         String navrat = "RDA_MessageStart (size = " + nSize + ") \n"
-                + "Sampling interval: " + dSamplingInterval + " µS \n"
+                + "Sampling interval: " + dSamplingInterval + " ï¿½S \n"
                 + "Number of channels: " + nChannels + "\n";
 
         for (int i = 0; i < dResolutions.length; i++) {

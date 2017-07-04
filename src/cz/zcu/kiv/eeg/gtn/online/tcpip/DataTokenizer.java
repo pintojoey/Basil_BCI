@@ -14,49 +14,42 @@ import cz.zcu.kiv.eeg.gtn.online.tcpip.objects.RDA_MessageStart;
 import cz.zcu.kiv.eeg.gtn.online.tcpip.objects.RDA_MessageStop;
 
 /**
- * N�zev �lohy: Jednoduch� BCI T��da: DataTokenizer
+ * 
  *
- * @author Michal Pato�ka Prvn� verze vytvo�ena: 3.3.2010
+ * @author Michal Patocka First version created: 3.3.2010
  * @version 2.0
  *
- * Tato t��da formuje z toku bajt� z�skan� od klienta TCPIP datov� objekty. Cel�
- * proces detekce za��n� hled�n�m unik�tn� posloupnosti 12 bajt�, kter� ozna�uj�
- * hlavi�ku datov�ho objektu. Toto je naimplementov�no tak, �e v nekone�n�m
- * cyklu p�id�v�m posledn� a ub�r�m prvn� z pole 12 bajt� a hled�m shodu mezi
- * t�mto polem a polem ozna�ujic�m hlavi�ku. Je - li tato posloupnost nalezena,
- * znamen� to, �e p�i�el jeden z p�ti typ� datov�ch objekt�. Jak� typ p�i�el a
- * jak� je jeho d�lka zjist�m p�e�ten�m n�sleduj�c�ch 8 bajt�, kter� n�sleduj�
- * po hlavi�ce. Obecn� plat�, �e na za��tku ka�d�ho p�enosu p�ijde objekt typu
- * RDA_MessageStart, ve kter�m jsou deklarov�ny pou�it� parametry pro
- * n�sleduj�c� datov� p�enos. Pot� chod� zna�n� mno�stv� objekt� typu
- * RDA_MessageData, p�i�em� ka�d� z nich m��e obsahovat n�kolik objekt� typu
- * RDA_Marker (nej�ast�ji v�ak pouze jeden). Kdy� zjist�m typ objektu, jak�
- * p�ich�z�, nen� probl�m do n�j na��st data konverz� pole ur�it�ho mno�stv�
- * bajt�, do po�adovan�ho datov�ho typu. Pokud je objekt nezn�m�ho typu, tak ho
- * nezpracov�v�m (p�i testech chodily objekty typu nType = 10000 jako v�pl� mezi
- * jednotliv�mi objekty). V�echny objekty na��t�m do bufferu, kde jsou
- * p�ipraveny k vyzvednut� pomoc� metody retriveDataBlock().
+ * This class converts byte stream into data objects. The whole process of 
+ * starts with searching for a unique sequence of 12 bytes denoting the header.
+ * Therefore, in an infinite cycle, we remove first 12 bytes and try to find
+ * the match between this array and an array announcing the header. 
+ * Once it is found, it means one of the data objects. First,
+ * RDA_MessageStart is expected with parameters for subsequent data transfer.
+ * Then many objects RDA_MessageData that can contain RDA_Marker (mostly just one).
+ * If the data are of an unknown type, they will not be processed.
+ * All objects are sent into a buffer from which they can
+ * be taken using the retriveDataBlock() method.
  */
 public class DataTokenizer extends Thread {
 
     /**
-     * Po�et kan�l� EEG
+     * Number of EEG channels
      */
     private int noOfChannels;
     
     /**
-     * Buffer jako vyrovn�vac� pam� pro do�asn� ulo�en� objekt� *
+     * Buffer used to cache incoming objects
      */
     private final SynchronizedLinkedListObject buffer = new SynchronizedLinkedListObject();
     
     /**
-     * Unik�tn� posloupnost 12 bajt�, kter� ozna�uje hlavi�ku datov�ho objektu.
+     * Unique sequence denoting the beginning of the data object.
      * *
      */
     private final byte[] UID = {-114, 69, 88, 67, -106, -55, -122, 76, -81, 74, -104, -69, -10, -55, 20, 80};
     
     /**
-     * Reference na TCP/IP klienta, ze kter�ho z�sk�v�m bajty ke zpracov�n�. *
+     * Reference to the TCP/IP client from which the incoming data are processed
      */
     private final TCPIPClient client;
 
@@ -64,17 +57,11 @@ public class DataTokenizer extends Thread {
 
     private boolean isRunning;
 
-    /**
-     * Reference na logger ud�lost�. *
-     */
     private static final Logger logger = Logger.getLogger(DataTokenizer.class);
 
     /**
-     * Zji��uje jestli jsou dv� pole bajt� shodn�.
+     * For finding match between two byte arrays.
      *
-     * @param one prvn� pole bajt�
-     * @param two dru� pole bajt�
-     * @return shoda/neshoda
      */
     private boolean comparator(byte[] one, byte[] two) {
         for (int i = 0; i < one.length; i++) {

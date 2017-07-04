@@ -1,25 +1,25 @@
 package cz.zcu.kiv.eeg.gtn.online.tcpip.objects;
 
 /**
- * Název úlohy: Jednoduché BCI Tøída: RDA_MessageHeader
+ * RDA_MessageHeader
  *
- * @author Michal Patoèka První verze vytvoøena: 3.3.2010
+ * @author Michal Patocka: first version 3.3.2010
  * @version 1.0
  *
- * Tato tøída reprezentuje datový objekt který pøichází ze serveru. Je vždy
- * oznaèen unikátní posloupností bajtù. Nese informace o typu a velikosti
- * následujícího datového bloku. Tuto hlavièku obsahují všechny ostatní datové
- * objekty (s výjimkou objektu typu RDA_Marker). Díky této tøídì vím, jaká data
- * mám zpracovávat.
+ * This class represents an incoming data object from the server. It is always
+ * denoted using unique byte sequence. It carries information about type and
+ * size of the next data block. Tuto hlaviï¿½ku obsahujï¿½ vï¿½echny ostatnï¿½ datovï¿½
+ * objekty (s vï¿½jimkou objektu typu RDA_Marker). Dï¿½ky tï¿½to tï¿½ï¿½dï¿½ vï¿½m, jakï¿½ data
+ * mï¿½m zpracovï¿½vat.
  */
 public class RDA_MessageHeader {
 
     /**
-     * Velikost celého datového bloku. *
+     * Size of the whole data block. *
      */
     protected long nSize;
     /**
-     * Typ datového bloku. *
+     * Data block type. *
      */
     protected long nType;
 

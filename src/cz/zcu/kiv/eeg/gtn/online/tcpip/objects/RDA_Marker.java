@@ -1,42 +1,41 @@
 package cz.zcu.kiv.eeg.gtn.online.tcpip.objects;
 
 /**
- * Název úlohy: Jednoduché BCI Tøída: RDA_Marker
+ * RDA_Marker
  *
- * @author Michal Patoèka První verze vytvoøena: 3.3.2010
+ * @author Michal Patocka 
+ * 		First version created: 3.3.2010
+ *      Refactoring and translation: 04. 07. 2017
+ * 
  * @version 1.0
  *
- * Tento objekt reprezentuje pøíchozí markery. Obsahuje informace o jeho
- * velikosti, relativním odsazením v datovém bloku (mùže být od 0 až po velikost
- * tohoto bloku) a poètu obsažených datových blokù (toto èíslo je standartnì 1).
- * Dále obsahuje inforamci o tom ke které elektrodì pøísluší. Jelikož však
- * server doposud nemá implemetovanou funkci pro zasílání markerù pouze z
- * urèitého poètu elektrod, je tato hodnota standartnì nastavena na -1, což
- * znamená, že platí pro všechny elektrody. Nejdùležitìjší èástí tohoto objektu
- * je však informace o názvu tohoto impulzu, která je oddìlená nulovými znaky
- * (/0).
+ * This object represents incoming markers. It contains information about their size,
+ * relative offset (from 0 to size of the block) and number of occupied data blocks (by default 1).
+ * It also contains channel information. Since the server does not support sending selected channels
+ * only, this value is by default set to -1 which means for all electrodes. The most important information
+ * is about the code of the incoming marker that is separated by zero characters (/0).
  */
 
 public class RDA_Marker {
 
     /**
-     * Velikost tohoto bloku v bajtech. *
+     * Size of the block in bytes. *
      */
     private final long nSize;
     /**
-     * Relativní odsazení v datovém bloku. *
+     * Relative offset in data block. *
      */
     private final long nPosition;
     /**
-     * Poèet obsažených blokù (standartnì 1). *
+     * Number of occupied blocks (by default 1). *
      */
     private final long nPoints;
     /**
-     * Zasažený kanál (standartnì -1 - všechny kanály). *
+     * Number of channels (by default -1 = all channels). *
      */
     private final long nChannel;
     /**
-     * Název pøíchozího markeru. *
+     * Name of the incoming marker
      */
     private final String sTypeDesc;
 

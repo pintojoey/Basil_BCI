@@ -1,37 +1,37 @@
 package cz.zcu.kiv.eeg.gtn.online.tcpip.objects;
 
 /**
- * Název úlohy: Jednoduché BCI Tøída: RDA_MessageData
+ * RDA_MessageData
  *
- * @author Michal Patoèka První verze vytvoøena: 3.3.2010
+ * @author Michal Patocka: First version created: 3.3.2010
  * @version 1.0
  *
- * Tato tøída je obecnou datovou tøídou zasílanou serverem. Obsahuje informace o
- * poètu obsažených datových blokù, poètu obsažených markerù a relativní poøadí
- * tohoto bloku od zaèátku komunikace. Dále samozøejmì obsahuje samotná data,
- * která jsou uložena v poli o délce (poèet kanálù * poèet datových blokù).
- * Rovnìž obsahuje informace o pøítomných markerech.
+ * This class represents a data message sent by the server. It contains information about
+ * the number of data blocks, number of contained markers a relative position of the block
+ * since communication started.. Furthermore, the data itself are contained that are stored in an 
+ * array (number of channels x number of data blocks).
+ * Also contains the information about markers.
  */
 public class RDA_MessageData extends RDA_MessageHeader {
 
     /**
-     * Poøadí tohoto bloku od poèátku komunikace. *
+     * Position of the data block since communication started. *
      */
     private final long nBlock;
     /**
-     * Poèet obsažených datových blokù. *
+     * Number of occupied data blocks. *
      */
     private final long nPoints;
     /**
-     * Poèet obsažených markerù. *
+     * Number of markers *
      */
     private final long nMarkers;
     /**
-     * Pole s uloženými hodnotami (samotná data). *
+     * Array with the data itself. *
      */
     private final float[] fData;
     /**
-     * Pole s referencemi na obsažené markery. *
+     * Array referencing the markers. *
      */
     private final RDA_Marker[] markers;
 

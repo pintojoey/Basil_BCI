@@ -1,13 +1,13 @@
 package cz.zcu.kiv.eeg.gtn.online.tcpip.objects;
 
 /**
- * Název úlohy: Jednoduché BCI Tøída: RDA_MessageStop
+ * RDA_MessageStop
  *
- * @author Michal Patoèka První verze vytvoøena: 3.3.2010
+ * @author Michal Patocka First version created: 3.3.2010
  * @version 1.0
  *
- * Tento prázdný objekt pøichází pøi ukonèení komunikace se serverem.
- * @author Michal Patoèka.
+ * This empty object is sent when communication with the server stops.
+ * @author Michal Patoï¿½ka.
  */
 public class RDA_MessageStop extends RDA_MessageHeader {
 

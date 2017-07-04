@@ -1,6 +1,6 @@
-package cz.zcu.kiv.eeg.gtn.Data;
+package cz.zcu.kiv.eeg.gtn.data;
 
-import cz.zcu.kiv.eeg.gtn.DataProcessing.Preprocessing.IPreprocessing;
+import cz.zcu.kiv.eeg.gtn.dataProcessing.preprocessing.IPreprocessing;
 
 import java.util.ArrayList;
 
@@ -32,7 +32,7 @@ public class EEGDataPackage {
 
     /**
      * Set EEG data
-     * @param data Data
+     * @param data data
      * @param step Last preprocessing step
      */
     public void setData(double[][] data, IPreprocessing step) {

@@ -1,4 +1,4 @@
-package cz.zcu.kiv.eeg.gtn.application.classification.test.statictics;
+package cz.zcu.kiv.eeg.gtn.data.processing.classification.test.statictics;
 
 /**
  * Created by stebjan on 23.6.2015.

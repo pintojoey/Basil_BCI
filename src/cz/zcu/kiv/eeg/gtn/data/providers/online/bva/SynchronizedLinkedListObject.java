@@ -1,16 +1,12 @@
-package cz.zcu.kiv.eeg.gtn.online.tcpip;
+package cz.zcu.kiv.eeg.gtn.data.providers.online.bva;
 
 import java.util.LinkedList;
 
 /**
- * Název úlohy: Jednoduché BCI
- * Tøída: SynchronizedLinkedListObject
- * @author Michal Patoèka
- * První verze vytvoøena: 3.3.2010
- * @version 1.0
+
  * 
- * Thread-safe linked list, používaný jako buffer objektù typu RDA.
- * Pøetíženy jsou pouze používané metody.
+ * Thread-safe linked list, used as a buffer for RDA object.
+ * Only used methods are overriden.
  */
 
 public class SynchronizedLinkedListObject extends LinkedList<Object> {

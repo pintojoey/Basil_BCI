@@ -1,4 +1,4 @@
-package cz.zcu.kiv.eeg.gtn.application.classification;
+package cz.zcu.kiv.eeg.gtn.data.processing.classification;
 
 import org.apache.commons.io.FileUtils;
 //import org.canova.api.records.reader.RecordReader;
@@ -21,7 +21,7 @@ import org.nd4j.linalg.dataset.SplitTestAndTrain;
 import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.lossfunctions.LossFunctions.LossFunction;
 
-import cz.zcu.kiv.eeg.gtn.application.featureextraction.IFeatureExtraction;
+import cz.zcu.kiv.eeg.gtn.data.processing.featureextraction.IFeatureExtraction;
 
 import java.io.*;
 import java.nio.file.Files;

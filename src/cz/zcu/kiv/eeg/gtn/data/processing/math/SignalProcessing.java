@@ -1,4 +1,4 @@
-package cz.zcu.kiv.eeg.gtn.algorithm.math;
+package cz.zcu.kiv.eeg.gtn.data.processing.math;
 
 public class SignalProcessing {
 

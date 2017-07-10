@@ -1,4 +1,4 @@
-package cz.zcu.kiv.eeg.gtn.application.classification.test;
+package cz.zcu.kiv.eeg.gtn.data.processing.classification.test;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -6,9 +6,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import cz.zcu.kiv.eeg.gtn.application.classification.*;
-import cz.zcu.kiv.eeg.gtn.application.featureextraction.FilterAndSubsamplingFeatureExtraction;
-import cz.zcu.kiv.eeg.gtn.application.featureextraction.IFeatureExtraction;
+import cz.zcu.kiv.eeg.gtn.data.processing.classification.*;
+import cz.zcu.kiv.eeg.gtn.data.processing.featureextraction.FilterAndSubsamplingFeatureExtraction;
+import cz.zcu.kiv.eeg.gtn.data.processing.featureextraction.IFeatureExtraction;
 
 /**
  * 

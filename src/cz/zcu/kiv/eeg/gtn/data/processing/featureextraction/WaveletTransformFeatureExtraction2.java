@@ -1,7 +1,7 @@
-package cz.zcu.kiv.eeg.gtn.application.featureextraction;
+package cz.zcu.kiv.eeg.gtn.data.processing.featureextraction;
 
-import cz.zcu.kiv.eeg.gtn.Const;
-import cz.zcu.kiv.eeg.gtn.algorithm.math.SignalProcessing;
+import cz.zcu.kiv.eeg.gtn.data.processing.math.SignalProcessing;
+import cz.zcu.kiv.eeg.gtn.utils.Const;
 import cz.zcu.kiv.eegdsp.common.ISignalProcessingResult;
 import cz.zcu.kiv.eegdsp.common.ISignalProcessor;
 import cz.zcu.kiv.eegdsp.main.SignalProcessingFactory;

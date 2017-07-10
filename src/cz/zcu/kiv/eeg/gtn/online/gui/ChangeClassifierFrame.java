@@ -30,10 +30,9 @@ import javax.swing.KeyStroke;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import cz.zcu.kiv.eeg.gtn.application.classification.*;
-import cz.zcu.kiv.eeg.gtn.application.classification.DBNDeepLearning4j;
-import cz.zcu.kiv.eeg.gtn.application.classification.test.TrainUsingOfflineProvider;
-import cz.zcu.kiv.eeg.gtn.application.featureextraction.IFeatureExtraction;
+import cz.zcu.kiv.eeg.gtn.data.processing.classification.*;
+import cz.zcu.kiv.eeg.gtn.data.processing.classification.test.TrainUsingOfflineProvider;
+import cz.zcu.kiv.eeg.gtn.data.processing.featureextraction.IFeatureExtraction;
 
 /**
  * Window for changing classifier and its parameters

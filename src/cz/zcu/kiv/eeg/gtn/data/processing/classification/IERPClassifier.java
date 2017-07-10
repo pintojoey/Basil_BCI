@@ -1,10 +1,10 @@
-package cz.zcu.kiv.eeg.gtn.application.classification;
+package cz.zcu.kiv.eeg.gtn.data.processing.classification;
 
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
 
-import cz.zcu.kiv.eeg.gtn.application.featureextraction.IFeatureExtraction;
+import cz.zcu.kiv.eeg.gtn.data.processing.featureextraction.IFeatureExtraction;
 
 
 

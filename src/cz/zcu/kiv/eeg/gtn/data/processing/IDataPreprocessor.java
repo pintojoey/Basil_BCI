@@ -1,4 +1,4 @@
-package cz.zcu.kiv.eeg.gtn.dataProcessing;
+package cz.zcu.kiv.eeg.gtn.data.processing;
 
 import cz.zcu.kiv.eeg.gtn.data.EEGDataPackage;
 

@@ -1,4 +1,4 @@
-package cz.zcu.kiv.eeg.gtn.application.featureextraction;
+package cz.zcu.kiv.eeg.gtn.data.processing.featureextraction;
 
 /**
  * 

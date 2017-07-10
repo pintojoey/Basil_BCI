@@ -1,11 +1,11 @@
-package cz.zcu.kiv.eeg.gtn.algorithm.math;
+package cz.zcu.kiv.eeg.gtn.data.processing.math;
 
-import cz.zcu.kiv.eeg.gtn.Const;
-import cz.zcu.kiv.eeg.gtn.algorithm.math.filter.biz.FilterCharacteristicsType;
-import cz.zcu.kiv.eeg.gtn.algorithm.math.filter.biz.FilterPassType;
-import cz.zcu.kiv.eeg.gtn.algorithm.math.filter.biz.IirFilter;
-import cz.zcu.kiv.eeg.gtn.algorithm.math.filter.biz.IirFilterCoefficients;
-import cz.zcu.kiv.eeg.gtn.algorithm.math.filter.biz.IirFilterDesignFisher;
+import cz.zcu.kiv.eeg.gtn.data.processing.math.filter.biz.FilterCharacteristicsType;
+import cz.zcu.kiv.eeg.gtn.data.processing.math.filter.biz.FilterPassType;
+import cz.zcu.kiv.eeg.gtn.data.processing.math.filter.biz.IirFilter;
+import cz.zcu.kiv.eeg.gtn.data.processing.math.filter.biz.IirFilterCoefficients;
+import cz.zcu.kiv.eeg.gtn.data.processing.math.filter.biz.IirFilterDesignFisher;
+import cz.zcu.kiv.eeg.gtn.utils.Const;
 
 
 /**

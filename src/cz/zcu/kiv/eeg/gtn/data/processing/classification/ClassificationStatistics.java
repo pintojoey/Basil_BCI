@@ -1,4 +1,4 @@
-package cz.zcu.kiv.eeg.gtn.application.classification;
+package cz.zcu.kiv.eeg.gtn.data.processing.classification;
 
 /**
  *

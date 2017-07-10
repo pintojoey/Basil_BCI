@@ -1,8 +1,8 @@
-package cz.zcu.kiv.eeg.gtn.online.app;
+package cz.zcu.kiv.eeg.gtn.data.providers.online.bva.app;
 
 import java.util.Arrays;
 
-import cz.zcu.kiv.eeg.gtn.Const;
+import cz.zcu.kiv.eeg.gtn.utils.Const;
 
 /**
  * Serves as a data container transfered to observers

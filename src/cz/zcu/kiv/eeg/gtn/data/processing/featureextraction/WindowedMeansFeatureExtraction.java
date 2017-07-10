@@ -1,10 +1,10 @@
-package cz.zcu.kiv.eeg.gtn.application.featureextraction;
+package cz.zcu.kiv.eeg.gtn.data.processing.featureextraction;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import cz.zcu.kiv.eeg.gtn.Const;
-import cz.zcu.kiv.eeg.gtn.algorithm.math.SignalProcessing;
+import cz.zcu.kiv.eeg.gtn.data.processing.math.SignalProcessing;
+import cz.zcu.kiv.eeg.gtn.utils.Const;
 
 public class WindowedMeansFeatureExtraction implements IFeatureExtraction {
 	private static final int[] CHANNELS = {1, 2, 3}; /* EEG channels to be transformed to feature vectors */

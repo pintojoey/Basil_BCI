@@ -1,15 +1,15 @@
-package cz.zcu.kiv.eeg.gtn.application.classification.test;
+package cz.zcu.kiv.eeg.gtn.data.processing.classification.test;
 
-import cz.zcu.kiv.eeg.gtn.Const;
-import cz.zcu.kiv.eeg.gtn.application.classification.IERPClassifier;
-import cz.zcu.kiv.eeg.gtn.application.classification.MLPClassifier;
-import cz.zcu.kiv.eeg.gtn.application.featureextraction.IFeatureExtraction;
-import cz.zcu.kiv.eeg.gtn.application.featureextraction.WaveletTransformFeatureExtraction;
-import cz.zcu.kiv.eeg.gtn.online.app.DataObjects.MessageType;
-import cz.zcu.kiv.eeg.gtn.online.app.DataObjects.ObserverMessage;
-import cz.zcu.kiv.eeg.gtn.online.app.OffLineDataProvider;
-import cz.zcu.kiv.eeg.gtn.online.app.OnlineDetection;
+import cz.zcu.kiv.eeg.gtn.data.processing.classification.IERPClassifier;
+import cz.zcu.kiv.eeg.gtn.data.processing.classification.MLPClassifier;
+import cz.zcu.kiv.eeg.gtn.data.processing.featureextraction.IFeatureExtraction;
+import cz.zcu.kiv.eeg.gtn.data.processing.featureextraction.WaveletTransformFeatureExtraction;
+import cz.zcu.kiv.eeg.gtn.data.providers.online.bva.app.OffLineDataProvider;
+import cz.zcu.kiv.eeg.gtn.data.providers.online.bva.app.OnlineDetection;
+import cz.zcu.kiv.eeg.gtn.data.providers.online.bva.app.DataObjects.MessageType;
+import cz.zcu.kiv.eeg.gtn.data.providers.online.bva.app.DataObjects.ObserverMessage;
 import cz.zcu.kiv.eeg.gtn.online.gui.ProbabilityComparator;
+import cz.zcu.kiv.eeg.gtn.utils.Const;
 
 import java.io.*;
 import java.util.*;

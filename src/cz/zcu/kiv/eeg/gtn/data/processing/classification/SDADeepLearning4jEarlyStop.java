@@ -1,6 +1,5 @@
-package cz.zcu.kiv.eeg.gtn.application.classification;
+package cz.zcu.kiv.eeg.gtn.data.processing.classification;
 
-import cz.zcu.kiv.eeg.gtn.application.featureextraction.IFeatureExtraction;
 import org.apache.commons.io.FileUtils;
 import org.bytedeco.javacv.FrameFilter;
 import org.deeplearning4j.api.storage.StatsStorage;
@@ -45,6 +44,8 @@ import org.nd4j.linalg.dataset.api.iterator.TestDataSetIterator;
 import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.lossfunctions.LossFunctions;
 import org.nd4j.linalg.lossfunctions.LossFunctions.LossFunction;
+
+import cz.zcu.kiv.eeg.gtn.data.processing.featureextraction.IFeatureExtraction;
 
 import java.io.*;
 import java.nio.file.Files;

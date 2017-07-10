@@ -1,4 +1,4 @@
-package cz.zcu.kiv.eeg.gtn.online.tcpip.objects;
+package cz.zcu.kiv.eeg.gtn.data.providers.online.bva.objects;
 
 /**
  * RDA_MessageStop

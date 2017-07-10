@@ -1,9 +1,9 @@
-package cz.zcu.kiv.eeg.gtn.algorithm.math;
+package cz.zcu.kiv.eeg.gtn.data.processing.math;
 
 import java.io.*;
 import java.util.*;
 
-import cz.zcu.kiv.eeg.gtn.online.app.EpochMessenger;
+import cz.zcu.kiv.eeg.gtn.data.providers.online.bva.app.EpochMessenger;
 
 /**
  * Class for removal of artifacts in EEG signal using the 

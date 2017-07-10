@@ -1,6 +1,5 @@
-package cz.zcu.kiv.eeg.gtn.application.classification;
+package cz.zcu.kiv.eeg.gtn.data.processing.classification;
 
-import cz.zcu.kiv.eeg.gtn.application.featureextraction.IFeatureExtraction;
 import org.apache.commons.io.FileUtils;
 import org.deeplearning4j.datasets.iterator.impl.ListDataSetIterator;
 import org.deeplearning4j.earlystopping.EarlyStoppingModelSaver;
@@ -35,6 +34,8 @@ import org.nd4j.linalg.dataset.SplitTestAndTrain;
 import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.lossfunctions.LossFunctions;
 import org.nd4j.linalg.lossfunctions.LossFunctions.LossFunction;
+
+import cz.zcu.kiv.eeg.gtn.data.processing.featureextraction.IFeatureExtraction;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.io.*;

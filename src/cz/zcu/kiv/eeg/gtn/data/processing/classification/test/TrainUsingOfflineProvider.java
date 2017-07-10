@@ -1,20 +1,20 @@
-package cz.zcu.kiv.eeg.gtn.application.classification.test;
+package cz.zcu.kiv.eeg.gtn.data.processing.classification.test;
 
 import java.io.IOException;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import cz.zcu.kiv.eeg.gtn.Const;
-import cz.zcu.kiv.eeg.gtn.algorithm.math.ButterWorthFilter;
-import cz.zcu.kiv.eeg.gtn.algorithm.math.IFilter;
-import cz.zcu.kiv.eeg.gtn.application.classification.*;
-import cz.zcu.kiv.eeg.gtn.application.featureextraction.IFeatureExtraction;
-import cz.zcu.kiv.eeg.gtn.application.featureextraction.WaveletTransformFeatureExtraction;
-import cz.zcu.kiv.eeg.gtn.online.app.EpochMessenger;
-import cz.zcu.kiv.eeg.gtn.online.app.OffLineDataProvider;
-import cz.zcu.kiv.eeg.gtn.online.app.DataObjects.MessageType;
-import cz.zcu.kiv.eeg.gtn.online.app.DataObjects.ObserverMessage;
+import cz.zcu.kiv.eeg.gtn.data.processing.classification.*;
+import cz.zcu.kiv.eeg.gtn.data.processing.featureextraction.IFeatureExtraction;
+import cz.zcu.kiv.eeg.gtn.data.processing.featureextraction.WaveletTransformFeatureExtraction;
+import cz.zcu.kiv.eeg.gtn.data.processing.math.ButterWorthFilter;
+import cz.zcu.kiv.eeg.gtn.data.processing.math.IFilter;
+import cz.zcu.kiv.eeg.gtn.data.providers.online.bva.app.EpochMessenger;
+import cz.zcu.kiv.eeg.gtn.data.providers.online.bva.app.OffLineDataProvider;
+import cz.zcu.kiv.eeg.gtn.data.providers.online.bva.app.DataObjects.MessageType;
+import cz.zcu.kiv.eeg.gtn.data.providers.online.bva.app.DataObjects.ObserverMessage;
+import cz.zcu.kiv.eeg.gtn.utils.Const;
 
 
 

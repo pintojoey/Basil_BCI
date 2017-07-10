@@ -1,4 +1,4 @@
-package cz.zcu.kiv.eeg.gtn.algorithm.math;
+package cz.zcu.kiv.eeg.gtn.data.processing.math;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -14,7 +14,7 @@ import org.apache.commons.math.linear.RealMatrix;
 import org.apache.commons.math.stat.correlation.Covariance;
 
 import Jama.Matrix;
-import cz.zcu.kiv.eeg.gtn.application.featureextraction.IFeatureExtraction;
+import cz.zcu.kiv.eeg.gtn.data.processing.featureextraction.IFeatureExtraction;
 
 public class LinearDiscriminantAnalysisAlgorithms {
 

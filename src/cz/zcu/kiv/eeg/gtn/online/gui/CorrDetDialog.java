@@ -24,7 +24,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-import cz.zcu.kiv.eeg.gtn.algorithm.math.CorrelationArtifactDet;
+import cz.zcu.kiv.eeg.gtn.data.processing.math.CorrelationArtifactDet;
 
 /**
  * Class providing the GUI dialog for the creation of the correlation artifact detection.

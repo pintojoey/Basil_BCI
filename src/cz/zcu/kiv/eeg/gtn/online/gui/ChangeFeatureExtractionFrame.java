@@ -25,12 +25,12 @@ import javax.swing.JSpinner;
 import javax.swing.KeyStroke;
 import javax.swing.SpinnerNumberModel;
 
-import cz.zcu.kiv.eeg.gtn.Const;
-import cz.zcu.kiv.eeg.gtn.application.featureextraction.FilterAndSubsamplingFeatureExtraction;
-import cz.zcu.kiv.eeg.gtn.application.featureextraction.HHTFeatureExtraction;
-import cz.zcu.kiv.eeg.gtn.application.featureextraction.IFeatureExtraction;
-import cz.zcu.kiv.eeg.gtn.application.featureextraction.MatchingPursuitFeatureExtraction;
-import cz.zcu.kiv.eeg.gtn.application.featureextraction.WaveletTransformFeatureExtraction;
+import cz.zcu.kiv.eeg.gtn.data.processing.featureextraction.FilterAndSubsamplingFeatureExtraction;
+import cz.zcu.kiv.eeg.gtn.data.processing.featureextraction.HHTFeatureExtraction;
+import cz.zcu.kiv.eeg.gtn.data.processing.featureextraction.IFeatureExtraction;
+import cz.zcu.kiv.eeg.gtn.data.processing.featureextraction.MatchingPursuitFeatureExtraction;
+import cz.zcu.kiv.eeg.gtn.data.processing.featureextraction.WaveletTransformFeatureExtraction;
+import cz.zcu.kiv.eeg.gtn.utils.Const;
 
 /**
  * 

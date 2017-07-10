@@ -1,4 +1,4 @@
-package cz.zcu.kiv.eeg.gtn.online.tcpip;
+package cz.zcu.kiv.eeg.gtn.data.providers.online.bva;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -7,11 +7,11 @@ import java.util.NoSuchElementException;
 
 import org.apache.log4j.Logger;
 
-import cz.zcu.kiv.eeg.gtn.online.tcpip.objects.RDA_Marker;
-import cz.zcu.kiv.eeg.gtn.online.tcpip.objects.RDA_MessageData;
-import cz.zcu.kiv.eeg.gtn.online.tcpip.objects.RDA_MessageHeader;
-import cz.zcu.kiv.eeg.gtn.online.tcpip.objects.RDA_MessageStart;
-import cz.zcu.kiv.eeg.gtn.online.tcpip.objects.RDA_MessageStop;
+import cz.zcu.kiv.eeg.gtn.data.providers.online.bva.objects.RDA_Marker;
+import cz.zcu.kiv.eeg.gtn.data.providers.online.bva.objects.RDA_MessageData;
+import cz.zcu.kiv.eeg.gtn.data.providers.online.bva.objects.RDA_MessageHeader;
+import cz.zcu.kiv.eeg.gtn.data.providers.online.bva.objects.RDA_MessageStart;
+import cz.zcu.kiv.eeg.gtn.data.providers.online.bva.objects.RDA_MessageStop;
 
 /**
  * 
@@ -73,12 +73,11 @@ public class DataTokenizer extends Thread {
     }
 
     /**
-     * Poli bajt� p�id� na konec nov� bajt a posune index cel�ho pole o 1, ��m�
-     * vyma�e odkaz na prvn� bajt.
+     * Adds a new byte into a byte array 
      *
-     * @param field pole bajt�
-     * @param ap p�id�van� bajt
-     * @return posunut� pole s bajtem nav�c
+     * @param field byte array
+     * @param ap new byte
+     * @return resulting array
      */
     private byte[] appendByte(byte[] field, byte ap) {
         for (int i = 0; i < (field.length - 1); i++) {
@@ -89,11 +88,11 @@ public class DataTokenizer extends Thread {
     }
 
     /**
-     * Tato metoda zapisuje objekty typu RDA_Marker a p�ed�v� na n� reference
-     * p��slu�n�mu datov�mu objektu.
+     * This method writes objects of RDA_Marker type and transfer
+     * references to corresponding data objects.
      *
-     * @param markerCount po�et marker�, kter� se zpracov�vaj�.
-     * @return pole marker�
+     * @param markerCount number of markers to process
+     * @return array of markers
      */
     private RDA_Marker[] writeMarkers(int markerCount) {
         RDA_Marker[] nMarkers = new RDA_Marker[markerCount];
@@ -109,17 +108,16 @@ public class DataTokenizer extends Thread {
 
             client.read(4);
             /*
-             * Tuto funkci doposud servr nem� implementovanou.
-             * Proto vrac� blbost. V n�vodu je �e se defaultn� jedn�
-             * o v�echny kan�ly, proto hodnota -1.
-             * long channel = arr2long(nChannel);*/
+             * This function has so far not been implemented by the server.
+             * Therefore, its return values do not make any sense. Default - all channels.
+             * -1 is used for it;*/
             long channel = -1;
 
             byte[] sTypeDesc = client.read((int) size - 16);
             String typeDesc = "";
             for (int j = 0; j < sTypeDesc.length; j++) {
-                char znak = (char) sTypeDesc[j];
-                typeDesc = typeDesc + znak;
+                char currentChar = (char) sTypeDesc[j];
+                typeDesc = typeDesc + currentChar;
             }
             nMarkers[i] = new RDA_Marker(size, position, points, channel, typeDesc);
         }
@@ -127,10 +125,8 @@ public class DataTokenizer extends Thread {
     }
 
     /**
-     * Konstruktor, kter�mu je p�ed�v�m odkaz na TCP/IP clienta. Je pou�it
-     * defaultn� logger.
      *
-     * @param client TCP/IP client pro z�sk�v�n� dat
+     * @param client TCP/IP client to obtain the data
      */
     public DataTokenizer(TCPIPClient client) {
         this.client = client;
@@ -155,9 +151,9 @@ public class DataTokenizer extends Thread {
     }
 
     /**
-     * Metoda pro spu�t�n� vl�kna DataTokenizeru. Jeliko� proces z�sk�v�n� dat a
-     * jejich p�ev�d�n� na datov� objekty mus� b�t paraelizov�n, mus� b�t
-     * pou�ito vl�knov�ho zpracov�n�.
+     * Since the process of data collection
+     * and their translation into data objects must be 
+     * parallelized, threads are used 
      */
     @Override
     public void run() {
@@ -191,7 +187,7 @@ public class DataTokenizer extends Thread {
                         resolutions[j] = getDouble(dResolutions);
                     }
 
-                    //jm�na kan�l� mohou m�t prom�nnou d�lku, jsou odd�len� znakem \0
+                    // channel lengths may have different lengths; they are separated by \0
                     for (int j = 0; j < channels; j++) {
                         byte[] b = client.read(1);
                         char rd = (char) b[0];
@@ -232,7 +228,6 @@ public class DataTokenizer extends Thread {
 
                     float[] data = new float[noOfChannels * points];
 
-                    int ch = 0;
                     for (int j = 0; j < data.length; j++) {
                         byte[] fData = client.read(4);
                         data[j] = getFloat(fData) * (float) start.getdResolutions()[0];
@@ -251,11 +246,11 @@ public class DataTokenizer extends Thread {
 
                     for (int j = 0; j < markers; j++) {
                         buffer.addLast(markerField[j]);
-                        logger.debug("P��choz� marker: " + markerField[j].getsTypeDesc());
+                        logger.debug("Incoming marker: " + markerField[j].getsTypeDesc());
                     }
 
                 } else {
-                    //v�echny nezn�m� typy objekt� se ignoruj�
+                    // Unknown objects are ignored.
                 }
 
             }
@@ -269,10 +264,10 @@ public class DataTokenizer extends Thread {
     }
 
     /**
-     * Tato metoda vrac� prvn� objekt na vrcholu bufferu, do kter�ho jsou
-     * na��t�ny datov� bloky.
+     * This method returns the first object on the top of the buffer, 
+     * into which data blocks have been inserted.
      *
-     * @return datov� objekt
+     * @return data objects
      */
     public synchronized Object retrieveDataBlock() {
 
@@ -291,11 +286,7 @@ public class DataTokenizer extends Thread {
         return o;
     }
 
-    /**
-     * Tato metoda zji��uje, jetli je pr�zdn� buffer.
-     *
-     * @return zda - li je pr�zdn� buffer.
-     */
+    
     public boolean hasNext() {
         return buffer.isEmpty();
     }

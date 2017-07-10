@@ -1,8 +1,8 @@
 package cz.zcu.kiv.eeg.gtn.online.gui;
 
-import cz.zcu.kiv.eeg.gtn.Const;
-
 import javax.swing.table.AbstractTableModel;
+
+import cz.zcu.kiv.eeg.gtn.utils.Const;
 
 @SuppressWarnings("serial")
 class StimuliTableModel extends AbstractTableModel {

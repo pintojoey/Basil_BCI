@@ -18,7 +18,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-import cz.zcu.kiv.eeg.gtn.algorithm.math.ButterWorthFilter;
+import cz.zcu.kiv.eeg.gtn.data.processing.math.ButterWorthFilter;
 
 	/**
 	 * Class providing the GUI dialog for the creation of the butter worth filter.

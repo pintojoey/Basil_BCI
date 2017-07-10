@@ -3,7 +3,7 @@ package cz.zcu.kiv.eeg.gtn;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-import cz.zcu.kiv.eeg.gtn.application.classification.test.OptimizeMLP;
+import cz.zcu.kiv.eeg.gtn.data.processing.classification.test.OptimizeMLP;
 import cz.zcu.kiv.eeg.gtn.online.gui.MainFrame;
 
 import java.io.IOException;

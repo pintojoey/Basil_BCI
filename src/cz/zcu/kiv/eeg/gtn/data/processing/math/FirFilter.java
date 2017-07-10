@@ -1,4 +1,4 @@
-package cz.zcu.kiv.eeg.gtn.algorithm.math;
+package cz.zcu.kiv.eeg.gtn.data.processing.math;
 
 /**
  * Taken from http://ptolemy.eecs.berkeley.edu/eecs20/week12/implementation.html

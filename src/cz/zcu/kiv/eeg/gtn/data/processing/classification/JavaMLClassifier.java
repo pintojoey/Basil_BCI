@@ -1,4 +1,4 @@
-package cz.zcu.kiv.eeg.gtn.application.classification;
+package cz.zcu.kiv.eeg.gtn.data.processing.classification;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -20,7 +20,7 @@ import java.util.Random;
 import java.util.Set;
 import java.util.SortedSet;
 
-import cz.zcu.kiv.eeg.gtn.application.featureextraction.IFeatureExtraction;
+import cz.zcu.kiv.eeg.gtn.data.processing.featureextraction.IFeatureExtraction;
 import libsvm.LibSVM;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import net.sf.javaml.classification.Classifier;

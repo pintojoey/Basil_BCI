@@ -1,4 +1,4 @@
-package cz.zcu.kiv.eeg.gtn.online.tcpip.objects;
+package cz.zcu.kiv.eeg.gtn.data.providers.online.bva.objects;
 
 /**
  * RDA_MessageData
@@ -48,26 +48,26 @@ public class RDA_MessageData extends RDA_MessageHeader {
     @Override
     public String toString() {
 
-        String navrat = "RDA_MessageData (size = " + super.getnSize() + ") \n"
+        String stringValue = "RDA_MessageData (size = " + super.getnSize() + ") \n"
                 + "block NO.: " + nBlock + " \n"
                 + "points: " + nPoints + "\n"
                 + "NO of markers: " + nMarkers + "\n";
         int nChannels = fData.length / (int) nPoints;
 
         for (int i = 0; i < nChannels; i++) {
-            navrat = navrat + (i + 1) + ": ";
+            stringValue = stringValue + (i + 1) + ": ";
             for (int j = i; j < fData.length; j += nPoints) {
-                navrat = navrat + fData[j] + ", ";
+                stringValue = stringValue + fData[j] + ", ";
             }
-            navrat = navrat + "\n";
+            stringValue = stringValue + "\n";
         }
-        navrat = navrat + "\n";
+        stringValue = stringValue + "\n";
 
         for (int i = 0; i < nMarkers; i++) {
-            navrat = navrat + markers[i].toString();
+            stringValue = stringValue + markers[i].toString();
         }
 
-        return navrat;
+        return stringValue;
     }
 
     public long getnBlock() {

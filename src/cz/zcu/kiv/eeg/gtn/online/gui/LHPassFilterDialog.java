@@ -15,8 +15,8 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
-import cz.zcu.kiv.eeg.gtn.algorithm.math.HighPassFilter;
-import cz.zcu.kiv.eeg.gtn.algorithm.math.LowPassFilter;
+import cz.zcu.kiv.eeg.gtn.data.processing.math.HighPassFilter;
+import cz.zcu.kiv.eeg.gtn.data.processing.math.LowPassFilter;
 
 /**
  * Class providing the GUI dialog for the creation of the low/high pass filter.

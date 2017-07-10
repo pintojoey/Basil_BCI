@@ -1,8 +1,8 @@
-package cz.zcu.kiv.eeg.gtn.online.app;
+package cz.zcu.kiv.eeg.gtn.data.providers.online.bva.app;
 
-import cz.zcu.kiv.eeg.gtn.Const;
-import cz.zcu.kiv.eeg.gtn.application.classification.IERPClassifier;
-import cz.zcu.kiv.eeg.gtn.online.app.DataObjects.ObserverMessage;
+import cz.zcu.kiv.eeg.gtn.data.processing.classification.IERPClassifier;
+import cz.zcu.kiv.eeg.gtn.data.providers.online.bva.app.DataObjects.ObserverMessage;
+import cz.zcu.kiv.eeg.gtn.utils.Const;
 
 import java.util.Arrays;
 import java.util.Observable;

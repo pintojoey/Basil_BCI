@@ -1,4 +1,4 @@
-package cz.zcu.kiv.eeg.gtn.online.tcpip.objects;
+package cz.zcu.kiv.eeg.gtn.data.providers.online.bva.objects;
 
 /**
  * RDA_MessageHeader
@@ -8,9 +8,8 @@ package cz.zcu.kiv.eeg.gtn.online.tcpip.objects;
  *
  * This class represents an incoming data object from the server. It is always
  * denoted using unique byte sequence. It carries information about type and
- * size of the next data block. Tuto hlavi�ku obsahuj� v�echny ostatn� datov�
- * objekty (s v�jimkou objektu typu RDA_Marker). D�ky t�to t��d� v�m, jak� data
- * m�m zpracov�vat.
+ * size of the next data block. Each data object except RDA_Marker contains 
+ * this header. The header gives us the information which data to process.
  */
 public class RDA_MessageHeader {
 

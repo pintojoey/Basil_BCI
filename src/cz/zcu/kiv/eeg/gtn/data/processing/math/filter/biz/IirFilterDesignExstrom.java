@@ -38,7 +38,7 @@
 // - The unit of the relative filter cutoff frequencies has been changed from a fraction of Pi
 //   to a fraction of 2*Pi.
 
-package cz.zcu.kiv.eeg.gtn.algorithm.math.filter.biz;
+package cz.zcu.kiv.eeg.gtn.data.processing.math.filter.biz;
 
 import biz.source_code.dsp.util.ArrayUtils;
 

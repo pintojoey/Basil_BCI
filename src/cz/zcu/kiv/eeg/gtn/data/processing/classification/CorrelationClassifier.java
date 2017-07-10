@@ -1,4 +1,4 @@
-package cz.zcu.kiv.eeg.gtn.application.classification;
+package cz.zcu.kiv.eeg.gtn.data.processing.classification;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -14,8 +14,8 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.util.List;
 
-import cz.zcu.kiv.eeg.gtn.algorithm.math.CorrelationAlgorithms;
-import cz.zcu.kiv.eeg.gtn.application.featureextraction.IFeatureExtraction;
+import cz.zcu.kiv.eeg.gtn.data.processing.featureextraction.IFeatureExtraction;
+import cz.zcu.kiv.eeg.gtn.data.processing.math.CorrelationAlgorithms;
 
 /**
  * Classifier using correlation.

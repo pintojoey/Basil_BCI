@@ -10,7 +10,7 @@
 // Please contact the author if you need another license.
 // This module is provided "as is", without warranties of any kind.
 
-package cz.zcu.kiv.eeg.gtn.algorithm.math.filter.biz;
+package cz.zcu.kiv.eeg.gtn.data.processing.math.filter.biz;
 
 import biz.source_code.dsp.math.Complex;
 import biz.source_code.dsp.math.PolynomialUtils;

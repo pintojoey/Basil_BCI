@@ -1,20 +1,22 @@
-package cz.zcu.kiv.eeg.gtn;
+package cz.zcu.kiv.eeg.gtn.utils;
 
 import java.awt.Font;
 
 /**
- * Obsahuje konstanty pou��van� v aplikaci.
+ * Uses constants used throughout the application
  */
 public class Const {
 
     /**
-     * Koncovka souboru ve form�tu VDEF.
+     * File extensions for BrainVision.
      */
     public static final String VHDR_EXTENSION = ".vhdr";
     public static final String VMRK_EXTENSION = ".vmrk";
-    public static final String EEG_EXTENSION = ".eeg";
+    public static final String EEG_EXTENSION  = ".eeg";
 
-    //----------------------Settings constants---------------------------
+    /**
+     * RDP connection parameters
+     */
     public static final String DEF_IP_ADDRESS = "127.0.0.1";
     public static final String[] DEF_PORTS = {"51244"};
     public static final int DEF_PORT = 51244;
@@ -76,14 +78,6 @@ public class Const {
 
     public static final int ELECTROD_VALS = 20;
     
-    //---------------------TEST---------------------
-   /* public static final String[] DIRECTORIES = {"data/numbers/Horazdovice", 
-        "data/numbers/Blatnice","data/numbers/Strasice","data/numbers/Masarykovo", "data/numbers/Stankov", 
-        "data/numbers/17ZS", "data/numbers/DolniBela", "data/numbers/KVary", "data/numbers/SPSD", "data/numbers/Strasice2",
-        "data/numbers/Tachov", "data/numbers/Tachov2", "data/numbers/ZSBolevecka"};*/
-//    public static final String[] DIRECTORIES = {"data/numbers/Horazdovice",
-//        "data/numbers/Blatnice","data/numbers/Strasice","data/numbers/Masarykovo", "data/numbers/Stankov",
-//         "data/numbers/DolniBela", "data/numbers/KVary", "data/numbers/SPSD", "data/numbers/Strasice2",
-//        "data/numbers/Tachov", "data/numbers/Tachov2", "data/numbers/ZSBolevecka"};
+   
     public static final String[] DIRECTORIES = {"data/numbers"};
 }

@@ -1,4 +1,4 @@
-package cz.zcu.kiv.eeg.gtn.algorithm.math;
+package cz.zcu.kiv.eeg.gtn.data.processing.math;
 
 /**
  * Implementation of High-Pass filter. Very simple and low-computing time.

@@ -1,18 +1,18 @@
 package cz.zcu.kiv.eeg.gtn.online.gui;
 
-import cz.zcu.kiv.eeg.gtn.application.classification.SDADeepLearning4jEarlyStop;
-import cz.zcu.kiv.eeg.gtn.Const;
-import cz.zcu.kiv.eeg.gtn.algorithm.math.IArtifactDetection;
-import cz.zcu.kiv.eeg.gtn.algorithm.math.IFilter;
-import cz.zcu.kiv.eeg.gtn.application.classification.*;
-import cz.zcu.kiv.eeg.gtn.application.classification.test.TestClassificationAccuracy;
-import cz.zcu.kiv.eeg.gtn.application.classification.test.TrainUsingOfflineProvider;
-import cz.zcu.kiv.eeg.gtn.application.featureextraction.*;
-import cz.zcu.kiv.eeg.gtn.online.app.IDataProvider;
-import cz.zcu.kiv.eeg.gtn.online.app.OffLineDataProvider;
-import cz.zcu.kiv.eeg.gtn.online.app.OnLineDataProvider;
-import cz.zcu.kiv.eeg.gtn.online.app.OnlineDetection;
+import cz.zcu.kiv.eeg.gtn.data.processing.classification.*;
+import cz.zcu.kiv.eeg.gtn.data.processing.classification.test.TestClassificationAccuracy;
+import cz.zcu.kiv.eeg.gtn.data.processing.classification.test.TrainUsingOfflineProvider;
+import cz.zcu.kiv.eeg.gtn.data.processing.featureextraction.*;
+import cz.zcu.kiv.eeg.gtn.data.processing.math.IArtifactDetection;
+import cz.zcu.kiv.eeg.gtn.data.processing.math.IFilter;
+import cz.zcu.kiv.eeg.gtn.data.providers.online.bva.app.IDataProvider;
+import cz.zcu.kiv.eeg.gtn.data.providers.online.bva.app.OffLineDataProvider;
+import cz.zcu.kiv.eeg.gtn.data.providers.online.bva.app.OnLineDataProvider;
+import cz.zcu.kiv.eeg.gtn.data.providers.online.bva.app.OnlineDetection;
 import cz.zcu.kiv.eeg.gtn.utils.ColorUtils;
+import cz.zcu.kiv.eeg.gtn.utils.Const;
+
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 

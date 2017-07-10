@@ -1,14 +1,14 @@
-package cz.zcu.kiv.eeg.gtn.application.featureextraction;
+package cz.zcu.kiv.eeg.gtn.data.processing.featureextraction;
 
 import java.util.Random;
 
-import cz.zcu.kiv.eeg.gtn.Const;
-import cz.zcu.kiv.eeg.gtn.algorithm.math.ButterWorthFilter;
-import cz.zcu.kiv.eeg.gtn.algorithm.math.HighPassFilter;
-import cz.zcu.kiv.eeg.gtn.algorithm.math.IFilter;
-import cz.zcu.kiv.eeg.gtn.algorithm.math.LowPassFilter;
-import cz.zcu.kiv.eeg.gtn.algorithm.math.SignalProcessing;
+import cz.zcu.kiv.eeg.gtn.data.processing.math.ButterWorthFilter;
+import cz.zcu.kiv.eeg.gtn.data.processing.math.HighPassFilter;
+import cz.zcu.kiv.eeg.gtn.data.processing.math.IFilter;
+import cz.zcu.kiv.eeg.gtn.data.processing.math.LowPassFilter;
+import cz.zcu.kiv.eeg.gtn.data.processing.math.SignalProcessing;
 import cz.zcu.kiv.eeg.gtn.online.gui.MainFrame;
+import cz.zcu.kiv.eeg.gtn.utils.Const;
 
 /**
  *

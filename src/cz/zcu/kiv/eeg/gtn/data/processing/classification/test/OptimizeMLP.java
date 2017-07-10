@@ -1,4 +1,4 @@
-package cz.zcu.kiv.eeg.gtn.application.classification.test;
+package cz.zcu.kiv.eeg.gtn.data.processing.classification.test;
 
 import java.io.IOException;
 import java.util.ArrayList;

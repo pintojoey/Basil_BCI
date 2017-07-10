@@ -15,8 +15,8 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
-import cz.zcu.kiv.eeg.gtn.algorithm.math.AmplitudeArtifactDet;
-import cz.zcu.kiv.eeg.gtn.algorithm.math.GradientArtifactDet;
+import cz.zcu.kiv.eeg.gtn.data.processing.math.AmplitudeArtifactDet;
+import cz.zcu.kiv.eeg.gtn.data.processing.math.GradientArtifactDet;
 
 /**
  * Class providing the GUI dialog for the creation of the amplitude artifact detection.
@@ -26,11 +26,7 @@ import cz.zcu.kiv.eeg.gtn.algorithm.math.GradientArtifactDet;
 public class AmplDetDialog extends JDialog{
 	
 	private static final long serialVersionUID = 1L;
-	/**
-	 * Instance of MainFrame, owner of the dialog.
-	 */
-	private MainFrame mainFrame;
-	
+		
 	/*
 	 * These attributes are here only because of 
 	 * referencing from inner classes.
@@ -45,7 +41,6 @@ public class AmplDetDialog extends JDialog{
 	 */
 	public AmplDetDialog(MainFrame frame){
 		super(frame);
-		this.mainFrame = frame;
 		this.setModal(true);
 		this.setTitle("Amplitude Artifact Detection Dialog");	
 		this.getContentPane().add(createMainPanel());

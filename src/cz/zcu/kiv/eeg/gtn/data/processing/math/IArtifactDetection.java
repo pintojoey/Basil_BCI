@@ -1,6 +1,6 @@
-package cz.zcu.kiv.eeg.gtn.algorithm.math;
+package cz.zcu.kiv.eeg.gtn.data.processing.math;
 
-import cz.zcu.kiv.eeg.gtn.online.app.EpochMessenger;
+import cz.zcu.kiv.eeg.gtn.data.providers.online.bva.app.EpochMessenger;
 
 /**
  * Interface which makes sure every artifact detector

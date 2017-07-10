@@ -1,11 +1,11 @@
 package cz.zcu.kiv.eeg.gtn.data;
 
-import cz.zcu.kiv.eeg.gtn.dataProcessing.preprocessing.IPreprocessing;
-
 import java.util.ArrayList;
 
+import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.IPreprocessing;
+
 /**
- * Class represents EEG data. It remembers data processing steps performed on the data it caries.
+ * Class represents EEG data. It remembers data processing steps performed on the data it carries.
  *
  * Created by Tomas Prokop on 04.07.2017.
  */
@@ -41,7 +41,7 @@ public class EEGDataPackage {
     }
 
     /**
-     * Get all preprocessing steps performed on curent data
+     * Get all preprocessing steps performed on current data
      * @return ordered preprocessing steps
      */
     public ArrayList<IPreprocessing> getPreprocessingSteps() {

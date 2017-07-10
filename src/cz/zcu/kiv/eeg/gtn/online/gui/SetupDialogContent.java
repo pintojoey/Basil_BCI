@@ -5,9 +5,9 @@
  */
 package cz.zcu.kiv.eeg.gtn.online.gui;
 
-import cz.zcu.kiv.eeg.gtn.Const;
-
 import javax.swing.*;
+
+import cz.zcu.kiv.eeg.gtn.utils.Const;
 
 /**
  *

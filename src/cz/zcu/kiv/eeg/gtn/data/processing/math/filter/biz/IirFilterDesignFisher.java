@@ -26,7 +26,7 @@
 // source code freely available.
 // See also: http://sk3w.se/svx/deb_new/svxlink-11.03/async/audio/fidmkf.h
 
-package cz.zcu.kiv.eeg.gtn.algorithm.math.filter.biz;
+package cz.zcu.kiv.eeg.gtn.data.processing.math.filter.biz;
 
 import biz.source_code.dsp.math.Complex;
 import biz.source_code.dsp.math.PolynomialUtils;

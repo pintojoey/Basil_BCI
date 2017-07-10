@@ -1,9 +1,9 @@
-package cz.zcu.kiv.eeg.gtn.application.featureextraction;
+package cz.zcu.kiv.eeg.gtn.data.processing.featureextraction;
 
-import cz.zcu.kiv.eeg.gtn.algorithm.math.ButterWorthFilter;
-import cz.zcu.kiv.eeg.gtn.algorithm.math.FirFilter;
-import cz.zcu.kiv.eeg.gtn.algorithm.math.IFilter;
-import cz.zcu.kiv.eeg.gtn.algorithm.math.SignalProcessing;
+import cz.zcu.kiv.eeg.gtn.data.processing.math.ButterWorthFilter;
+import cz.zcu.kiv.eeg.gtn.data.processing.math.FirFilter;
+import cz.zcu.kiv.eeg.gtn.data.processing.math.IFilter;
+import cz.zcu.kiv.eeg.gtn.data.processing.math.SignalProcessing;
 
 public class FilterFeatureExtraction implements IFeatureExtraction {
 

@@ -1,9 +1,9 @@
-package cz.zcu.kiv.eeg.gtn.application.classification;
+package cz.zcu.kiv.eeg.gtn.data.processing.classification;
 
 import java.util.List;
 
-import cz.zcu.kiv.eeg.gtn.algorithm.math.LinearDiscriminantAnalysisAlgorithms;
-import cz.zcu.kiv.eeg.gtn.application.featureextraction.IFeatureExtraction;
+import cz.zcu.kiv.eeg.gtn.data.processing.featureextraction.IFeatureExtraction;
+import cz.zcu.kiv.eeg.gtn.data.processing.math.LinearDiscriminantAnalysisAlgorithms;
 
 public class LinearDiscriminantAnalysisClassifier extends ERPClassifierAdapter {
 

@@ -8,7 +8,7 @@ import cz.zcu.kiv.eeg.gtn.data.providers.online.bva.app.OffLineDataProvider;
 import cz.zcu.kiv.eeg.gtn.data.providers.online.bva.app.OnlineDetection;
 import cz.zcu.kiv.eeg.gtn.data.providers.online.bva.app.DataObjects.MessageType;
 import cz.zcu.kiv.eeg.gtn.data.providers.online.bva.app.DataObjects.ObserverMessage;
-import cz.zcu.kiv.eeg.gtn.online.gui.ProbabilityComparator;
+import cz.zcu.kiv.eeg.gtn.gui.ProbabilityComparator;
 import cz.zcu.kiv.eeg.gtn.utils.Const;
 
 import java.io.*;

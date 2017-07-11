@@ -7,7 +7,7 @@ import cz.zcu.kiv.eeg.gtn.data.processing.math.HighPassFilter;
 import cz.zcu.kiv.eeg.gtn.data.processing.math.IFilter;
 import cz.zcu.kiv.eeg.gtn.data.processing.math.LowPassFilter;
 import cz.zcu.kiv.eeg.gtn.data.processing.math.SignalProcessing;
-import cz.zcu.kiv.eeg.gtn.online.gui.MainFrame;
+import cz.zcu.kiv.eeg.gtn.gui.MainFrame;
 import cz.zcu.kiv.eeg.gtn.utils.Const;
 
 /**

@@ -16,7 +16,7 @@ import org.neuroph.nnet.learning.BackPropagation;
 import org.neuroph.util.random.NguyenWidrowRandomizer;
 
 import cz.zcu.kiv.eeg.gtn.data.processing.featureextraction.IFeatureExtraction;
-import cz.zcu.kiv.eeg.gtn.online.gui.Chart;
+import cz.zcu.kiv.eeg.gtn.gui.Chart;
 import cz.zcu.kiv.eeg.gtn.utils.Const;
 
 /**

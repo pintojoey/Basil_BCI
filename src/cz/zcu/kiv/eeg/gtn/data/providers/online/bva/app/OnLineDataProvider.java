@@ -12,7 +12,7 @@ import cz.zcu.kiv.eeg.gtn.data.providers.online.bva.objects.RDA_Marker;
 import cz.zcu.kiv.eeg.gtn.data.providers.online.bva.objects.RDA_MessageData;
 import cz.zcu.kiv.eeg.gtn.data.providers.online.bva.objects.RDA_MessageStart;
 import cz.zcu.kiv.eeg.gtn.data.providers.online.bva.objects.RDA_MessageStop;
-import cz.zcu.kiv.eeg.gtn.online.gui.MainFrame;
+import cz.zcu.kiv.eeg.gtn.gui.MainFrame;
 import cz.zcu.kiv.eeg.gtn.utils.Const;
 
 public class OnLineDataProvider extends Observable implements IDataProvider, Runnable { 

@@ -1,4 +1,4 @@
-package cz.zcu.kiv.eeg.gtn.online.gui;
+package cz.zcu.kiv.eeg.gtn.gui;
 
 import java.awt.Dimension;
 import java.awt.GridLayout;

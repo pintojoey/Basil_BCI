@@ -1,4 +1,4 @@
-package cz.zcu.kiv.eeg.gtn.online.gui;
+package cz.zcu.kiv.eeg.gtn.gui;
 
 import cz.zcu.kiv.eeg.gtn.data.processing.classification.*;
 import cz.zcu.kiv.eeg.gtn.data.processing.classification.test.TestClassificationAccuracy;

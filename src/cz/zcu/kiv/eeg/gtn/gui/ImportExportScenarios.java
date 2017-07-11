@@ -1,4 +1,4 @@
-package cz.zcu.kiv.eeg.gtn.online.gui;
+package cz.zcu.kiv.eeg.gtn.gui;
 
 import com.sun.org.apache.xml.internal.serialize.OutputFormat;
 import com.sun.org.apache.xml.internal.serialize.XMLSerializer;

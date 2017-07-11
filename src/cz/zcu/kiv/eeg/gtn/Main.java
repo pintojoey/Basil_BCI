@@ -4,7 +4,7 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import cz.zcu.kiv.eeg.gtn.data.processing.classification.test.OptimizeMLP;
-import cz.zcu.kiv.eeg.gtn.online.gui.MainFrame;
+import cz.zcu.kiv.eeg.gtn.gui.MainFrame;
 
 import java.io.IOException;
 import java.io.PrintStream;

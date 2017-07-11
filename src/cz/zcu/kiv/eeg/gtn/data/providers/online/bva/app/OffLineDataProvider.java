@@ -4,7 +4,7 @@ import cz.zcu.kiv.eeg.gtn.data.processing.math.Baseline;
 import cz.zcu.kiv.eeg.gtn.data.processing.math.IArtifactDetection;
 import cz.zcu.kiv.eeg.gtn.data.providers.online.bva.app.DataObjects.MessageType;
 import cz.zcu.kiv.eeg.gtn.data.providers.online.bva.app.DataObjects.ObserverMessage;
-import cz.zcu.kiv.eeg.gtn.online.gui.MainFrame;
+import cz.zcu.kiv.eeg.gtn.gui.MainFrame;
 import cz.zcu.kiv.eeg.gtn.utils.Const;
 import cz.zcu.kiv.signal.ChannelInfo;
 import cz.zcu.kiv.signal.DataTransformer;

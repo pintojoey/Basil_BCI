@@ -1,4 +1,4 @@
-package cz.zcu.kiv.eeg.gtn.data.processing.classification.test;
+package cz.zcu.kiv.eeg.gtn;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -9,6 +9,10 @@ import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import cz.zcu.kiv.eeg.gtn.data.processing.classification.test.Statistics;
+import cz.zcu.kiv.eeg.gtn.data.processing.classification.test.TestClassificationAccuracy;
+import cz.zcu.kiv.eeg.gtn.data.processing.classification.test.TrainUsingOfflineProvider;
+
 /**
  * 
  * This class is used to automatically optimize classifiers. It iterates training and testing phases
@@ -18,7 +22,7 @@ import java.util.logging.Logger;
  * @author lvareka
  *
  */
-public class OptimizeMLP {
+public class OptimizeClassification {
 	
 	
 	public static void main(String[] args) throws InterruptedException, IOException {
@@ -40,7 +44,7 @@ public class OptimizeMLP {
 				e.printStackTrace();
 				return;
 			} catch (ExecutionException ex) {
-                        Logger.getLogger(OptimizeMLP.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(OptimizeClassification.class.getName()).log(Level.SEVERE, null, ex);
                     }
 			Map<String, Statistics> stats = testAccuracy.getStats();
 			int okNumber = 0;

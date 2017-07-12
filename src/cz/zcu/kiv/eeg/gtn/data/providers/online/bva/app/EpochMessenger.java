@@ -13,18 +13,17 @@ import cz.zcu.kiv.eeg.gtn.utils.Const;
 public class EpochMessenger {
 
     /**
-     * Channels [Fz, Cz, Pz] * time samples
+     * Channels * time samples
      */
     private final double[][] epoch;
-    private boolean isTarget;// klasifikator pracuje s polem typu double, ne float
-
-    /**
-     * Guessed number-related stimulus 1 - 9
-     */
+    private boolean isTarget;
     private int stimulusIndex;
+    
+    public static final int DEFAULT_USED_CHANNELS = 3;
+    public static final int NUMBER_OF_STIMULI = 9;
 
     public EpochMessenger() {
-        this.epoch = new double[Const.USED_CHANNELS][Const.POSTSTIMULUS_VALUES];
+        this.epoch = new double[DEFAULT_USED_CHANNELS][Const.POSTSTIMULUS_VALUES];
         this.stimulusIndex = -1;
     }
 
@@ -32,6 +31,8 @@ public class EpochMessenger {
         this.epoch = epoch;
         this.stimulusIndex = stimulusIndex;
     }
+    
+    
 
     public double[][] getEpoch() {
         return epoch;

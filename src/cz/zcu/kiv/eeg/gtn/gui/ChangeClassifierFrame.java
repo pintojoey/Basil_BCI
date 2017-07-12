@@ -574,7 +574,7 @@ public class ChangeClassifierFrame extends JFrame {
 				}
 				else if (dbnBttn.isSelected()) {
 					int neurons = (Integer) dbnNeuron.getValue();
-					IERPClassifier classifier = new DBNDeepLearning4j(neurons);
+					IERPClassifier classifier = new DBNDeepLearning4jClassifier(neurons);
 					classifier.setFeatureExtraction(fe);
 
 					List<String> classifierParams = new ArrayList<String>();
@@ -584,7 +584,7 @@ public class ChangeClassifierFrame extends JFrame {
 				}
 				else if (saeBttn.isSelected()) {
 					int neurons = (Integer) sdaNeuron.getValue();
-					IERPClassifier classifier = new SDADeepLearning4jEarlyStop(neurons);
+					IERPClassifier classifier = new SDADeepLearning4jEarlyStopClassifier(neurons);
 					classifier.setFeatureExtraction(fe);
 
 					List<String> classifierParams = new ArrayList<String>();

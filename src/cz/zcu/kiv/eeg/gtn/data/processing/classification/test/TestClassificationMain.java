@@ -86,7 +86,7 @@ public class TestClassificationMain {
 			nnStructure.add(numberOfInputNeurons); nnStructure.add(middleNeurons); nnStructure.add(outputNeurons);
 
 
-			IERPClassifier classifier = new SDADeepLearning4j();//MLPClassifier(nnStructure);
+			IERPClassifier classifier = new SDADeepLearning4jClassifier();//MLPClassifier(nnStructure);
 			//IERPClassifier classifier = new MLPDeepLearning4j();
 			//IERPClassifier classifier = new DBNDeepLearning4j();//MLPClassifier(nnStructure);
 			//IERPClassifier classifier = new DBNDeepLearning4j();

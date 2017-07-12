@@ -184,19 +184,7 @@ public class MLPClassifier extends ERPClassifierAdapter implements LearningEvent
     	}
         
         
-        /*Chart chartNonTarget = new Chart("Non-Target feature training data average");
-        chartNonTarget.update(sumNonTarget);
-        chartNonTarget.pack();
-        chartNonTarget.setVisible(true);
-        
-        Chart chartTarget = new Chart("Target feature training data average");
-        chartTarget.update(sumTarget);
-        chartTarget.pack();
-        chartTarget.setVisible(true);*/
-        
-        // shuffle the resulting dataset
-        
-        //dataset.createDirectory("default_training_dataset");
+      
         dataset.shuffle();
         dataset.save("default_training_dataset");
         trainingTesting = dataset.createTrainingAndTestSubsets(80, 20);

@@ -3,7 +3,6 @@ package cz.zcu.kiv.eeg.gtn;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-import cz.zcu.kiv.eeg.gtn.data.processing.classification.test.OptimizeMLP;
 import cz.zcu.kiv.eeg.gtn.gui.MainFrame;
 
 import java.io.IOException;
@@ -50,7 +49,7 @@ public class Main {
             runGui();
         } else if ("-opt".equals(args[0])) {
             try {
-                OptimizeMLP.main(null);
+                OptimizeClassification.main(null);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             } catch (IOException e) {

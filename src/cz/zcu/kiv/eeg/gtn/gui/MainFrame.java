@@ -197,14 +197,14 @@ public class MainFrame extends JFrame implements Observer {
                 classifier = new CorrelationClassifier();
             } else if (row.equals("DBNDeepLearning4j")) {
                 try {
-                    classifier = new DBNDeepLearning4j(Integer.parseInt(br
+                    classifier = new DBNDeepLearning4jClassifier(Integer.parseInt(br
                             .readLine()));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             } else if (row.equals("SDADeepLearning4jEarlyStop")) {
                 try {
-                    classifier = new SDADeepLearning4jEarlyStop(Integer.parseInt(br
+                    classifier = new SDADeepLearning4jEarlyStopClassifier(Integer.parseInt(br
                             .readLine()));
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -646,15 +646,9 @@ public class MainFrame extends JFrame implements Observer {
             int[] counts = ((OnlineDetection) message).getClassificationCounters();
             initProbabilities(probabilities, counts);
 
-            this.epochCharts.update(((OnlineDetection) message).getPzAvg());
+           // this.epochCharts.update(((OnlineDetection) message).getPzAvg());
         }
-        /*
-         * else { log.error(MainFrame.class.toString() +
-         * ": Expencted online detection, but received something else."); throw
-         * new IllegalArgumentException(
-         * "Expencted online detection, but received something else."); }
-         */
-
+       
     }
 
     private void initGui() {
@@ -663,7 +657,6 @@ public class MainFrame extends JFrame implements Observer {
         Arrays.fill(zeros, 0);
         Arrays.fill(intZeros, 0);
         initProbabilities(zeros, intZeros);
-       // winnerJTA.setText(Const.UNKNOWN_RESULT);
     }
 
     private void stopRunningThread() {

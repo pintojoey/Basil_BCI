@@ -10,10 +10,10 @@ import cz.zcu.kiv.eeg.gtn.data.processing.featureextraction.IFeatureExtraction;
 import cz.zcu.kiv.eeg.gtn.data.processing.featureextraction.WaveletTransformFeatureExtraction;
 import cz.zcu.kiv.eeg.gtn.data.processing.math.ButterWorthFilter;
 import cz.zcu.kiv.eeg.gtn.data.processing.math.IFilter;
+import cz.zcu.kiv.eeg.gtn.data.providers.MessageType;
+import cz.zcu.kiv.eeg.gtn.data.providers.ObserverMessage;
 import cz.zcu.kiv.eeg.gtn.data.providers.online.bva.app.EpochMessenger;
 import cz.zcu.kiv.eeg.gtn.data.providers.online.bva.app.OffLineDataProvider;
-import cz.zcu.kiv.eeg.gtn.data.providers.online.bva.app.DataObjects.MessageType;
-import cz.zcu.kiv.eeg.gtn.data.providers.online.bva.app.DataObjects.ObserverMessage;
 import cz.zcu.kiv.eeg.gtn.utils.Const;
 
 
@@ -111,14 +111,7 @@ public class TrainUsingOfflineProvider implements Observer {
         if (message instanceof ObserverMessage) {
             ObserverMessage msg = (ObserverMessage) message;
             if (msg.getMsgType() == MessageType.END) {
-                try {
-                	// currently writes the epochs into a CSV
-                	// TODO: evaluate its present benefits and possibly remove
-                    writeCSV(epochs);
-                } catch (Exception ex) {
-                    Logger.getLogger(TrainUsingOfflineProvider.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                this.train();
+               this.train();
             }
         }
         if (message instanceof EpochMessenger) {
@@ -227,7 +220,7 @@ public class TrainUsingOfflineProvider implements Observer {
         //TODO clasifikatory
         //classifier = new MLPClassifier(nnStructure);
         //classifier = new SDADeepLearning4j();
-        classifier = new SDADeepLearning4jEarlyStop();
+        classifier = new SDADeepLearning4jEarlyStopClassifier();
         //classifier = new MLPDeepLearning4jEarlyStop();
         //classifier = new MLPDeepLearning4j();
         //classifier = new DBNDeepLearning4j();

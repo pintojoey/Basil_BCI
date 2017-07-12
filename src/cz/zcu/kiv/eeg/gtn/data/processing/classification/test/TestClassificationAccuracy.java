@@ -4,10 +4,10 @@ import cz.zcu.kiv.eeg.gtn.data.processing.classification.IERPClassifier;
 import cz.zcu.kiv.eeg.gtn.data.processing.classification.MLPClassifier;
 import cz.zcu.kiv.eeg.gtn.data.processing.featureextraction.IFeatureExtraction;
 import cz.zcu.kiv.eeg.gtn.data.processing.featureextraction.WaveletTransformFeatureExtraction;
+import cz.zcu.kiv.eeg.gtn.data.providers.MessageType;
+import cz.zcu.kiv.eeg.gtn.data.providers.ObserverMessage;
 import cz.zcu.kiv.eeg.gtn.data.providers.online.bva.app.OffLineDataProvider;
 import cz.zcu.kiv.eeg.gtn.data.providers.online.bva.app.OnlineDetection;
-import cz.zcu.kiv.eeg.gtn.data.providers.online.bva.app.DataObjects.MessageType;
-import cz.zcu.kiv.eeg.gtn.data.providers.online.bva.app.DataObjects.ObserverMessage;
 import cz.zcu.kiv.eeg.gtn.gui.ProbabilityComparator;
 import cz.zcu.kiv.eeg.gtn.utils.Const;
 
@@ -83,16 +83,7 @@ public class TestClassificationAccuracy implements Observer {
                         //submits task for execution. Calling get() method blocks thread until work is done.
                         service.submit(offLineData).get(); 
                         
-                        /*
-                         Thread t = new Thread(offLineData);
-
-                         t.start();
-
-                         while (!end) {
-                         Thread.sleep(500);
-                         }
-                         t.join();
-                         */
+                     
                     }
                 }
             }
@@ -105,22 +96,14 @@ public class TestClassificationAccuracy implements Observer {
         printStats();
     }
     
-        private void writePzIntoCsv(double[] vals, PrintWriter outfile) {
-        //Iterate the elements actually being used
-        for (int i = 0; i < vals.length; i++) {
-            outfile.append(vals[i] + ",");
-        }
-        //outfile.append(stimulus);
-        outfile.append("\n");
-    }
+       
 
     public double computeHumanAccuracy() throws IOException {
         int totalGood = 0;
         int fileCount = 0;
         for (String dirName : Const.DIRECTORIES) {
             int[] res = getHumanGuessPercentage(infoFileName, dirName);
-            double percentageForDir = (double) res[1] / res[0];
-            //System.out.println(dirName + " " + percentageForDir * 100 + "%");
+          
             totalGood += res[1];
             fileCount += res[0];
         }
@@ -137,9 +120,7 @@ public class TestClassificationAccuracy implements Observer {
             if (entry.getValue().getRank() == 1) {
                 okNumber++;
             }
-            //System.out.println(entry.getKey());
-            //System.out.println(entry.getValue());
-            //System.out.println();
+          
         }
         System.out.println("Total points: " + Statistics.getTotalPts() + " of " + Statistics.MAX_POINT * stats.size());
         System.out.println("Perfect guess: " + okNumber);

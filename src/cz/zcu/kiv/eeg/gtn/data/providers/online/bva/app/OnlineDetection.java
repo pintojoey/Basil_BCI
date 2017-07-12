@@ -1,7 +1,7 @@
 package cz.zcu.kiv.eeg.gtn.data.providers.online.bva.app;
 
 import cz.zcu.kiv.eeg.gtn.data.processing.classification.IERPClassifier;
-import cz.zcu.kiv.eeg.gtn.data.providers.online.bva.app.DataObjects.ObserverMessage;
+import cz.zcu.kiv.eeg.gtn.data.providers.ObserverMessage;
 import cz.zcu.kiv.eeg.gtn.utils.Const;
 
 import java.util.Arrays;
@@ -26,8 +26,8 @@ public class OnlineDetection extends Observable implements Observer {
         this.classifier = classifier;
         this.classificationCounters = new int[sizeOfStimuls];
         this.classificationResults = new double[sizeOfStimuls];
-        this.sumEpoch = new double[Const.USED_CHANNELS][sizeOfStimuls][Const.POSTSTIMULUS_VALUES];
-        this.avgEpoch = new double[Const.USED_CHANNELS][sizeOfStimuls][Const.POSTSTIMULUS_VALUES];
+        this.sumEpoch = new double[EpochMessenger.DEFAULT_USED_CHANNELS][sizeOfStimuls][Const.POSTSTIMULUS_VALUES];
+        this.avgEpoch = new double[EpochMessenger.DEFAULT_USED_CHANNELS][sizeOfStimuls][Const.POSTSTIMULUS_VALUES];
 
         Arrays.fill(classificationCounters, 0);
         Arrays.fill(classificationResults, 0);
@@ -47,13 +47,13 @@ public class OnlineDetection extends Observable implements Observer {
 
             if (stimulusID < sizeOfStimuls) {
                 classificationCounters[stimulusID]++;
-                for (int i = 0; i < Const.USED_CHANNELS; i++) {
-                    for (int j = 0; j < Const.POSTSTIMULUS_VALUES; j++) {
+                for (int i = 0; i < sumEpoch.length; i++) {
+                    for (int j = 0; j < sumEpoch[i][stimulusID].length; j++) {
                         sumEpoch[i][stimulusID][j] += epochMsg.getEpoch()[i][j]; // Pz
                         avgEpoch[i][stimulusID][j] = sumEpoch[i][stimulusID][j] / classificationCounters[stimulusID];
                     }
                 }
-                double[][] avgEpochStimulus = getAvgEpochWithStimulus(stimulusID, avgEpoch);
+   
                 
                 double classificationResult = this.classifier.classify(epochMsg.getEpoch());
 
@@ -71,7 +71,7 @@ public class OnlineDetection extends Observable implements Observer {
 
     private double calcEnergy( double[][] epochStimulus, int start, int end) {
     	double energy = 0;
-    	for (int i = 0; i < Const.USED_CHANNELS; i++) {
+    	for (int i = 0; i < sumEpoch.length; i++) {
     		for (int j = start; j < end; j++) {
     			energy += Math.pow(epochStimulus[i][j], 2);
     		}
@@ -80,8 +80,8 @@ public class OnlineDetection extends Observable implements Observer {
     }
     
     private double[][] getAvgEpochWithStimulus(int stimulusIndex, double[][][] epoch) {
-        double[][] epochStimulus = new double[Const.USED_CHANNELS][Const.POSTSTIMULUS_VALUES];
-        for (int i = 0; i < Const.USED_CHANNELS; i++) {
+        double[][] epochStimulus = new double[sumEpoch.length][Const.POSTSTIMULUS_VALUES];
+        for (int i = 0; i < sumEpoch.length; i++) {
             System.arraycopy(epoch[i][stimulusIndex], 0, epochStimulus[i], 0, Const.POSTSTIMULUS_VALUES);
         }
         return epochStimulus;
@@ -102,9 +102,7 @@ public class OnlineDetection extends Observable implements Observer {
         return wResults;
     }
 
-    public double[][] getPzAvg() {
-        return this.avgEpoch[2];
-    }
+ 
 
     public double[] getWeightedResults() {
         return weightedResults;

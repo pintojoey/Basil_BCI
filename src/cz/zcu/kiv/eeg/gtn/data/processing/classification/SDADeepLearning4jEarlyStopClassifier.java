@@ -56,7 +56,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 // creates instance of Stacked Denoising Autoencoder @author Pumprdlici group
-public class SDADeepLearning4jEarlyStop implements IERPClassifier {
+public class SDADeepLearning4jEarlyStopClassifier implements IERPClassifier {
     private final int NEURON_COUNT_DEFAULT = 30;    //default number of neurons
     private IFeatureExtraction fe;                //type of feature extraction (MatchingPursuit, FilterAndSubampling or WaveletTransform)
     //private MultiLayerNetwork model;            //multi layer neural network with a logistic output layer and multiple hidden neuralNets
@@ -73,12 +73,12 @@ public class SDADeepLearning4jEarlyStop implements IERPClassifier {
 
 
     /*Default constructor*/
-    public SDADeepLearning4jEarlyStop() {
+    public SDADeepLearning4jEarlyStopClassifier() {
         this.neuronCount = NEURON_COUNT_DEFAULT; // sets count of neurons in layer(0) to default number
     }
 
     /*Parametric constructor */
-    public SDADeepLearning4jEarlyStop(int neuronCount) {
+    public SDADeepLearning4jEarlyStopClassifier(int neuronCount) {
         this.neuronCount = neuronCount; // sets count of neurons in layer(0) to param
     }
 

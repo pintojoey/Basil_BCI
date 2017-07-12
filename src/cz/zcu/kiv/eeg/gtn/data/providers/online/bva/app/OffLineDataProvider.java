@@ -2,8 +2,8 @@ package cz.zcu.kiv.eeg.gtn.data.providers.online.bva.app;
 
 import cz.zcu.kiv.eeg.gtn.data.processing.math.Baseline;
 import cz.zcu.kiv.eeg.gtn.data.processing.math.IArtifactDetection;
-import cz.zcu.kiv.eeg.gtn.data.providers.online.bva.app.DataObjects.MessageType;
-import cz.zcu.kiv.eeg.gtn.data.providers.online.bva.app.DataObjects.ObserverMessage;
+import cz.zcu.kiv.eeg.gtn.data.providers.MessageType;
+import cz.zcu.kiv.eeg.gtn.data.providers.ObserverMessage;
 import cz.zcu.kiv.eeg.gtn.gui.MainFrame;
 import cz.zcu.kiv.eeg.gtn.utils.Const;
 import cz.zcu.kiv.signal.ChannelInfo;

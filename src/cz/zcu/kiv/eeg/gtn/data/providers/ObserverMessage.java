@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package cz.zcu.kiv.eeg.gtn.data.providers.online.bva.app.DataObjects;
+package cz.zcu.kiv.eeg.gtn.data.providers;
 
 /**
  *

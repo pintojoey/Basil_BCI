@@ -1,0 +1,94 @@
+package cz.zcu.kiv.eeg.gtn.data.providers.bva;
+
+import java.util.Observer;
+
+import cz.zcu.kiv.eeg.gtn.data.providers.AbstractDataProvider;
+import cz.zcu.kiv.eeg.gtn.data.providers.messaging.*;
+import cz.zcu.kiv.eeg.gtn.data.providers.bva.online.DataTokenizer;
+import cz.zcu.kiv.eeg.gtn.data.providers.bva.online.TCPIPClient;
+import org.apache.log4j.Logger;
+
+import cz.zcu.kiv.eeg.gtn.data.providers.bva.RDA.RDA_MessageData;
+import cz.zcu.kiv.eeg.gtn.data.providers.bva.RDA.RDA_MessageStart;
+import cz.zcu.kiv.eeg.gtn.data.providers.bva.RDA.RDA_MessageStop;
+
+public class OnLineDataProvider extends AbstractDataProvider {
+
+    private final Logger logger = Logger.getLogger(OnLineDataProvider.class);
+    private final String ipAddress;
+    private final int port;
+    private final TCPIPClient client;
+    private final DataTokenizer dtk;
+    private final Observer obs;
+
+    private int channelCnt = 0;
+    private boolean isRunning;
+
+    public OnLineDataProvider(String ip_adr, int port, Observer obs) throws Exception {
+        super();
+        this.ipAddress = ip_adr;
+        this.port = port;
+        this.obs = obs;
+        client = new TCPIPClient(this.ipAddress, this.port);
+        client.start();
+        dtk = new DataTokenizer(client);
+        dtk.start();
+        isRunning = true;
+    }
+
+    @Override
+    public void run() {
+        addObserver(obs);
+
+        boolean stopped = false;
+        EEGMessage msg = null;
+        int count = 0;
+
+        while (isRunning) {
+            Object o = dtk.retrieveDataBlock();
+            if (o instanceof RDA_MessageData) {
+                RDA_MessageData rda = (RDA_MessageData)o;
+                float[][] data = new float[channelCnt][(int)rda.getnPoints()];
+
+                for (int i = 0; i<channelCnt;i++){
+//TODO
+                }
+
+                //msg = new EEGDataMessage(MessageType.DATA, count, markers, data);
+
+                //buffer.write((RDA_MessageData) o);
+            } else if (o instanceof RDA_MessageStart) {
+                RDA_MessageStart rda = (RDA_MessageStart) o;
+                String[] chNames = rda.getsChannelNames();
+                super.setAvailableChannels(chNames);
+                channelCnt = chNames.length;
+                msg = new EEGStartMessage(MessageType.START, count, chNames, rda.getdResolutions(), (int)rda.getnChannels(), rda.getdSamplingInterval());
+            } else if (o instanceof RDA_MessageStop) {
+                msg = new EEGStopMessage(MessageType.DATA, count);
+                client.requestStop();
+                dtk.requestStop();
+                isRunning = false;
+                stopped = true;
+            }
+
+            if(msg != null) {
+                count++;
+                this.setChanged();
+                this.notifyObservers(msg);
+            }
+        }
+
+        if (!stopped) {
+            client.requestStop();
+            dtk.requestStop();
+        }
+
+        logger.info("Experiment has ended.");
+    }
+
+    @Override
+    public synchronized void stop() {
+        isRunning = false;
+    }
+
+}

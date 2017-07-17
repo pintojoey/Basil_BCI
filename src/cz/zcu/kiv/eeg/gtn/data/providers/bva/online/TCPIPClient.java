@@ -1,4 +1,4 @@
-package cz.zcu.kiv.eeg.gtn.data.providers.bva;
+package cz.zcu.kiv.eeg.gtn.data.providers.bva.online;
 
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -14,7 +14,7 @@ import org.apache.log4j.Logger;
  * ensured by using the Socket class and by handling exceptions. Data are
  * processed byte by byte. Cache (linkedlist) is used into which obtained bytes from the
  * server are stored. DataTokenizer is above this class translating obtained
- * bytes into interpretable messages. Bytes can be obtained using the read() method.
+ * bytes into interpretable RDA. Bytes can be obtained using the read() method.
  * read().
  */
 public class TCPIPClient extends Thread {

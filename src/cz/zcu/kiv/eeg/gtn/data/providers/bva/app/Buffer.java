@@ -4,8 +4,8 @@ import java.util.Arrays;
 import java.util.LinkedList;
 
 import cz.zcu.kiv.eeg.gtn.data.processing.math.Baseline;
-import cz.zcu.kiv.eeg.gtn.data.providers.bva.messages.RDA_Marker;
-import cz.zcu.kiv.eeg.gtn.data.providers.bva.messages.RDA_MessageData;
+import cz.zcu.kiv.eeg.gtn.data.providers.bva.RDA.RDA_Marker;
+import cz.zcu.kiv.eeg.gtn.data.providers.bva.RDA.RDA_MessageData;
 import cz.zcu.kiv.eeg.gtn.utils.Const;
 
 /**

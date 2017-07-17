@@ -1,11 +1,13 @@
-package cz.zcu.kiv.eeg.gtn.data.providers;
+package cz.zcu.kiv.eeg.gtn.data.providers.messaging;
 
 /**
  * Created by Tomas Prokop on 17.07.2017.
  */
 public class EEGMarker {
-    private String name;
-    private int offset;
+
+    private final String name;
+
+    private final int offset;
 
     public EEGMarker(String name, int offset) {
         this.name = name;

@@ -1,7 +1,7 @@
 package cz.zcu.kiv.eeg.gtn.data.providers.bva.app;
 
 import cz.zcu.kiv.eeg.gtn.data.processing.classification.IERPClassifier;
-import cz.zcu.kiv.eeg.gtn.data.providers.EEGDataBlock;
+import cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGDataMessage;
 import cz.zcu.kiv.eeg.gtn.utils.Const;
 
 import java.util.Arrays;
@@ -63,7 +63,7 @@ public class OnlineDetection extends Observable implements Observer {
                 setChanged();
                 notifyObservers(this);
             }
-        } else if (arg instanceof EEGDataBlock) {
+        } else if (arg instanceof EEGDataMessage) {
             setChanged();
             notifyObservers(arg); 
         }

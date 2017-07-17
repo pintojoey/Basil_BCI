@@ -1,4 +1,4 @@
-package cz.zcu.kiv.eeg.gtn.data.providers.bva.messages;
+package cz.zcu.kiv.eeg.gtn.data.providers.bva.RDA;
 
 /**
  * RDA_MessageStop

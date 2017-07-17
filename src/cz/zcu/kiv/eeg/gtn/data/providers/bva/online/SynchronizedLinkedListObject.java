@@ -1,4 +1,4 @@
-package cz.zcu.kiv.eeg.gtn.data.providers.bva;
+package cz.zcu.kiv.eeg.gtn.data.providers.bva.online;
 
 import java.util.LinkedList;
 

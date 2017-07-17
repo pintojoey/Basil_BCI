@@ -8,10 +8,10 @@ import cz.zcu.kiv.eeg.gtn.data.processing.featureExtraction.IFeatureExtraction;
 import cz.zcu.kiv.eeg.gtn.data.processing.featureExtraction.WaveletTransformFeatureExtraction;
 import cz.zcu.kiv.eeg.gtn.data.processing.math.ButterWorthFilter;
 import cz.zcu.kiv.eeg.gtn.data.processing.math.IFilter;
-import cz.zcu.kiv.eeg.gtn.data.providers.MessageType;
-import cz.zcu.kiv.eeg.gtn.data.providers.EEGDataBlock;
+import cz.zcu.kiv.eeg.gtn.data.providers.messaging.MessageType;
+import cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGDataMessage;
 import cz.zcu.kiv.eeg.gtn.data.providers.bva.app.EpochMessenger;
-import cz.zcu.kiv.eeg.gtn.data.providers.bva.app.OffLineDataProvider;
+import cz.zcu.kiv.eeg.gtn.data.providers.bva.OffLineDataProvider;
 import cz.zcu.kiv.eeg.gtn.utils.Const;
 
 
@@ -106,8 +106,8 @@ public class TrainUsingOfflineProvider implements Observer {
      */
     @Override
     public void update(Observable sender, Object message) {
-        if (message instanceof EEGDataBlock) {
-            EEGDataBlock msg = (EEGDataBlock) message;
+        if (message instanceof EEGDataMessage) {
+            EEGDataMessage msg = (EEGDataMessage) message;
             if (msg.getMsgType() == MessageType.END) {
                this.train();
             }

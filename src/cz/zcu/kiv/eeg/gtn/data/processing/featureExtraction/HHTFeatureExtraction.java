@@ -142,7 +142,7 @@ public class HHTFeatureExtraction implements IFeatureExtraction {
 	
 	/**
 	 * Method for selecting the most suitable features from input Hilbert transformations.
-	 * It iterates through all HilbertTransform messages and their amplitudes and frequency arrays.
+	 * It iterates through all HilbertTransform RDA and their amplitudes and frequency arrays.
 	 * It creates a sample window of specific size, which is shifted through aforementioned arrays
 	 * and for each shift calculates average value of read frequencies and amplitudes and stores them into
 	 * an {@link ArrayList}.
@@ -153,7 +153,7 @@ public class HHTFeatureExtraction implements IFeatureExtraction {
 	 * Based on typeOfFeatures variable is determined what type of features should be returned.
 	 * Then it's decided what HilbertTranform is best to get features from (based on its score) and from the
 	 * one selected, we get the desired features.
-	 * @param hTransforms - {@link Vector} with HilbertTransform messages, which hold arrays with frequencies and amplitudes
+	 * @param hTransforms - {@link Vector} with HilbertTransform RDA, which hold arrays with frequencies and amplitudes
 	 * of relevant IMFs
 	 * @return features from selected Hilbert transform (double[])
 	 */

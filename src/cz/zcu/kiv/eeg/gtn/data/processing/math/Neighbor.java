@@ -3,7 +3,7 @@ package cz.zcu.kiv.eeg.gtn.data.processing.math;
 import java.io.Serializable;
 
 /**
- * Class for creating messages that represents elements in training data
+ * Class for creating RDA that represents elements in training data
  * of the custom classifier based on K Nearest Neighbors algorithm.
  * @author Vlada47
  *

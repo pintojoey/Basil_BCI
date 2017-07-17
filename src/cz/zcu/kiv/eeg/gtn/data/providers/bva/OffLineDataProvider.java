@@ -1,9 +1,12 @@
-package cz.zcu.kiv.eeg.gtn.data.providers.bva.app;
+package cz.zcu.kiv.eeg.gtn.data.providers.bva;
 
 import cz.zcu.kiv.eeg.gtn.data.processing.math.Baseline;
 import cz.zcu.kiv.eeg.gtn.data.processing.math.IArtifactDetection;
-import cz.zcu.kiv.eeg.gtn.data.providers.MessageType;
-import cz.zcu.kiv.eeg.gtn.data.providers.EEGDataBlock;
+import cz.zcu.kiv.eeg.gtn.data.providers.AbstractDataProvider;
+import cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGStopMessage;
+import cz.zcu.kiv.eeg.gtn.data.providers.messaging.MessageType;
+import cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGDataMessage;
+import cz.zcu.kiv.eeg.gtn.data.providers.bva.app.EpochMessenger;
 import cz.zcu.kiv.eeg.gtn.gui.MainFrame;
 import cz.zcu.kiv.eeg.gtn.utils.Const;
 import cz.zcu.kiv.signal.ChannelInfo;
@@ -15,7 +18,7 @@ import java.io.*;
 import java.nio.ByteOrder;
 import java.util.*;
 
-public class OffLineDataProvider extends Observable implements Runnable, IDataProvider {
+public class OffLineDataProvider extends AbstractDataProvider{
 
     private String vhdrFile;
     private String vmrkFile;
@@ -69,6 +72,7 @@ public class OffLineDataProvider extends Observable implements Runnable, IDataPr
     @Override
     public void run() {
         try {
+            int cnt = 0;
             for (Map.Entry<String, Integer> fileEntry: files.entrySet()) {
                 DataTransformer dt = new EEGDataTransformer();
                 setFileNames(fileEntry.getKey());
@@ -139,6 +143,7 @@ public class OffLineDataProvider extends Observable implements Runnable, IDataPr
 
                         this.setChanged();
                         this.notifyObservers(em);
+                        cnt++;
                     } catch (ArrayIndexOutOfBoundsException ex) {
                         ex.printStackTrace();
                     }
@@ -146,7 +151,7 @@ public class OffLineDataProvider extends Observable implements Runnable, IDataPr
             }
 //            outfile.close();
             this.setChanged();
-            this.notifyObservers(new EEGDataBlock(MessageType.END, "EEG file loaded."));
+            this.notifyObservers(new EEGStopMessage(MessageType.END, cnt));
 
         } catch (IOException e) {
             e.printStackTrace();

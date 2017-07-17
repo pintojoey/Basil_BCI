@@ -3,6 +3,7 @@ package cz.zcu.kiv.eeg.gtn.data.providers.bva;
 import java.util.Observer;
 
 import cz.zcu.kiv.eeg.gtn.data.providers.AbstractDataProvider;
+import cz.zcu.kiv.eeg.gtn.data.providers.bva.RDA.RDA_Marker;
 import cz.zcu.kiv.eeg.gtn.data.providers.messaging.*;
 import cz.zcu.kiv.eeg.gtn.data.providers.bva.online.DataTokenizer;
 import cz.zcu.kiv.eeg.gtn.data.providers.bva.online.TCPIPClient;
@@ -49,14 +50,21 @@ public class OnLineDataProvider extends AbstractDataProvider {
             if (o instanceof RDA_MessageData) {
                 RDA_MessageData rda = (RDA_MessageData)o;
                 float[][] data = new float[channelCnt][(int)rda.getnPoints()];
+                EEGMarker[] markers = new EEGMarker[(int)rda.getnMarkers()];
 
+                float[] rdaDta = rda.getfData();
+                int pts = (int)rda.getnPoints();
                 for (int i = 0; i<channelCnt;i++){
-//TODO
+                    System.arraycopy(rdaDta,i*pts,data[i],0,pts);
                 }
 
-                //msg = new EEGDataMessage(MessageType.DATA, count, markers, data);
+                int i = 0;
+                for (RDA_Marker m : rda.getMarkers()) {
+                    markers[i] = new EEGMarker(m.getsTypeDesc(), (int)m.getnPosition());
+                    i++;
+                }
 
-                //buffer.write((RDA_MessageData) o);
+                msg = new EEGDataMessage(MessageType.DATA, count, markers, data);
             } else if (o instanceof RDA_MessageStart) {
                 RDA_MessageStart rda = (RDA_MessageStart) o;
                 String[] chNames = rda.getsChannelNames();

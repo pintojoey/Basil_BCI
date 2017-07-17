@@ -32,7 +32,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import cz.zcu.kiv.eeg.gtn.data.processing.classification.*;
 import cz.zcu.kiv.eeg.gtn.data.processing.classification.test.TrainUsingOfflineProvider;
-import cz.zcu.kiv.eeg.gtn.data.processing.featureextraction.IFeatureExtraction;
+import cz.zcu.kiv.eeg.gtn.data.processing.featureExtraction.IFeatureExtraction;
 
 /**
  * Window for changing classifier and its parameters

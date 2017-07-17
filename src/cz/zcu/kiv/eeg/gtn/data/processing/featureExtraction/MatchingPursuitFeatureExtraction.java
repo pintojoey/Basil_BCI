@@ -1,4 +1,4 @@
-package cz.zcu.kiv.eeg.gtn.data.processing.featureextraction;
+package cz.zcu.kiv.eeg.gtn.data.processing.featureExtraction;
 
 import cz.zcu.kiv.eegdsp.matchingpursuit.MatchingPursuit;
 

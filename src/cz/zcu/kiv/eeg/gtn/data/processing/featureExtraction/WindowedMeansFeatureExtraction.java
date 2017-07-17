@@ -1,7 +1,4 @@
-package cz.zcu.kiv.eeg.gtn.data.processing.featureextraction;
-
-import java.util.ArrayList;
-import java.util.List;
+package cz.zcu.kiv.eeg.gtn.data.processing.featureExtraction;
 
 import cz.zcu.kiv.eeg.gtn.data.processing.math.SignalProcessing;
 import cz.zcu.kiv.eeg.gtn.utils.Const;

@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Map;
 
 import cz.zcu.kiv.eeg.gtn.data.processing.classification.*;
-import cz.zcu.kiv.eeg.gtn.data.processing.featureextraction.FilterAndSubsamplingFeatureExtraction;
-import cz.zcu.kiv.eeg.gtn.data.processing.featureextraction.IFeatureExtraction;
+import cz.zcu.kiv.eeg.gtn.data.processing.featureExtraction.FilterAndSubsamplingFeatureExtraction;
+import cz.zcu.kiv.eeg.gtn.data.processing.featureExtraction.IFeatureExtraction;
 
 /**
  * 

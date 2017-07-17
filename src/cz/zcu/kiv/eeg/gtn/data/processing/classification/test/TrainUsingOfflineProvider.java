@@ -2,12 +2,10 @@ package cz.zcu.kiv.eeg.gtn.data.processing.classification.test;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import cz.zcu.kiv.eeg.gtn.data.processing.classification.*;
-import cz.zcu.kiv.eeg.gtn.data.processing.featureextraction.IFeatureExtraction;
-import cz.zcu.kiv.eeg.gtn.data.processing.featureextraction.WaveletTransformFeatureExtraction;
+import cz.zcu.kiv.eeg.gtn.data.processing.featureExtraction.IFeatureExtraction;
+import cz.zcu.kiv.eeg.gtn.data.processing.featureExtraction.WaveletTransformFeatureExtraction;
 import cz.zcu.kiv.eeg.gtn.data.processing.math.ButterWorthFilter;
 import cz.zcu.kiv.eeg.gtn.data.processing.math.IFilter;
 import cz.zcu.kiv.eeg.gtn.data.providers.MessageType;

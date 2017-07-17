@@ -12,29 +12,16 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
-import java.util.Random;
-import java.util.Set;
-import java.util.SortedSet;
 
-import cz.zcu.kiv.eeg.gtn.data.processing.featureextraction.IFeatureExtraction;
+import cz.zcu.kiv.eeg.gtn.data.processing.featureExtraction.IFeatureExtraction;
 import libsvm.LibSVM;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import net.sf.javaml.classification.Classifier;
-import net.sf.javaml.classification.KNearestNeighbors;
-import net.sf.javaml.classification.MeanFeatureVotingClassifier;
-import net.sf.javaml.classification.SOM;
-import net.sf.javaml.clustering.SOM.GridType;
-import net.sf.javaml.clustering.SOM.LearningType;
-import net.sf.javaml.clustering.SOM.NeighbourhoodFunction;
 import net.sf.javaml.core.Dataset;
 import net.sf.javaml.core.DefaultDataset;
 import net.sf.javaml.core.DenseInstance;
 import net.sf.javaml.core.Instance;
-import net.sf.javaml.distance.DistanceMeasure;
 
 public class JavaMLClassifier implements IERPClassifier {
 	private Classifier classifier;

@@ -3,7 +3,7 @@ package cz.zcu.kiv.eeg.gtn.gui;
 import cz.zcu.kiv.eeg.gtn.data.processing.classification.*;
 import cz.zcu.kiv.eeg.gtn.data.processing.classification.test.TestClassificationAccuracy;
 import cz.zcu.kiv.eeg.gtn.data.processing.classification.test.TrainUsingOfflineProvider;
-import cz.zcu.kiv.eeg.gtn.data.processing.featureextraction.*;
+import cz.zcu.kiv.eeg.gtn.data.processing.featureExtraction.*;
 import cz.zcu.kiv.eeg.gtn.data.processing.math.IArtifactDetection;
 import cz.zcu.kiv.eeg.gtn.data.processing.math.IFilter;
 import cz.zcu.kiv.eeg.gtn.data.providers.online.bva.app.IDataProvider;

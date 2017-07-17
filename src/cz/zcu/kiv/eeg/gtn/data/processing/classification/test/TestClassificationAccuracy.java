@@ -2,8 +2,8 @@ package cz.zcu.kiv.eeg.gtn.data.processing.classification.test;
 
 import cz.zcu.kiv.eeg.gtn.data.processing.classification.IERPClassifier;
 import cz.zcu.kiv.eeg.gtn.data.processing.classification.MLPClassifier;
-import cz.zcu.kiv.eeg.gtn.data.processing.featureextraction.IFeatureExtraction;
-import cz.zcu.kiv.eeg.gtn.data.processing.featureextraction.WaveletTransformFeatureExtraction;
+import cz.zcu.kiv.eeg.gtn.data.processing.featureExtraction.IFeatureExtraction;
+import cz.zcu.kiv.eeg.gtn.data.processing.featureExtraction.WaveletTransformFeatureExtraction;
 import cz.zcu.kiv.eeg.gtn.data.providers.MessageType;
 import cz.zcu.kiv.eeg.gtn.data.providers.ObserverMessage;
 import cz.zcu.kiv.eeg.gtn.data.providers.online.bva.app.OffLineDataProvider;

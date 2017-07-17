@@ -5,9 +5,9 @@ import cz.zcu.kiv.eeg.gtn.data.processing.classification.MLPClassifier;
 import cz.zcu.kiv.eeg.gtn.data.processing.featureExtraction.IFeatureExtraction;
 import cz.zcu.kiv.eeg.gtn.data.processing.featureExtraction.WaveletTransformFeatureExtraction;
 import cz.zcu.kiv.eeg.gtn.data.providers.MessageType;
-import cz.zcu.kiv.eeg.gtn.data.providers.ObserverMessage;
-import cz.zcu.kiv.eeg.gtn.data.providers.online.bva.app.OffLineDataProvider;
-import cz.zcu.kiv.eeg.gtn.data.providers.online.bva.app.OnlineDetection;
+import cz.zcu.kiv.eeg.gtn.data.providers.EEGDataBlock;
+import cz.zcu.kiv.eeg.gtn.data.providers.bva.app.OffLineDataProvider;
+import cz.zcu.kiv.eeg.gtn.data.providers.bva.app.OnlineDetection;
 import cz.zcu.kiv.eeg.gtn.gui.ProbabilityComparator;
 import cz.zcu.kiv.eeg.gtn.utils.Const;
 
@@ -224,8 +224,8 @@ public class TestClassificationAccuracy implements Observer {
             result = initProbabilities(probabilities);
 
         }
-        if (message instanceof ObserverMessage) {
-            ObserverMessage msg = (ObserverMessage) message;
+        if (message instanceof EEGDataBlock) {
+            EEGDataBlock msg = (EEGDataBlock) message;
             if (msg.getMsgType() == MessageType.END) {
                 //   System.out.println(filename);
                 int winner = (result[0] + 1);

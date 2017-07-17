@@ -462,7 +462,7 @@ public class LSL {
      * @param wait_time The waiting time for the operation, in seconds, to search for streams.
      *                  Warning: If this is too short (less than 0.5s) only a subset (or none) of the
      *                  outlets that are present on the network may be returned.
-     * @return An array of stream info objects (excluding their desc field), any of which can
+     * @return An array of stream info messages (excluding their desc field), any of which can
      *         subsequently be used to open an inlet. The full info can be retrieve from the inlet.
      */
     public static StreamInfo[] resolve_streams(double wait_time)
@@ -483,7 +483,7 @@ public class LSL {
      * @param minimum Optionally return at least this number of streams.
      * @param timeout Optionally a timeout of the operation, in seconds (default: no timeout).
      *                If the timeout expires, less than the desired number of streams (possibly none) will be returned.
-     * @return An array of matching stream info objects (excluding their meta-data), any of
+     * @return An array of matching stream info messages (excluding their meta-data), any of
      *         which can subsequently be used to open an inlet.
      */
     public static StreamInfo[] resolve_stream(String prop, String value, int minimum, double timeout)
@@ -505,7 +505,7 @@ public class LSL {
      * @param minimum Return at least this number of streams.
      * @param timeout Optionally a timeout of the operation, in seconds (default: no timeout).
      *                If the timeout expires, less than the desired number of streams (possibly none) will be returned.
-     * @return An array of matching stream info objects (excluding their meta-data), any of
+     * @return An array of matching stream info messages (excluding their meta-data), any of
      *         which can subsequently be used to open an inlet.
      */
     public static StreamInfo[] resolve_stream(String pred, int minimum, double timeout)
@@ -842,7 +842,7 @@ public class LSL {
 
         /**
          * Obtain the set of currently present streams on the network (i.e. resolve result).
-         * @return An array of matching stream info objects (excluding their meta-data), any of
+         * @return An array of matching stream info messages (excluding their meta-data), any of
          *         which can subsequently be used to open an inlet.
          */
         public StreamInfo[] results() {

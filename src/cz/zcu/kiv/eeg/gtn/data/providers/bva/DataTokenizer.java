@@ -1,4 +1,4 @@
-package cz.zcu.kiv.eeg.gtn.data.providers.online.bva;
+package cz.zcu.kiv.eeg.gtn.data.providers.bva;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -7,11 +7,11 @@ import java.util.NoSuchElementException;
 
 import org.apache.log4j.Logger;
 
-import cz.zcu.kiv.eeg.gtn.data.providers.online.bva.objects.RDA_Marker;
-import cz.zcu.kiv.eeg.gtn.data.providers.online.bva.objects.RDA_MessageData;
-import cz.zcu.kiv.eeg.gtn.data.providers.online.bva.objects.RDA_MessageHeader;
-import cz.zcu.kiv.eeg.gtn.data.providers.online.bva.objects.RDA_MessageStart;
-import cz.zcu.kiv.eeg.gtn.data.providers.online.bva.objects.RDA_MessageStop;
+import cz.zcu.kiv.eeg.gtn.data.providers.bva.messages.RDA_Marker;
+import cz.zcu.kiv.eeg.gtn.data.providers.bva.messages.RDA_MessageData;
+import cz.zcu.kiv.eeg.gtn.data.providers.bva.messages.RDA_MessageHeader;
+import cz.zcu.kiv.eeg.gtn.data.providers.bva.messages.RDA_MessageStart;
+import cz.zcu.kiv.eeg.gtn.data.providers.bva.messages.RDA_MessageStop;
 
 /**
  * 
@@ -19,15 +19,15 @@ import cz.zcu.kiv.eeg.gtn.data.providers.online.bva.objects.RDA_MessageStop;
  * @author Michal Patocka First version created: 3.3.2010
  * @version 2.0
  *
- * This class converts byte stream into data objects. The whole process of 
+ * This class converts byte stream into data messages. The whole process of
  * starts with searching for a unique sequence of 12 bytes denoting the header.
  * Therefore, in an infinite cycle, we remove first 12 bytes and try to find
  * the match between this array and an array announcing the header. 
- * Once it is found, it means one of the data objects. First,
+ * Once it is found, it means one of the data messages. First,
  * RDA_MessageStart is expected with parameters for subsequent data transfer.
- * Then many objects RDA_MessageData that can contain RDA_Marker (mostly just one).
+ * Then many messages RDA_MessageData that can contain RDA_Marker (mostly just one).
  * If the data are of an unknown type, they will not be processed.
- * All objects are sent into a buffer from which they can
+ * All messages are sent into a buffer from which they can
  * be taken using the retriveDataBlock() method.
  */
 public class DataTokenizer extends Thread {
@@ -38,7 +38,7 @@ public class DataTokenizer extends Thread {
     private int noOfChannels;
     
     /**
-     * Buffer used to cache incoming objects
+     * Buffer used to cache incoming messages
      */
     private final SynchronizedLinkedListObject buffer = new SynchronizedLinkedListObject();
     
@@ -88,8 +88,8 @@ public class DataTokenizer extends Thread {
     }
 
     /**
-     * This method writes objects of RDA_Marker type and transfer
-     * references to corresponding data objects.
+     * This method writes messages of RDA_Marker type and transfer
+     * references to corresponding data messages.
      *
      * @param markerCount number of markers to process
      * @return array of markers
@@ -152,7 +152,7 @@ public class DataTokenizer extends Thread {
 
     /**
      * Since the process of data collection
-     * and their translation into data objects must be 
+     * and their translation into data messages must be
      * parallelized, threads are used 
      */
     @Override
@@ -250,7 +250,7 @@ public class DataTokenizer extends Thread {
                     }
 
                 } else {
-                    // Unknown objects are ignored.
+                    // Unknown messages are ignored.
                 }
 
             }
@@ -267,7 +267,7 @@ public class DataTokenizer extends Thread {
      * This method returns the first object on the top of the buffer, 
      * into which data blocks have been inserted.
      *
-     * @return data objects
+     * @return data messages
      */
     public synchronized Object retrieveDataBlock() {
 

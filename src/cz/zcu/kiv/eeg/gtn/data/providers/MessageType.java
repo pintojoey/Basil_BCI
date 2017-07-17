@@ -10,5 +10,5 @@ package cz.zcu.kiv.eeg.gtn.data.providers;
  * @author Prokop
  */
 public enum MessageType {
-    END, START
+    NONE, START, DATA, END
 }

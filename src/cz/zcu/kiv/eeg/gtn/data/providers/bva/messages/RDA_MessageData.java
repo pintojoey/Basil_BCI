@@ -1,4 +1,4 @@
-package cz.zcu.kiv.eeg.gtn.data.providers.online.bva.objects;
+package cz.zcu.kiv.eeg.gtn.data.providers.bva.messages;
 
 /**
  * RDA_MessageData

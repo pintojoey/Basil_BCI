@@ -1,11 +1,11 @@
-package cz.zcu.kiv.eeg.gtn.data.providers.online.bva.app;
+package cz.zcu.kiv.eeg.gtn.data.providers.bva.app;
 
 import java.util.Arrays;
 import java.util.LinkedList;
 
 import cz.zcu.kiv.eeg.gtn.data.processing.math.Baseline;
-import cz.zcu.kiv.eeg.gtn.data.providers.online.bva.objects.RDA_Marker;
-import cz.zcu.kiv.eeg.gtn.data.providers.online.bva.objects.RDA_MessageData;
+import cz.zcu.kiv.eeg.gtn.data.providers.bva.messages.RDA_Marker;
+import cz.zcu.kiv.eeg.gtn.data.providers.bva.messages.RDA_MessageData;
 import cz.zcu.kiv.eeg.gtn.utils.Const;
 
 /**
@@ -149,7 +149,7 @@ public class Buffer {
         if (markers != null) {
             for (RDA_Marker marker : markers) {
                 /* index denotes position of the current marker;
-                 it is a current position in an array 
+                 it is a current position in an array
                  + relative position of marker in the data object */
                 int index = this.endIndex + (int) marker.getnPosition();
                 this.indexes.addLast(index);

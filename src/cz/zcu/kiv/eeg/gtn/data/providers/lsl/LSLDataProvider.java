@@ -1,4 +1,4 @@
-package cz.zcu.kiv.eeg.gtn.data.providers.online.lsl;
+package cz.zcu.kiv.eeg.gtn.data.providers.lsl;
 
 import java.util.Observer;
 import cz.zcu.kiv.eeg.gtn.data.providers.AbstractDataProvider;

@@ -6,10 +6,10 @@ import cz.zcu.kiv.eeg.gtn.data.processing.classification.test.TrainUsingOfflineP
 import cz.zcu.kiv.eeg.gtn.data.processing.featureExtraction.*;
 import cz.zcu.kiv.eeg.gtn.data.processing.math.IArtifactDetection;
 import cz.zcu.kiv.eeg.gtn.data.processing.math.IFilter;
-import cz.zcu.kiv.eeg.gtn.data.providers.online.bva.app.IDataProvider;
-import cz.zcu.kiv.eeg.gtn.data.providers.online.bva.app.OffLineDataProvider;
-import cz.zcu.kiv.eeg.gtn.data.providers.online.bva.app.OnLineDataProvider;
-import cz.zcu.kiv.eeg.gtn.data.providers.online.bva.app.OnlineDetection;
+import cz.zcu.kiv.eeg.gtn.data.providers.bva.app.IDataProvider;
+import cz.zcu.kiv.eeg.gtn.data.providers.bva.app.OffLineDataProvider;
+import cz.zcu.kiv.eeg.gtn.data.providers.bva.app.OnLineDataProvider;
+import cz.zcu.kiv.eeg.gtn.data.providers.bva.app.OnlineDetection;
 import cz.zcu.kiv.eeg.gtn.utils.ColorUtils;
 import cz.zcu.kiv.eeg.gtn.utils.Const;
 

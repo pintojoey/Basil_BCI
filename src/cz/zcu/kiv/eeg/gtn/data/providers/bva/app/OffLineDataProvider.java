@@ -1,9 +1,9 @@
-package cz.zcu.kiv.eeg.gtn.data.providers.online.bva.app;
+package cz.zcu.kiv.eeg.gtn.data.providers.bva.app;
 
 import cz.zcu.kiv.eeg.gtn.data.processing.math.Baseline;
 import cz.zcu.kiv.eeg.gtn.data.processing.math.IArtifactDetection;
 import cz.zcu.kiv.eeg.gtn.data.providers.MessageType;
-import cz.zcu.kiv.eeg.gtn.data.providers.ObserverMessage;
+import cz.zcu.kiv.eeg.gtn.data.providers.EEGDataBlock;
 import cz.zcu.kiv.eeg.gtn.gui.MainFrame;
 import cz.zcu.kiv.eeg.gtn.utils.Const;
 import cz.zcu.kiv.signal.ChannelInfo;
@@ -146,7 +146,7 @@ public class OffLineDataProvider extends Observable implements Runnable, IDataPr
             }
 //            outfile.close();
             this.setChanged();
-            this.notifyObservers(new ObserverMessage(MessageType.END, "EEG file loaded."));
+            this.notifyObservers(new EEGDataBlock(MessageType.END, "EEG file loaded."));
 
         } catch (IOException e) {
             e.printStackTrace();

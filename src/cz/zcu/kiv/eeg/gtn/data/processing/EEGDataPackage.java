@@ -1,4 +1,4 @@
-package cz.zcu.kiv.eeg.gtn.data;
+package cz.zcu.kiv.eeg.gtn.data.processing;
 
 import java.util.ArrayList;
 

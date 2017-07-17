@@ -1,4 +1,4 @@
-package cz.zcu.kiv.eeg.gtn.data.providers.online.bva.app;
+package cz.zcu.kiv.eeg.gtn.data.providers.bva.app;
 
 import java.util.Observable;
 import java.util.Observer;
@@ -6,12 +6,12 @@ import java.util.Observer;
 import org.apache.log4j.Logger;
 
 import cz.zcu.kiv.eeg.gtn.data.processing.math.IArtifactDetection;
-import cz.zcu.kiv.eeg.gtn.data.providers.online.bva.DataTokenizer;
-import cz.zcu.kiv.eeg.gtn.data.providers.online.bva.TCPIPClient;
-import cz.zcu.kiv.eeg.gtn.data.providers.online.bva.objects.RDA_Marker;
-import cz.zcu.kiv.eeg.gtn.data.providers.online.bva.objects.RDA_MessageData;
-import cz.zcu.kiv.eeg.gtn.data.providers.online.bva.objects.RDA_MessageStart;
-import cz.zcu.kiv.eeg.gtn.data.providers.online.bva.objects.RDA_MessageStop;
+import cz.zcu.kiv.eeg.gtn.data.providers.bva.DataTokenizer;
+import cz.zcu.kiv.eeg.gtn.data.providers.bva.TCPIPClient;
+import cz.zcu.kiv.eeg.gtn.data.providers.bva.messages.RDA_Marker;
+import cz.zcu.kiv.eeg.gtn.data.providers.bva.messages.RDA_MessageData;
+import cz.zcu.kiv.eeg.gtn.data.providers.bva.messages.RDA_MessageStart;
+import cz.zcu.kiv.eeg.gtn.data.providers.bva.messages.RDA_MessageStop;
 import cz.zcu.kiv.eeg.gtn.gui.MainFrame;
 import cz.zcu.kiv.eeg.gtn.utils.Const;
 

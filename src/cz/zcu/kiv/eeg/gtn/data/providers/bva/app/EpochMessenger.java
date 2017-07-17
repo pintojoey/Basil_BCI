@@ -1,4 +1,4 @@
-package cz.zcu.kiv.eeg.gtn.data.providers.online.bva.app;
+package cz.zcu.kiv.eeg.gtn.data.providers.bva.app;
 
 import java.util.Arrays;
 

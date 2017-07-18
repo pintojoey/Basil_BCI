@@ -9,9 +9,19 @@ public class EEGMarker {
 
     private final int offset;
 
+    private boolean isTarget = false;
+
     public EEGMarker(String name, int offset) {
         this.name = name;
         this.offset = offset;
+    }
+
+    public boolean isTarget() {
+        return isTarget;
+    }
+
+    public void setTarget(boolean target) {
+        isTarget = target;
     }
 
     public String getName() {

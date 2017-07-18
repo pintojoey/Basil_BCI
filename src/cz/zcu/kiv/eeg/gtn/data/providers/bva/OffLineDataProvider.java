@@ -1,13 +1,10 @@
 package cz.zcu.kiv.eeg.gtn.data.providers.bva;
 
-import cz.zcu.kiv.eeg.gtn.data.processing.math.Baseline;
-import cz.zcu.kiv.eeg.gtn.data.processing.math.IArtifactDetection;
 import cz.zcu.kiv.eeg.gtn.data.providers.AbstractDataProvider;
+import cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGDataMessage;
+import cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGStartMessage;
 import cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGStopMessage;
 import cz.zcu.kiv.eeg.gtn.data.providers.messaging.MessageType;
-import cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGDataMessage;
-import cz.zcu.kiv.eeg.gtn.data.providers.bva.app.EpochMessenger;
-import cz.zcu.kiv.eeg.gtn.gui.MainFrame;
 import cz.zcu.kiv.eeg.gtn.utils.Const;
 import cz.zcu.kiv.signal.ChannelInfo;
 import cz.zcu.kiv.signal.DataTransformer;
@@ -16,26 +13,25 @@ import cz.zcu.kiv.signal.EEGMarker;
 
 import java.io.*;
 import java.nio.ByteOrder;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Observer;
 
 public class OffLineDataProvider extends AbstractDataProvider{
 
     private String vhdrFile;
     private String vmrkFile;
     private String eegFile;
-    private int FZIndex;
-    private int CZIndex;
-    private int PZIndex;
-    private Map<String, Integer> files;
 
-    private IArtifactDetection artifactDetector;
+    private Map<String, Integer> files;
     private boolean running;
 
 
     public OffLineDataProvider(File eegFile, Observer obs) {
         this.addObserver(obs);
-        files = new HashMap<String, Integer>();
-        files.put(eegFile.getAbsolutePath(), 2);
+        files = new HashMap<>();
+        files.put(eegFile.getAbsolutePath(), -1);
         this.running = true;
     }
 
@@ -45,6 +41,7 @@ public class OffLineDataProvider extends AbstractDataProvider{
         if (!dir.exists() || !dir.isDirectory()) {
             throw new FileNotFoundException(dir + " is not a directory");
         }
+
         this.files = loadExpectedResults(trainDir);
         this.running = true;
     }
@@ -74,6 +71,9 @@ public class OffLineDataProvider extends AbstractDataProvider{
         try {
             int cnt = 0;
             for (Map.Entry<String, Integer> fileEntry: files.entrySet()) {
+                if(!running)
+                    break;
+
                 DataTransformer dt = new EEGDataTransformer();
                 setFileNames(fileEntry.getKey());
                 File file = new File(fileEntry.getKey());
@@ -82,80 +82,78 @@ public class OffLineDataProvider extends AbstractDataProvider{
                     continue;
                 }
 
-                List<ChannelInfo> channels = dt.getChannelInfo(vhdrFile);
-                for (ChannelInfo channel : channels) {
-                    if ("fz".equals(channel.getName().toLowerCase())) {
-                        FZIndex = channel.getNumber();
-                    } else if ("cz".equals(channel.getName().toLowerCase())) {
-                        CZIndex = channel.getNumber();
-                    }
-                    if ("pz".equals(channel.getName().toLowerCase())) {
-                        PZIndex = channel.getNumber();
-                    }
-                }
+                //Send start msg
+                EEGStartMessage start = CreateStartMessage(dt, vhdrFile, cnt);
+                cnt++;
+                this.setChanged();
+                this.notifyObservers(start);
 
                 ByteOrder order = ByteOrder.LITTLE_ENDIAN;
-                
-                double[] fzChannel = dt.readBinaryData(vhdrFile, eegFile, FZIndex, order);
-                double[] czChannel = dt.readBinaryData(vhdrFile, eegFile, CZIndex, order);
-                double[] pzChannel = dt.readBinaryData(vhdrFile, eegFile, PZIndex, order);
+                int len = super.getAvailableChannels().length;
+                float[][] data = new float[len][];
+                for (int i = 0; i < len; i++) {
+                    data[i] = toFloatArray(dt.readBinaryData(vhdrFile, eegFile, i, order));
+                }
 
                 List<EEGMarker> markers = dt.readMarkerList(vmrkFile);
-                //Collections.shuffle(markers);
-                for (EEGMarker marker : markers) {
-                    if (!running) {
-                        break;
-                    }
-
-                    EpochMessenger em = new EpochMessenger();
-
-                    String stimulusNumber = marker.getStimulus().replaceAll("[\\D]", "");
-                    int stimulusIndex = -1;
-                    if (stimulusNumber.length() > 0) {
-                        stimulusIndex = Integer.parseInt(stimulusNumber) - 1;
-                    }
-                    em.setStimulusIndex(stimulusIndex);
-                    try {
-                        float[] ffzChannel = toFloatArray(Arrays.copyOfRange(fzChannel,
-                                marker.getPosition() - Const.PREESTIMULUS_VALUES, marker.getPosition() + Const.POSTSTIMULUS_VALUES));
-                        float[] fczChannel = toFloatArray(Arrays.copyOfRange(czChannel,
-                                marker.getPosition() - Const.PREESTIMULUS_VALUES, marker.getPosition() + Const.POSTSTIMULUS_VALUES));
-                        float[] fpzChannel = toFloatArray(Arrays.copyOfRange(pzChannel,
-                                marker.getPosition() - Const.PREESTIMULUS_VALUES, marker.getPosition() + Const.POSTSTIMULUS_VALUES));
-
-                        Baseline.correct(ffzChannel, Const.PREESTIMULUS_VALUES);
-                        Baseline.correct(fczChannel, Const.PREESTIMULUS_VALUES);
-                        Baseline.correct(fpzChannel, Const.PREESTIMULUS_VALUES);
-
- 
-                        em.setFZ(ffzChannel, 100);
-                        em.setCZ(fczChannel, 100);
-                        em.setPZ(fpzChannel, 100);
-
-                        if (em.getStimulusIndex() + 1 == fileEntry.getValue()) {
-                            em.setTarget(true);
-                        }
-
-                        artifactDetector = MainFrame.artifactDetection;
-                        if (artifactDetector != null) {
-                            em = artifactDetector.detectArtifact(em);
-                        }
-
-                        this.setChanged();
-                        this.notifyObservers(em);
-                        cnt++;
-                    } catch (ArrayIndexOutOfBoundsException ex) {
-                        ex.printStackTrace();
-                    }
+                cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGMarker[] eegMarkers = new cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGMarker[markers.size()];
+                int i = 0;
+                int target = fileEntry.getValue();
+                for (EEGMarker m : markers) {
+                    eegMarkers[i] = new cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGMarker(m.getName(), m.getPosition());
+                    eegMarkers[i].setTarget(getStimulusNumber(m.getStimulus()) == target);
                 }
+
+                EEGDataMessage dataMsg = new EEGDataMessage(MessageType.DATA, 1, eegMarkers, data);
+                this.setChanged();
+                this.notifyObservers(dataMsg);
+                cnt++;
             }
-//            outfile.close();
+
             this.setChanged();
             this.notifyObservers(new EEGStopMessage(MessageType.END, cnt));
-
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private int getStimulusNumber(String stimulus){
+        String sNumber = stimulus.replaceAll("[\\D]","");
+        if(sNumber.length() == 0) return  -1;
+        return  Integer.parseInt(sNumber);
+    }
+
+    private EEGStartMessage CreateStartMessage(DataTransformer dt, String vhdrFile, int cnt) throws IOException {
+
+        List<ChannelInfo> channels = dt.getChannelInfo(vhdrFile);
+        String[] chNames = new String[channels.size()];
+        double[] resolutions = new double[chNames.length];
+        int i =0;
+        for (ChannelInfo channel : channels) {
+            chNames[i]=channel.getName();
+            resolutions[i]=channel.getResolution();
+        }
+
+        double sampling;
+        String val = getProperty("samplinginterval", dt);
+        sampling = Integer.parseInt(val);
+
+        super.setAvailableChannels(chNames);
+        EEGStartMessage msg = new EEGStartMessage(MessageType.START, cnt, chNames, resolutions, chNames.length, sampling);
+        return msg;
+    }
+
+    private String getProperty(String propName, DataTransformer dt){
+        HashMap<String, HashMap<String, String>> props = dt.getProperties();
+        for (Map.Entry<String, HashMap<String, String>> entry : props.entrySet()){
+            for (Map.Entry<String, String> prop : entry.getValue().entrySet()){
+                if(prop.getKey().equalsIgnoreCase(propName)){
+                    return prop.getValue();
+                }
+            }
+        }
+
+        return null;
     }
 
     @Override
@@ -163,25 +161,6 @@ public class OffLineDataProvider extends AbstractDataProvider{
         this.running = false;
     }
 
-    private void writeCsv(float[] vals, String stimulus, PrintWriter outfile) throws FileNotFoundException {
-
-        //Iterate the elements actually being used
-        for (int i = 0; i < vals.length; i++) {
-            outfile.append(vals[i] + ",");
-        }
-        outfile.append(stimulus);
-        outfile.append("\n");
-
-    }
-
-    private void writePzIntoCsv(double[] vals, PrintWriter outfile) {
-        //Iterate the elements actually being used
-        for (int i = 0; i < vals.length; i++) {
-            outfile.append(vals[i] + ",");
-        }
-        //outfile.append(stimulus);
-        outfile.append("\n");
-    }
     private Map<String, Integer> loadExpectedResults(String dir) throws IOException {
         Map<String, Integer> res = new HashMap<>();
         File file = new File(dir + File.separator + "infoTrain.txt");

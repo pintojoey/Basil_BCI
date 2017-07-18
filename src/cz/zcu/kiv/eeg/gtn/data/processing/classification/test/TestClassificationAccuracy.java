@@ -7,7 +7,6 @@ import cz.zcu.kiv.eeg.gtn.data.processing.featureExtraction.WaveletTransformFeat
 import cz.zcu.kiv.eeg.gtn.data.providers.messaging.MessageType;
 import cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGDataMessage;
 import cz.zcu.kiv.eeg.gtn.data.providers.bva.OffLineDataProvider;
-import cz.zcu.kiv.eeg.gtn.data.providers.bva.app.OnlineDetection;
 import cz.zcu.kiv.eeg.gtn.gui.ProbabilityComparator;
 import cz.zcu.kiv.eeg.gtn.utils.Const;
 
@@ -78,10 +77,10 @@ public class TestClassificationAccuracy implements Observer {
                         }
                         
 
-                        OnlineDetection detection = new OnlineDetection(classifier, this,sizeofStimuls);
-                        OffLineDataProvider offLineData = new OffLineDataProvider(f, detection);
+                        //OnlineDetection detection = new OnlineDetection(classifier, this,sizeofStimuls);
+                        //OffLineDataProvider offLineData = new OffLineDataProvider(f, detection);
                         //submits task for execution. Calling get() method blocks thread until work is done.
-                        service.submit(offLineData).get(); 
+                        //service.submit(offLineData).get();
                         
                      
                     }
@@ -218,12 +217,12 @@ public class TestClassificationAccuracy implements Observer {
 
     @Override
     public void update(Observable o, Object message) {
-        if (message instanceof OnlineDetection) {
+/*        if (message instanceof OnlineDetection) {
             double[] probabilities = ((OnlineDetection) message).getWeightedResults();
 
             result = initProbabilities(probabilities);
 
-        }
+        }*/
         if (message instanceof EEGDataMessage) {
             EEGDataMessage msg = (EEGDataMessage) message;
             if (msg.getMsgType() == MessageType.END) {

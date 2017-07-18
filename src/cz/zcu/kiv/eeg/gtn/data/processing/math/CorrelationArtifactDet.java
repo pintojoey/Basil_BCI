@@ -3,8 +3,6 @@ package cz.zcu.kiv.eeg.gtn.data.processing.math;
 import java.io.*;
 import java.util.*;
 
-import cz.zcu.kiv.eeg.gtn.data.providers.bva.app.EpochMessenger;
-
 /**
  * Class for removal of artifacts in EEG signal using the 
  * Pearson's correlation method. The EEG signal is correlated 
@@ -32,7 +30,7 @@ public class CorrelationArtifactDet implements IArtifactDetection{
 	public double threshold;
 	
 	/**
-	 * Creates an instance of CorrelationArtifactDet with threshold set to {@link DEFAULT_THRESHOLD}.
+	 * Creates an instance of CorrelationArtifactDet with default threshold.
 	 * The default pattern of eye blink is used.
 	 */
 	public CorrelationArtifactDet(){
@@ -140,10 +138,10 @@ public class CorrelationArtifactDet implements IArtifactDetection{
 	 * @return epochMes Returns the correlated epoch, unless it contains artifact. In that 
 	 * case returns null.
 	 */
-	public EpochMessenger detectArtifact(EpochMessenger epochMes){
+/*	public EpochMessenger detectArtifact(EpochMessenger epochMes){
 		epochMes = detectArtifact(epochMes, this.pattern);
 		return epochMes;
-	}
+	}*/
 	
 	/**
 	 * Shifts the pattern against the epoch and with each shift calculates the correlation 
@@ -160,12 +158,12 @@ public class CorrelationArtifactDet implements IArtifactDetection{
 	 * @return epochMes Returns the correlated epoch, unless it contains artifact. In that 
 	 * case returns null.
 	 */
-	public EpochMessenger detectArtifact(EpochMessenger epochMes, double[] pattern){
+/*	public EpochMessenger detectArtifact(EpochMessenger epochMes, double[] pattern){
 		if(pattern == null)return epochMes;
 		
 		double[][] epoch = epochMes.getEpoch();
 		double n = pattern.length;
-		for(int channel = 0; channel<epoch.length; channel++){
+		for(int channel = 0; channel<epoch.length; channel++){;
 			double sumXY = 0;
 			double sumX = 0;
 			double sumY = 0;
@@ -196,7 +194,7 @@ public class CorrelationArtifactDet implements IArtifactDetection{
 			}
 		}
 		return epochMes;
-	}
+	}*/
 	
 	/**
 	 * Returns the threshold (maximum difference between average of epoch values and 

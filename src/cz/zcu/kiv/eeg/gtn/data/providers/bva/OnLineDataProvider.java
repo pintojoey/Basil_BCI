@@ -35,7 +35,8 @@ public class OnLineDataProvider extends AbstractDataProvider {
 
     @Override
     public void run() {
-        addObserver(obs);
+        if(obs != null)
+            addObserver(obs);
 
         boolean stopped = false;
         EEGMessage msg = null;
@@ -55,9 +56,11 @@ public class OnLineDataProvider extends AbstractDataProvider {
                 }
 
                 int i = 0;
-                for (RDA_Marker m : rda.getMarkers()) {
-                    markers[i] = new EEGMarker(m.getsTypeDesc(), (int) m.getnPosition());
-                    i++;
+                if(rda.getMarkers() != null) {
+                    for (RDA_Marker m : rda.getMarkers()) {
+                        markers[i] = new EEGMarker(m.getsTypeDesc(), (int) m.getnPosition());
+                        i++;
+                    }
                 }
 
                 msg = new EEGDataMessage(MessageType.DATA, count, markers, data);

@@ -1,7 +1,5 @@
 package cz.zcu.kiv.eeg.gtn.data.processing.math;
 
-import cz.zcu.kiv.eeg.gtn.data.providers.bva.app.EpochMessenger;
-
 /**
  * Class for removal of artifacts in EEG signal using the amplitude method. This
  * method searches the EEG signal for value greater than set threshold. If
@@ -31,7 +29,6 @@ public class AmplitudeArtifactDet implements IArtifactDetection {
 
     /**
      * Creates an instance of this class with threshold set to
-     * {@link DEFAULT_THRESHOLD}.
      */
     public AmplitudeArtifactDet() {
         this(DEFAULT_THRESHOLD);
@@ -45,7 +42,7 @@ public class AmplitudeArtifactDet implements IArtifactDetection {
      * @param epoch Epoch tested for artifacts
      * @return null if given epocj contains artefact, epoch otherwise.
      */
-    @Override
+/*    @Override
     public EpochMessenger detectArtifact(EpochMessenger epoch) {
         double[][] values = epoch.getEpoch();
 
@@ -57,7 +54,7 @@ public class AmplitudeArtifactDet implements IArtifactDetection {
             }
         }
         return epoch;
-    }
+    }*/
 
     /**
      * Returns the threshold.

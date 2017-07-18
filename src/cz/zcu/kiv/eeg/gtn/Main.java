@@ -3,6 +3,7 @@ package cz.zcu.kiv.eeg.gtn;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
+import cz.zcu.kiv.eeg.gtn.data.providers.bva.OnLineDataProvider;
 import cz.zcu.kiv.eeg.gtn.gui.MainFrame;
 
 import java.io.IOException;
@@ -53,6 +54,13 @@ public class Main {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else if("-tst".equals(args[0])){
+            try {
+                OnLineDataProvider odp = new OnLineDataProvider("147.228.127.95", 51244, null);
+                odp.run();
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         } else {

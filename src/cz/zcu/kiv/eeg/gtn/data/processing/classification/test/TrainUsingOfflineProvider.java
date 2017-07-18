@@ -10,7 +10,6 @@ import cz.zcu.kiv.eeg.gtn.data.processing.math.ButterWorthFilter;
 import cz.zcu.kiv.eeg.gtn.data.processing.math.IFilter;
 import cz.zcu.kiv.eeg.gtn.data.providers.messaging.MessageType;
 import cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGDataMessage;
-import cz.zcu.kiv.eeg.gtn.data.providers.bva.app.EpochMessenger;
 import cz.zcu.kiv.eeg.gtn.data.providers.bva.OffLineDataProvider;
 import cz.zcu.kiv.eeg.gtn.utils.Const;
 
@@ -112,7 +111,7 @@ public class TrainUsingOfflineProvider implements Observer {
                this.train();
             }
         }
-        if (message instanceof EpochMessenger) {
+/*        if (message instanceof EpochMessenger) {
             double[][] epoch = ((EpochMessenger) message).getEpoch();
             receivedEpochsCounter++;
            
@@ -127,7 +126,7 @@ public class TrainUsingOfflineProvider implements Observer {
                 targets.add(0.0);
                 numberOfNonTargets++;
             }
-        }
+        }*/
     }
 
     private void train() {

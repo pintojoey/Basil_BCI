@@ -1,7 +1,5 @@
 package cz.zcu.kiv.eeg.gtn.data.processing.math;
 
-import cz.zcu.kiv.eeg.gtn.data.providers.bva.app.EpochMessenger;
-
 /**
  * Class for removal of artifacts in EEG signal using the 
  * gradient method. The EEG signal is averaged and than each 
@@ -47,7 +45,7 @@ public class GradientArtifactDet implements IArtifactDetection{
 	 * @param epoch Epoch from which to remove artifacts.
 	 * @return Epoch or null.
 	 */
-	public EpochMessenger detectArtifact(EpochMessenger epochMes){
+/*	public EpochMessenger detectArtifact(EpochMessenger epochMes){
 		double[][] epoch = epochMes.getEpoch();
 		for(int channel = 0; channel<epoch.length; channel++){
 			double average = 0;
@@ -61,7 +59,7 @@ public class GradientArtifactDet implements IArtifactDetection{
 			}
 		}
 		return epochMes;
-	}
+	}*/
 	
 	/**
 	 * Returns the threshold (maximal difference between average of epoch values and 

@@ -6,9 +6,9 @@ import cz.zcu.kiv.eeg.gtn.data.processing.classification.test.TrainUsingOfflineP
 import cz.zcu.kiv.eeg.gtn.data.processing.featureExtraction.*;
 import cz.zcu.kiv.eeg.gtn.data.processing.math.IArtifactDetection;
 import cz.zcu.kiv.eeg.gtn.data.processing.math.IFilter;
+import cz.zcu.kiv.eeg.gtn.data.providers.AbstractDataProvider;
 import cz.zcu.kiv.eeg.gtn.data.providers.bva.OffLineDataProvider;
 import cz.zcu.kiv.eeg.gtn.data.providers.bva.OnLineDataProvider;
-import cz.zcu.kiv.eeg.gtn.data.providers.bva.app.OnlineDetection;
 import cz.zcu.kiv.eeg.gtn.utils.ColorUtils;
 import cz.zcu.kiv.eeg.gtn.utils.Const;
 
@@ -51,7 +51,7 @@ public class MainFrame extends JFrame implements Observer {
 
     private Observer detection;
 
-    private IDataProvider dp;
+    private AbstractDataProvider dp;
 
     public File eegFile;
 
@@ -639,14 +639,14 @@ public class MainFrame extends JFrame implements Observer {
     @Override
     public void update(Observable sender, Object message)
             throws IllegalArgumentException {
-        if (message instanceof OnlineDetection) {
+/*        if (message instanceof OnlineDetection) {
             double[] probabilities = ((OnlineDetection) message)
                     .getWeightedResults();
             int[] counts = ((OnlineDetection) message).getClassificationCounters();
             initProbabilities(probabilities, counts);
 
            // this.epochCharts.update(((OnlineDetection) message).getPzAvg());
-        }
+        }*/
        
     }
 
@@ -807,7 +807,7 @@ public class MainFrame extends JFrame implements Observer {
                 int i = chooser.showDialog(mainFrame, "Open");
                 if (i == 0) {
                     eegFile = chooser.getSelectedFile();
-                    detection = new OnlineDetection(classifier, mainFrame,stimuls.size());
+                    //detection = new OnlineDetection(classifier, mainFrame,stimuls.size());
                     stopRunningThread();
 
                     try {
@@ -883,7 +883,7 @@ public class MainFrame extends JFrame implements Observer {
                 if (isOk) {
                     stopRunningThread();
 
-                    detection = new OnlineDetection(classifier, mainFrame,stimuls.size());
+                    //detection = new OnlineDetection(classifier, mainFrame,stimuls.size());
 
                     try {
                         dp = new OnLineDataProvider(recorderIPAddress, port,

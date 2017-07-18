@@ -5,6 +5,8 @@
  */
 package cz.zcu.kiv.eeg.gtn.data.providers.messaging;
 
+import java.util.Arrays;
+
 /**
  * @author Prokop
  */
@@ -27,5 +29,11 @@ public class EEGDataMessage extends EEGMessage {
 
     public float[][] getData() {
         return data;
+    }
+    
+    @Override
+    public String toString() {
+		return "Markers: " + Arrays.toString(markers) + "\n " + "Data: " + Arrays.deepToString(data);
+    	
     }
 }

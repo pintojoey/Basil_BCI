@@ -31,4 +31,9 @@ public class EEGMarker {
     public int getOffset() {
         return offset;
     }
+    
+    @Override
+    public String toString() {
+    	return name + ", offset: " + offset;
+    }
 }

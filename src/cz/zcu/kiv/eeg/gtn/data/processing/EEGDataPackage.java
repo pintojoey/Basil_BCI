@@ -13,14 +13,20 @@ public class EEGDataPackage {
 
     private ArrayList<IPreprocessing> preprocessingSteps;
 
-    public EEGDataPackage(){
-        preprocessingSteps = new ArrayList<>();
-    }
-
     /**
      * EEG data
      */
     private double [][] data;
+
+
+    public EEGDataPackage(){
+        preprocessingSteps = new ArrayList<>();
+    }
+
+    public EEGDataPackage(double[][] data) {
+        this.data = data;
+        preprocessingSteps = new ArrayList<>();
+    }
 
     /**
      * Returns data
@@ -37,6 +43,10 @@ public class EEGDataPackage {
      */
     public void setData(double[][] data, IPreprocessing step) {
         preprocessingSteps.add(step);
+        this.data = data;
+    }
+
+    public void setData(double[][] data) {
         this.data = data;
     }
 

@@ -2,7 +2,6 @@ package cz.zcu.kiv.eeg.gtn;
 
 import cz.zcu.kiv.eeg.gtn.data.providers.bva.OffLineDataProvider;
 import cz.zcu.kiv.eeg.gtn.data.providers.bva.OnLineDataProvider;
-import cz.zcu.kiv.eeg.gtn.data.providers.lsl.LSLEEGDataMessageProvider;
 
 import java.io.File;
 import java.util.Observable;

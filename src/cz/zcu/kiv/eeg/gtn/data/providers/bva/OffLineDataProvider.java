@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Observer;
 
-public class OffLineDataProvider extends AbstractDataProvider{
+public class OffLineDataProvider extends AbstractDataProvider {
 
     private String vhdrFile;
     private String vmrkFile;
@@ -70,8 +70,8 @@ public class OffLineDataProvider extends AbstractDataProvider{
     public void run() {
         try {
             int cnt = 0;
-            for (Map.Entry<String, Integer> fileEntry: files.entrySet()) {
-                if(!running)
+            for (Map.Entry<String, Integer> fileEntry : files.entrySet()) {
+                if (!running)
                     break;
 
                 DataTransformer dt = new EEGDataTransformer();
@@ -92,7 +92,8 @@ public class OffLineDataProvider extends AbstractDataProvider{
                 int len = super.getAvailableChannels().length;
                 float[][] data = new float[len][];
                 for (int i = 0; i < len; i++) {
-                    data[i] = toFloatArray(dt.readBinaryData(vhdrFile, eegFile, i, order));
+                    double[] d = dt.readBinaryData(vhdrFile, eegFile, i + 1, order);
+                    data[i] = toFloatArray(d);
                 }
 
                 List<EEGMarker> markers = dt.readMarkerList(vmrkFile);
@@ -102,6 +103,7 @@ public class OffLineDataProvider extends AbstractDataProvider{
                 for (EEGMarker m : markers) {
                     eegMarkers[i] = new cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGMarker(m.getName(), m.getPosition());
                     eegMarkers[i].setTarget(getStimulusNumber(m.getStimulus()) == target);
+                    i++;
                 }
 
                 EEGDataMessage dataMsg = new EEGDataMessage(MessageType.DATA, 1, eegMarkers, data);
@@ -117,10 +119,10 @@ public class OffLineDataProvider extends AbstractDataProvider{
         }
     }
 
-    private int getStimulusNumber(String stimulus){
-        String sNumber = stimulus.replaceAll("[\\D]","");
-        if(sNumber.length() == 0) return  -1;
-        return  Integer.parseInt(sNumber);
+    private int getStimulusNumber(String stimulus) {
+        String sNumber = stimulus.replaceAll("[\\D]", "");
+        if (sNumber.length() == 0) return -1;
+        return Integer.parseInt(sNumber);
     }
 
     private EEGStartMessage CreateStartMessage(DataTransformer dt, String vhdrFile, int cnt) throws IOException {
@@ -128,10 +130,11 @@ public class OffLineDataProvider extends AbstractDataProvider{
         List<ChannelInfo> channels = dt.getChannelInfo(vhdrFile);
         String[] chNames = new String[channels.size()];
         double[] resolutions = new double[chNames.length];
-        int i =0;
+        int i = 0;
         for (ChannelInfo channel : channels) {
-            chNames[i]=channel.getName();
-            resolutions[i]=channel.getResolution();
+            chNames[i] = channel.getName();
+            resolutions[i] = channel.getResolution();
+            i++;
         }
 
         double sampling;
@@ -143,11 +146,11 @@ public class OffLineDataProvider extends AbstractDataProvider{
         return msg;
     }
 
-    private String getProperty(String propName, DataTransformer dt){
+    private String getProperty(String propName, DataTransformer dt) {
         HashMap<String, HashMap<String, String>> props = dt.getProperties();
-        for (Map.Entry<String, HashMap<String, String>> entry : props.entrySet()){
-            for (Map.Entry<String, String> prop : entry.getValue().entrySet()){
-                if(prop.getKey().equalsIgnoreCase(propName)){
+        for (Map.Entry<String, HashMap<String, String>> entry : props.entrySet()) {
+            for (Map.Entry<String, String> prop : entry.getValue().entrySet()) {
+                if (prop.getKey().equalsIgnoreCase(propName)) {
                     return prop.getValue();
                 }
             }

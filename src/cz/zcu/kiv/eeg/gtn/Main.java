@@ -56,13 +56,6 @@ public class Main {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        } else if("-tst".equals(args[0])){
-            try {
-                OnLineDataProvider odp = new OnLineDataProvider("147.228.127.95", 51244, null);
-                odp.run();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
         } else {
             printHelp(System.out);
         }

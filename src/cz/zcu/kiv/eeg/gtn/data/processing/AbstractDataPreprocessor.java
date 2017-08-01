@@ -1,5 +1,6 @@
 package cz.zcu.kiv.eeg.gtn.data.processing;
 
+import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.IEpochExtraction;
 import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.IPreprocessing;
 import cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGDataMessage;
 import cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGMessage;
@@ -17,21 +18,17 @@ public abstract class AbstractDataPreprocessor extends Observable implements Obs
 
     protected  boolean running = false;
 
-    protected  final int prestimulus;
-
-    protected final int packageSize;
-
+    protected final IEpochExtraction epochExtraction;
     protected final List<IPreprocessing> preprocessing;
 
-    public AbstractDataPreprocessor(int prestimulus, int packageSize, List<IPreprocessing> preprocessing) {
-        this.prestimulus = prestimulus;
-        this.packageSize = packageSize;
-        this.preprocessing = preprocessing;
+    public AbstractDataPreprocessor(IEpochExtraction epochExtraction, List<IPreprocessing> preprocessing) {
+    	this.epochExtraction = epochExtraction;
+    	this.preprocessing = preprocessing;
     }
 
     public abstract void storeData(EEGDataMessage data);
 
-    public abstract EEGDataPackage retrieveData(int prestimulus, int size);
+    public abstract EEGDataPackage retrieveData();
 
     public abstract void start(EEGStartMessage start);
 
@@ -42,7 +39,7 @@ public abstract class AbstractDataPreprocessor extends Observable implements Obs
         if (arg instanceof EEGMessage) {
             if (arg instanceof EEGDataMessage) {
                 storeData((EEGDataMessage) arg);
-                processData(); //TODO možná to dát do vlákna? + nutno implementovat buffer
+                processAllData(); //TODO možná to dát do vlákna? + nutno implementovat buffer
             } else if (arg instanceof EEGStartMessage) {
                 start((EEGStartMessage) arg);
                 running = true;
@@ -52,15 +49,29 @@ public abstract class AbstractDataPreprocessor extends Observable implements Obs
         }
     }
 
-    protected void processData(){
-        EEGDataPackage data = retrieveData(prestimulus, packageSize);
+    protected void processAllData(){
+        EEGDataPackage data = retrieveData();
         if(data == null) return;
-
-        for (IPreprocessing prep : preprocessing){
-            data = prep.preprocess(data);
+        
+        List<EEGDataPackage> epochs = null;
+        
+        if (this.epochExtraction != null) {
+        	epochs = this.epochExtraction.extractEpochs(data);
+        	for (EEGDataPackage epoch: epochs) {
+        		processData(epoch);
+        	}
+        } else {
+        	processData(data);
         }
-
-        this.setChanged();
-        this.notifyObservers(data);
+       
     }
+
+	protected void processData(EEGDataPackage data) {
+		for (IPreprocessing prep : preprocessing){
+			data = prep.preprocess(data);
+	    }
+
+	    this.setChanged();
+	    this.notifyObservers(data);
+	}
 }

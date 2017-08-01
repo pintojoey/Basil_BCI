@@ -1,4 +1,4 @@
-package cz.zcu.kiv.eeg.gtn.data.processing;
+package cz.zcu.kiv.eeg.gtn.data.processing.Structures;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +21,6 @@ public class EEGDataPackage {
     private double [][] data;
     
     private List<EEGMarker> markers;
-
 
     public EEGDataPackage(){
         preprocessingSteps = new ArrayList<>();
@@ -48,6 +47,18 @@ public class EEGDataPackage {
     public void setData(double[][] data, IPreprocessing step) {
         preprocessingSteps.add(step);
         this.data = data;
+    }
+
+    public List<EEGMarker> getMarkers() {
+        return markers;
+    }
+
+    public void setMarkers(List<EEGMarker> markers) {
+        this.markers = markers;
+    }
+
+    public void addMarker(EEGMarker marker){
+        this.markers.add(marker);
     }
 
     public void setData(double[][] data) {

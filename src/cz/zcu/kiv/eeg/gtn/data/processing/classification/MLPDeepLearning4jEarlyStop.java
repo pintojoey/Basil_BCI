@@ -38,7 +38,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Created by lukasvareka on 4. 7. 2016.
  */
-public class MLPDeepLearning4jEarlyStop implements IERPClassifier {
+public class MLPDeepLearning4jEarlyStop implements IClassifier {
     private final int NEURON_COUNT_DEFAULT = 30;    //default number of neurons
     private IFeatureExtraction fe;                //type of feature extraction (MatchingPursuit, FilterAndSubampling or WaveletTransform)
     private MultiLayerNetwork model;            //multi layer neural network with a logistic output layer and multiple hidden neuralNets

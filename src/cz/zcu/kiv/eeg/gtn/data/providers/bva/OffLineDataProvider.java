@@ -1,5 +1,6 @@
 package cz.zcu.kiv.eeg.gtn.data.providers.bva;
 
+import cz.zcu.kiv.eeg.gtn.data.listeners.EEGMessageListener;
 import cz.zcu.kiv.eeg.gtn.data.providers.AbstractDataProvider;
 import cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGDataMessage;
 import cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGStartMessage;
@@ -16,7 +17,6 @@ import java.nio.ByteOrder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Observer;
 
 public class OffLineDataProvider extends AbstractDataProvider {
 
@@ -28,15 +28,13 @@ public class OffLineDataProvider extends AbstractDataProvider {
     private boolean running;
 
 
-    public OffLineDataProvider(File eegFile, Observer obs) {
-        this.addObserver(obs);
+    public OffLineDataProvider(File eegFile) {
         files = new HashMap<>();
         files.put(eegFile.getAbsolutePath(), -1);
         this.running = true;
     }
 
-    public OffLineDataProvider(String trainDir, Observer obs) throws IOException {
-        this.addObserver(obs);
+    public OffLineDataProvider(String trainDir) throws IOException {
         File dir = new File(trainDir);
         if (!dir.exists() || !dir.isDirectory()) {
             throw new FileNotFoundException(dir + " is not a directory");
@@ -85,8 +83,9 @@ public class OffLineDataProvider extends AbstractDataProvider {
                 //Send start msg
                 EEGStartMessage start = CreateStartMessage(dt, vhdrFile, cnt);
                 cnt++;
-                this.setChanged();
-                this.notifyObservers(start);
+                for (EEGMessageListener ls : super.listeners) {
+                    ls.startMessageSent(start);
+                }
 
                 ByteOrder order = ByteOrder.LITTLE_ENDIAN;
                 int len = super.getAvailableChannels().length;
@@ -107,13 +106,17 @@ public class OffLineDataProvider extends AbstractDataProvider {
                 }
 
                 EEGDataMessage dataMsg = new EEGDataMessage(MessageType.DATA, 1, eegMarkers, data);
-                this.setChanged();
-                this.notifyObservers(dataMsg);
+                for (EEGMessageListener ls : super.listeners) {
+                    ls.dataMessageSent(dataMsg);
+                }
                 cnt++;
             }
 
-            this.setChanged();
-            this.notifyObservers(new EEGStopMessage(MessageType.END, cnt));
+            EEGStopMessage stop = new EEGStopMessage(MessageType.END, cnt);
+            for (EEGMessageListener ls : super.listeners) {
+                ls.stopMessageSent(stop);
+            }
+
         } catch (IOException e) {
             e.printStackTrace();
         }

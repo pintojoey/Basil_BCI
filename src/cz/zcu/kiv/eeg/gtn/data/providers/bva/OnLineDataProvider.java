@@ -1,7 +1,6 @@
 package cz.zcu.kiv.eeg.gtn.data.providers.bva;
 
-import java.util.Observer;
-
+import cz.zcu.kiv.eeg.gtn.data.listeners.EEGMessageListener;
 import cz.zcu.kiv.eeg.gtn.data.providers.AbstractDataProvider;
 import cz.zcu.kiv.eeg.gtn.data.providers.bva.RDA.RDA_Marker;
 import cz.zcu.kiv.eeg.gtn.data.providers.messaging.*;
@@ -18,14 +17,12 @@ public class OnLineDataProvider extends AbstractDataProvider {
     private final Logger logger = Logger.getLogger(OnLineDataProvider.class);
     private final TCPIPClient client;
     private final DataTokenizer dtk;
-    private final Observer obs;
 
     private int channelCnt = 0;
     private boolean isRunning;
 
-    public OnLineDataProvider(String ipAddress, int port, Observer obs) throws Exception {
+    public OnLineDataProvider(String ipAddress, int port) throws Exception {
         super();
-        this.obs = obs;
         client = new TCPIPClient(ipAddress, port);
         client.start();
         dtk = new DataTokenizer(client);
@@ -35,11 +32,8 @@ public class OnLineDataProvider extends AbstractDataProvider {
 
     @Override
     public void run() {
-        if (obs != null)
-            addObserver(obs);
 
         boolean stopped = false;
-        EEGMessage msg = null;
         int count = 0;
 
         while (isRunning) {
@@ -63,25 +57,30 @@ public class OnLineDataProvider extends AbstractDataProvider {
                     }
                 }
 
-                msg = new EEGDataMessage(MessageType.DATA, count, markers, data);
+                EEGDataMessage msg = new EEGDataMessage(MessageType.DATA, count, markers, data);
+                for (EEGMessageListener ls : super.listeners) {
+                    ls.dataMessageSent(msg);
+                }
             } else if (o instanceof RDA_MessageStart) {
                 RDA_MessageStart rda = (RDA_MessageStart) o;
                 String[] chNames = rda.getsChannelNames();
                 super.setAvailableChannels(chNames);
                 channelCnt = chNames.length;
-                msg = new EEGStartMessage(MessageType.START, count, chNames, rda.getdResolutions(), (int) rda.getnChannels(), rda.getdSamplingInterval());
+
+                EEGStartMessage msg = new EEGStartMessage(MessageType.START, count, chNames, rda.getdResolutions(), (int) rda.getnChannels(), rda.getdSamplingInterval());
+                for (EEGMessageListener ls : super.listeners) {
+                    ls.startMessageSent(msg);
+                }
             } else if (o instanceof RDA_MessageStop) {
-                msg = new EEGStopMessage(MessageType.DATA, count);
+                EEGStopMessage msg = new EEGStopMessage(MessageType.DATA, count);
+                for (EEGMessageListener ls : super.listeners) {
+                    ls.stopMessageSent(msg);
+                }
+
                 client.requestStop();
                 dtk.requestStop();
                 isRunning = false;
                 stopped = true;
-            }
-
-            if (msg != null) {
-                count++;
-                this.setChanged();
-                this.notifyObservers(msg);
             }
         }
 

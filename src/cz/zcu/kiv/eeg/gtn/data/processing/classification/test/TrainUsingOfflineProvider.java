@@ -31,14 +31,14 @@ public class TrainUsingOfflineProvider implements Observer {
     private int iters;
     private int middleNeurons;
     private static IFeatureExtraction fe;
-    private static IERPClassifier classifier;
+    private static IClassifier classifier;
     private static String file;
     private IFilter filter;
     private int receivedEpochsCounter = 0;
 
     
     public TrainUsingOfflineProvider(IFeatureExtraction fe,
-            IERPClassifier classifier, String file, IFilter filter)  {
+            IClassifier classifier, String file, IFilter filter)  {
         TrainUsingOfflineProvider.fe = fe;
         TrainUsingOfflineProvider.classifier = classifier;
         TrainUsingOfflineProvider.file = file;
@@ -53,7 +53,7 @@ public class TrainUsingOfflineProvider implements Observer {
 
         OffLineDataProvider offLineData;
         try {
-			offLineData =  new OffLineDataProvider(Const.INFO_DIR, this);
+			offLineData =  new OffLineDataProvider(Const.INFO_DIR);
 			Thread t = new Thread(offLineData);
 	        t.start();
 	        try {
@@ -76,7 +76,7 @@ public class TrainUsingOfflineProvider implements Observer {
         this.classifier = null;
 
         // used to open the thread for collecting single epochs from continuous EEG
-        OffLineDataProvider offLineData = new OffLineDataProvider(Const.INFO_DIR, this);
+        OffLineDataProvider offLineData = new OffLineDataProvider(Const.INFO_DIR);
         Thread t = new Thread(offLineData);
         t.start();
         try {
@@ -225,7 +225,7 @@ public class TrainUsingOfflineProvider implements Observer {
         classifier.setFeatureExtraction(fe);
     }
 
-    public IERPClassifier getClassifier() {
+    public IClassifier getClassifier() {
         return classifier;
     }
 

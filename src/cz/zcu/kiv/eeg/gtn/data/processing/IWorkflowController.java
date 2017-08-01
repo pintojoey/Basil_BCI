@@ -1,13 +1,16 @@
 package cz.zcu.kiv.eeg.gtn.data.processing;
 
-import cz.zcu.kiv.eeg.gtn.data.processing.Structures.IBuffer;
+import cz.zcu.kiv.eeg.gtn.data.processing.Structures.EEGDataPackage;
+import cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGDataMessage;
+import cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGStartMessage;
+import cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGStopMessage;
 
 /**
  * Created by Tomas Prokop on 04.07.2017.
  */
 public interface IWorkflowController {
-    IBuffer getBuffer();
-    void storeData();
-
-
+    void processData();
+    void start(EEGStartMessage start);
+    void stop(EEGStopMessage stop);
+    void storeData(EEGDataMessage data);
 }

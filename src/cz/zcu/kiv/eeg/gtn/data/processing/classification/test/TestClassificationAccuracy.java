@@ -1,6 +1,6 @@
 package cz.zcu.kiv.eeg.gtn.data.processing.classification.test;
 
-import cz.zcu.kiv.eeg.gtn.data.processing.classification.IERPClassifier;
+import cz.zcu.kiv.eeg.gtn.data.processing.classification.IClassifier;
 import cz.zcu.kiv.eeg.gtn.data.processing.classification.MLPClassifier;
 import cz.zcu.kiv.eeg.gtn.data.processing.featureExtraction.IFeatureExtraction;
 import cz.zcu.kiv.eeg.gtn.data.processing.featureExtraction.WaveletTransformFeatureExtraction;
@@ -44,7 +44,7 @@ public class TestClassificationAccuracy implements Observer {
         //this(null);
     }
 
-    public TestClassificationAccuracy(IERPClassifier classifier) throws InterruptedException, IOException, ExecutionException {
+    public TestClassificationAccuracy(IClassifier classifier) throws InterruptedException, IOException, ExecutionException {
         stats = new HashMap<>();
         Statistics.setTotalPts(0);
         results = new HashMap<>();

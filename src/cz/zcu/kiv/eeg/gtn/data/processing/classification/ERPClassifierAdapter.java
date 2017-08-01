@@ -11,7 +11,7 @@ import cz.zcu.kiv.eeg.gtn.data.processing.featureExtraction.IFeatureExtraction;
  * 
  * @author Tomas Rondik
  */
-public class ERPClassifierAdapter implements IERPClassifier {
+public class ERPClassifierAdapter implements IClassifier {
 
 	@Override
 	public void setFeatureExtraction(IFeatureExtraction fe) {

@@ -18,7 +18,7 @@ import cz.zcu.kiv.eeg.gtn.data.processing.featureExtraction.IFeatureExtraction;
  * 
  * Created by lukasvareka on 8. 11. 2016.
  */
-public class BLDAMatlabClassifier implements  IERPClassifier {
+public class BLDAMatlabClassifier implements  IClassifier {
     private IFeatureExtraction fe;
     private static MatlabProxy proxy = null;
     private String MATLAB_PATH = "D:\\DG\\BCI\\matlab_experiments";

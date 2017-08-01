@@ -29,7 +29,7 @@ import java.util.List;
 /**
  * Created by lukasvareka on 27. 6. 2016.
  */
-public class MLPDeepLearning4j implements IERPClassifier {
+public class MLPDeepLearning4j implements IClassifier {
     private final int NEURON_COUNT_DEFAULT = 30;    //default number of neurons
     private IFeatureExtraction fe;                //type of feature extraction (MatchingPursuit, FilterAndSubampling or WaveletTransform)
     private MultiLayerNetwork model;            //multi layer neural network with a logistic output layer and multiple hidden neuralNets

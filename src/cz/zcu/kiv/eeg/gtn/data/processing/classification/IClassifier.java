@@ -16,7 +16,7 @@ import cz.zcu.kiv.eeg.gtn.data.processing.featureExtraction.IFeatureExtraction;
  * @author Lukas Vareka
  *
  */
-public interface IERPClassifier {
+public interface IClassifier {
 	
 	/**
 	 * 

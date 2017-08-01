@@ -521,7 +521,7 @@ public class ChangeClassifierFrame extends JFrame {
 					nnStructure.add(middle);
 					nnStructure.add(output);
 
-					IERPClassifier classifier = new MLPClassifier(nnStructure);
+					IClassifier classifier = new MLPClassifier(nnStructure);
 					classifier.setFeatureExtraction(fe);
 
 					List<String> classifierParams = new ArrayList<String>();
@@ -534,7 +534,7 @@ public class ChangeClassifierFrame extends JFrame {
 					int neighborsNumber = (Integer) neighborsNumberSpinner
 							.getValue();
 
-					IERPClassifier classifier = new KNNClassifier(
+					IClassifier classifier = new KNNClassifier(
 							neighborsNumber);
 					classifier.setFeatureExtraction(fe);
 
@@ -543,14 +543,14 @@ public class ChangeClassifierFrame extends JFrame {
 
 					trainingDialog(c, mainFrame, classifier, classifierParams);
 				} else if (ldaBttn.isSelected()) {
-					IERPClassifier classifier = new LinearDiscriminantAnalysisClassifier();
+					IClassifier classifier = new LinearDiscriminantAnalysisClassifier();
 					classifier.setFeatureExtraction(fe);
 
 					List<String> classifierParams = new ArrayList<String>();
 
 					trainingDialog(c, mainFrame, classifier, classifierParams);
 				} else if (svmBttn.isSelected()) {
-					IERPClassifier classifier;
+					IClassifier classifier;
 					try {
 						classifier = new SVMClassifier((Double) svmCost
 								.getValue());
@@ -565,7 +565,7 @@ public class ChangeClassifierFrame extends JFrame {
 						e1.printStackTrace();
 					}
 				} else if (correlationBttn.isSelected()) {
-					IERPClassifier classifier = new CorrelationClassifier();
+					IClassifier classifier = new CorrelationClassifier();
 					classifier.setFeatureExtraction(fe);
 
 					List<String> classifierParams = new ArrayList<String>();
@@ -574,7 +574,7 @@ public class ChangeClassifierFrame extends JFrame {
 				}
 				else if (dbnBttn.isSelected()) {
 					int neurons = (Integer) dbnNeuron.getValue();
-					IERPClassifier classifier = new DBNDeepLearning4jClassifier(neurons);
+					IClassifier classifier = new DBNDeepLearning4jClassifier(neurons);
 					classifier.setFeatureExtraction(fe);
 
 					List<String> classifierParams = new ArrayList<String>();
@@ -584,7 +584,7 @@ public class ChangeClassifierFrame extends JFrame {
 				}
 				else if (saeBttn.isSelected()) {
 					int neurons = (Integer) sdaNeuron.getValue();
-					IERPClassifier classifier = new SDADeepLearning4jEarlyStopClassifier(neurons);
+					IClassifier classifier = new SDADeepLearning4jEarlyStopClassifier(neurons);
 					classifier.setFeatureExtraction(fe);
 
 					List<String> classifierParams = new ArrayList<String>();
@@ -622,7 +622,7 @@ public class ChangeClassifierFrame extends JFrame {
 	 *            - parameters for classifier
 	 */
 	private void trainingDialog(ChangeClassifierFrame c, MainFrame mainFrame,
-			IERPClassifier classifier, List<String> classifierParams) {
+			IClassifier classifier, List<String> classifierParams) {
 		if (mainFrame.isTrained() == false) {
 			int dialogResult = JOptionPane.showConfirmDialog(null,
 					"You have to train the classifier in order to use it",

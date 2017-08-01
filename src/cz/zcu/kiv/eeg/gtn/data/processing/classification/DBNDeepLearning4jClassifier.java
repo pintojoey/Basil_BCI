@@ -27,7 +27,7 @@ import java.nio.file.Paths;
 import java.util.List;
 
 // creates instance of Deep Belief Network @author Pumprdlici group
-public class DBNDeepLearning4jClassifier implements IERPClassifier {
+public class DBNDeepLearning4jClassifier implements IClassifier {
     private final int NEURON_COUNT = 15; //default number of neurons
     private IFeatureExtraction fe;        //type of feature extraction (MatchingPursuit, FilterAndSubampling or WaveletTransform)
     private MultiLayerNetwork model;    //multi layer neural network with a logistic output layer and multiple hidden neuralNets

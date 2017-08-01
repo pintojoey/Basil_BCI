@@ -1,17 +1,27 @@
 package cz.zcu.kiv.eeg.gtn.data.providers;
 
-import java.util.Observable;
+import cz.zcu.kiv.eeg.gtn.data.listeners.EEGMessageListener;
+
+import java.util.ArrayList;
+import java.util.List;
+
 
 /**
  * Created by Tomas Prokop on 04.07.2017.
  */
-public abstract class AbstractDataProvider extends Observable implements Runnable {
+public abstract class AbstractDataProvider implements Runnable {
+
+    protected List<EEGMessageListener> listeners = new ArrayList<EEGMessageListener>();
 
     private String[] availableChannels;
 
     public abstract void run();
 
     public abstract void stop();
+
+    public void addListener(EEGMessageListener listener){
+        listeners.add(listener);
+    }
 
     public String[] getAvailableChannels() {
         return availableChannels;

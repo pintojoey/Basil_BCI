@@ -1,6 +1,6 @@
 package cz.zcu.kiv.eeg.gtn.data.processing.preprocessing;
 
-import cz.zcu.kiv.eeg.gtn.data.processing.EEGDataPackage;
+import cz.zcu.kiv.eeg.gtn.data.processing.Structures.EEGDataPackage;
 
 /**
  * Created by Tomas Prokop on 04.07.2017.

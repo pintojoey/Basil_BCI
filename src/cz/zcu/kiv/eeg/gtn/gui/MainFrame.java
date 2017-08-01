@@ -61,7 +61,7 @@ public class MainFrame extends JFrame implements Observer {
 
     private IFeatureExtraction fe;
 
-    private IERPClassifier classifier;
+    private IClassifier classifier;
 
     private final ShowChart epochCharts;
 
@@ -677,7 +677,7 @@ public class MainFrame extends JFrame implements Observer {
      *
      * @return classifier
      */
-    public IERPClassifier getClassifier() {
+    public IClassifier getClassifier() {
         return classifier;
     }
 
@@ -686,7 +686,7 @@ public class MainFrame extends JFrame implements Observer {
      *
      * @param classifier - classifier to be set
      */
-    public void setClassifier(IERPClassifier classifier) {
+    public void setClassifier(IClassifier classifier) {
         this.classifier = classifier;
     }
 
@@ -811,7 +811,7 @@ public class MainFrame extends JFrame implements Observer {
                     stopRunningThread();
 
                     try {
-                        dp = new OffLineDataProvider(eegFile, detection);
+                        dp = new OffLineDataProvider(eegFile);
                         dataProvider = new Thread((OffLineDataProvider) dp);
                         dataProvider.start();
                     } catch (Exception ex) {
@@ -886,8 +886,7 @@ public class MainFrame extends JFrame implements Observer {
                     //detection = new OnlineDetection(classifier, mainFrame,stimuls.size());
 
                     try {
-                        dp = new OnLineDataProvider(recorderIPAddress, port,
-                                detection);
+                        dp = new OnLineDataProvider(recorderIPAddress, port);
                         dataProvider = new Thread((OnLineDataProvider) dp);
                         dataProvider.start();
                     } catch (Exception ex) {

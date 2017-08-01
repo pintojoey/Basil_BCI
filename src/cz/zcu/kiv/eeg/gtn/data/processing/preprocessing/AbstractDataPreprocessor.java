@@ -1,8 +1,6 @@
-package cz.zcu.kiv.eeg.gtn.data.processing;
+package cz.zcu.kiv.eeg.gtn.data.processing.preprocessing;
 
-import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.IEpochExtraction;
-import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.IPreprocessing;
-import cz.zcu.kiv.eeg.gtn.data.processing.EEGDataPackage;
+import cz.zcu.kiv.eeg.gtn.data.processing.Structures.EEGDataPackage;
 import cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGDataMessage;
 import cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGMessage;
 import cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGStartMessage;
@@ -41,7 +39,7 @@ public abstract class AbstractDataPreprocessor extends Observable implements Obs
         if (arg instanceof EEGMessage) {
             if (arg instanceof EEGDataMessage) {
                 storeData((EEGDataMessage) arg);
-                processData(); //TODO možná to dát do vlákna? + nutno implementovat buffer
+                //processData(); //TODO možná to dát do vlákna? + nutno implementovat buffer
             } else if (arg instanceof EEGStartMessage) {
                 start((EEGStartMessage) arg);
                 running = true;
@@ -52,7 +50,8 @@ public abstract class AbstractDataPreprocessor extends Observable implements Obs
     }
 
     protected void processAllData(){
-        EEGDataPackage data = retrieveData();
+        EEGDataPackage data = null;
+                //= retrieveData();
         if(data == null) return;
 
         List<EEGDataPackage> epochs = null;

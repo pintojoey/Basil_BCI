@@ -23,7 +23,7 @@ import net.sf.javaml.core.DefaultDataset;
 import net.sf.javaml.core.DenseInstance;
 import net.sf.javaml.core.Instance;
 
-public class JavaMLClassifier implements IERPClassifier {
+public class JavaMLClassifier implements IClassifier {
 	private Classifier classifier;
 	private IFeatureExtraction fe;
 	

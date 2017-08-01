@@ -1,6 +1,6 @@
-package cz.zcu.kiv.eeg.gtn.data.processing;
+package cz.zcu.kiv.eeg.gtn.data.processing.preprocessing;
 
-import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.IPreprocessing;
+import cz.zcu.kiv.eeg.gtn.data.processing.EEGDataPackage;
 import cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGDataMessage;
 import cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGMessage;
 import cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGStartMessage;
@@ -13,18 +13,15 @@ import java.util.Observer;
 /**
  * Created by Tomas Prokop on 04.07.2017.
  */
-public abstract class AbstractDataPreprocessor extends Observable implements Observer {
+public abstract class AbstractDataPreprocessor extends Observable implements Observer, IDataPreprocessor {
 
     protected  boolean running = false;
-
-    protected  final int prestimulus;
 
     protected final int packageSize;
 
     protected final List<IPreprocessing> preprocessing;
 
-    public AbstractDataPreprocessor(int prestimulus, int packageSize, List<IPreprocessing> preprocessing) {
-        this.prestimulus = prestimulus;
+    public AbstractDataPreprocessor(int packageSize, List<IPreprocessing> preprocessing) {
         this.packageSize = packageSize;
         this.preprocessing = preprocessing;
     }
@@ -53,14 +50,6 @@ public abstract class AbstractDataPreprocessor extends Observable implements Obs
     }
 
     protected void processData(){
-        EEGDataPackage data = retrieveData(prestimulus, packageSize);
-        if(data == null) return;
 
-        for (IPreprocessing prep : preprocessing){
-            data = prep.preprocess(data);
-        }
-
-        this.setChanged();
-        this.notifyObservers(data);
     }
 }

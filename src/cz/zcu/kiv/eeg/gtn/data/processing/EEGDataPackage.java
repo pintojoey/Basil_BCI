@@ -1,8 +1,10 @@
 package cz.zcu.kiv.eeg.gtn.data.processing;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.IPreprocessing;
+import cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGMarker;
 
 /**
  * Class represents EEG data. It remembers data processing steps performed on the data it carries.
@@ -17,6 +19,8 @@ public class EEGDataPackage {
      * EEG data
      */
     private double [][] data;
+    
+    private List<EEGMarker> markers;
 
 
     public EEGDataPackage(){

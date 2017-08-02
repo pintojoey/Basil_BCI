@@ -89,10 +89,9 @@ public class OffLineDataProvider extends AbstractDataProvider {
 
                 ByteOrder order = ByteOrder.LITTLE_ENDIAN;
                 int len = super.getAvailableChannels().length;
-                float[][] data = new float[len][];
+                double[][] data = new double[len][];
                 for (int i = 0; i < len; i++) {
-                    double[] d = dt.readBinaryData(vhdrFile, eegFile, i + 1, order);
-                    data[i] = toFloatArray(d);
+                    data[i] = dt.readBinaryData(vhdrFile, eegFile, i + 1, order);;
                 }
 
                 List<EEGMarker> markers = dt.readMarkerList(vmrkFile);

@@ -12,7 +12,7 @@ public class SignalProcessing {
     }
 
     public static double[] normalize(double[] features) {
-        double size = getSizeOfVector(features);
+        double size =  getSizeOfVector(features);
         for (int i = 0; i < features.length; i++) {
             features[i] = features[i] / size;
         }
@@ -25,5 +25,22 @@ public class SignalProcessing {
             size += Math.pow(features[i], 2);
         }
         return Math.sqrt(size);
+    }
+    
+    /**
+     * 
+     * Finds the averaged value from a selected part of the signal
+     * 
+     * @param inputSignal
+     * @param start index in the signal to start averaging
+     * @param end   index in the signal to stop averaging
+     * @return average value in the selected part of the signal
+     */
+    public static double average(double[] inputSignal, int start, int end) {
+    	double sum = 0;
+    	for (int i = start; i <= end; i++) {
+    		sum += inputSignal[i];
+    	}
+    	return sum / (end - start + 1);
     }
 }

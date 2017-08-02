@@ -40,7 +40,7 @@ public class OnLineDataProvider extends AbstractDataProvider {
             Object o = dtk.retrieveDataBlock();
             if (o instanceof RDA_MessageData) {
                 RDA_MessageData rda = (RDA_MessageData) o;
-                float[][] data = new float[channelCnt][(int) rda.getnPoints()];
+                double[][] data = new double[channelCnt][(int) rda.getnPoints()];
                 EEGMarker[] markers = new EEGMarker[(int) rda.getnMarkers()];
 
                 float[] rdaDta = rda.getfData();

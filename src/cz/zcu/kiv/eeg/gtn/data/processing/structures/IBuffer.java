@@ -1,4 +1,6 @@
-package cz.zcu.kiv.eeg.gtn.data.processing.Structures;
+package cz.zcu.kiv.eeg.gtn.data.processing.structures;
+
+import java.util.List;
 
 import cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGMarker;
 
@@ -13,7 +15,7 @@ public interface IBuffer {
      * @param data    data
      * @param markers markers
      */
-    void add(float[][] data, EEGMarker markers);
+    void add(double[][] data, List<EEGMarker> markers);
 
     /**
      * Get all data in buffer
@@ -29,20 +31,20 @@ public interface IBuffer {
      * @param size samples
      * @return data
      */
-    EEGDataPackage get(int size);
+    EEGDataPackage getAndRemove(int size);
 
     /**
      * Get all markers
      * @return
      */
-    EEGMarker getMarkers();
+    List<EEGMarker> getMarkers();
 
     /**
      * get required number of markers
      * @param count
      * @return
      */
-    EEGMarker getMarkers(int count);
+    List<EEGMarker> getAndRemoveMarkers(int count);
 
     /**
      * Current number of samples in buffer

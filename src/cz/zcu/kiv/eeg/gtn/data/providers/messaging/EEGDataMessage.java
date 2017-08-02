@@ -14,9 +14,9 @@ public class EEGDataMessage extends EEGMessage {
 
     private final EEGMarker[] markers;
 
-    private final float[][] data;
+    private final double[][] data; /* NUMBER_OF_CHANNELS x BLOCK_SIZE */
 
-    public EEGDataMessage(MessageType msgType, int messageNumber, EEGMarker[] markers, float[][] data) {
+    public EEGDataMessage(MessageType msgType, int messageNumber, EEGMarker[] markers, double[][] data) {
         super(msgType, messageNumber);
         this.markers = markers;
         this.data = data;
@@ -27,7 +27,7 @@ public class EEGDataMessage extends EEGMessage {
         return markers;
     }
 
-    public float[][] getData() {
+    public double[][] getData() {
         return data;
     }
     

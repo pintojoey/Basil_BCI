@@ -1,7 +1,7 @@
 package cz.zcu.kiv.eeg.gtn.data.processing;
 
 import cz.zcu.kiv.eeg.gtn.data.listeners.EEGMessageListener;
-import cz.zcu.kiv.eeg.gtn.data.processing.Structures.IBuffer;
+import cz.zcu.kiv.eeg.gtn.data.processing.structures.IBuffer;
 import cz.zcu.kiv.eeg.gtn.data.processing.classification.IClassifier;
 import cz.zcu.kiv.eeg.gtn.data.processing.featureExtraction.IFeatureExtraction;
 import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.IDataPreprocessor;

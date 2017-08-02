@@ -20,7 +20,7 @@ import cz.zcu.kiv.eeg.gtn.data.providers.messaging.MessageType;
  */
 public class LSLEEGDataMessageProvider extends AbstractDataProvider  {
 	private final int BLOCK_SIZE = 5000; /* size of a single data block before  transferring to observers */
-	private volatile float[][] data; /* data  - BLOCK*/
+	private volatile double[][] data; /* data  - BLOCK*/
 	private volatile List<EEGMarker> markers; /* stimuli markers */ 
 	private LSLEEGCollector eegCollector;   /* provider for EEG data */
 	private LSLMarkerCollector markerCollector;  /* provider for markers */
@@ -28,7 +28,7 @@ public class LSLEEGDataMessageProvider extends AbstractDataProvider  {
 	private int blockCounter; /* counter for blocks that have been sent to observers */
 	
 	public LSLEEGDataMessageProvider() {
-		this.data           = new float[BLOCK_SIZE][];
+		this.data           = null;
 		this.markers        = new ArrayList<EEGMarker>();
 		this.eegCollector    = new LSLEEGCollector(this);
 		this.markerCollector = new LSLMarkerCollector(this);
@@ -56,7 +56,14 @@ public class LSLEEGDataMessageProvider extends AbstractDataProvider  {
 	 * @param eegSample
 	 */
 	public synchronized void addEEGSample(float[] eegSample) {
-		data[dataPointer] = eegSample;
+		if (data == null)
+			data = new double[eegSample.length][BLOCK_SIZE];
+		
+		// fill data array using the obtained sample
+		for (int i = 0; i < eegSample.length; i++)
+			data[i][dataPointer] = eegSample[i];
+		
+		
 		dataPointer++;
 		
 		/* if maximum size is reached, transfer the data */
@@ -66,7 +73,7 @@ public class LSLEEGDataMessageProvider extends AbstractDataProvider  {
 				ls.dataMessageSent(eegDataMessage);
 			}
 			this.blockCounter++;
-			this.data    = new float[BLOCK_SIZE][];
+			this.data = new double[eegSample.length][BLOCK_SIZE];
 			this.markers = new ArrayList<EEGMarker>();
 			this.dataPointer = 0;
 		}

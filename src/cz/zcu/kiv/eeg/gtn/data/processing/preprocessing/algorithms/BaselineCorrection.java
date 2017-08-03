@@ -35,8 +35,8 @@ public class BaselineCorrection implements IPreprocessing {
         		eegData[i][j] = eegData[i][j] - averageBaseline; 
         	}
         }
-        return new EEGDataPackage(eegData, data.getMarkers());
+        data.setData(eegData, this);
         
-        
+        return data;
     }
 }

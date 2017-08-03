@@ -14,6 +14,7 @@ import cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGMarker;
 public class EEGDataPackage {
 
     private ArrayList<IPreprocessing> preprocessingSteps;
+    private String[] channelNames;
 
     /**
      * EEG data
@@ -29,10 +30,19 @@ public class EEGDataPackage {
     public EEGDataPackage(double[][] data, List<EEGMarker> markers) {
         this.data = data;
         this.markers = markers;
-        preprocessingSteps = new ArrayList<>();
+        this.channelNames = null;
+        this.preprocessingSteps = new ArrayList<>();
     }
+    
+    
 
-    /**
+    public EEGDataPackage(double[][] data, List<EEGMarker> markers, String[] channelNames) {
+		this(data, markers);
+		this.channelNames = channelNames;
+		
+	}
+
+	/**
      * Returns data
      * @return data
      */
@@ -70,7 +80,17 @@ public class EEGDataPackage {
      * Get all preprocessing steps performed on current data
      * @return ordered preprocessing steps
      */
-    public ArrayList<IPreprocessing> getPreprocessingSteps() {
+    public List<IPreprocessing> getPreprocessingSteps() {
         return preprocessingSteps;
     }
+
+	public String[] getChannelNames() {
+		return channelNames;
+	}
+
+	public void setChannelNames(String[] channelNames) {
+		this.channelNames = channelNames;
+	}
+    
+    
 }

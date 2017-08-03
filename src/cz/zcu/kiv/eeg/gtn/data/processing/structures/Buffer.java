@@ -2,9 +2,16 @@ package cz.zcu.kiv.eeg.gtn.data.processing.structures;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGMarker;
 
+/**
+ * Implementation of the buffer. Can add / remove
+ * data to the end / from the beginning of the array.
+ * Offsets of markers are updated accordingly.
+ * 
+ * @author lvareka
+ *
+ * */
 public class Buffer implements IBuffer {
 	private volatile double[][] data;
 	private volatile List<EEGMarker> markers;
@@ -17,6 +24,8 @@ public class Buffer implements IBuffer {
 	
 	@Override
 	public synchronized void add(double[][] newData, List<EEGMarker> markers) {
+		this.addMarkers(markers);
+		
 		if (this.data == null) {
 			this.data = newData;
 		} else {
@@ -28,20 +37,53 @@ public class Buffer implements IBuffer {
 			}
 			this.data = mergedData;
 		}
-		this.markers.addAll(markers);
-		
+			
 	}
 
-	
+	/**
+	 * Add new markers - it is necessary to update offsets using
+	 * the current data array size
+	 * 
+	 * @param markers - new markers to add onto the end of the array
+	 */
+	private void addMarkers(List<EEGMarker> markers) {
+		for (EEGMarker marker: markers) {
+			marker.incrementOffset(this.data[0].length);
+		}
+		
+		this.markers.addAll(markers);
+	}
+
 	@Override
 	public EEGDataPackage get() {
 		return new EEGDataPackage(this.data, this.markers);
 	}
 
 	@Override
-	public EEGDataPackage getAndRemove(int size) {
-		// TODO Auto-generated method stub
-		return null;
+	public synchronized EEGDataPackage getAndRemove(int size) {
+		double[][] toRemove = new double[this.data.length][size];
+		double[][] newData  = new double[this.data.length][this.data[0].length - size]; 
+		for (int i = 0; i < this.data.length; i++) {
+			System.arraycopy(this.data[i], 0,    toRemove, 0, size);
+			System.arraycopy(this.data[i], size, newData, 0, this.data[0].length - size);
+		}
+		List<EEGMarker> markersToRemove = this.removeMarkers(size);
+		return new EEGDataPackage(newData, markersToRemove);
+	}
+
+	private List<EEGMarker> removeMarkers(int size) {
+		List<EEGMarker> toRemove = new ArrayList<EEGMarker>();
+		
+		for (EEGMarker marker : this.markers) {
+			if (marker.getOffset() < size) {
+				toRemove.add(marker);
+			} else {
+				marker.decrementOffset(size);
+			}
+		}
+		this.markers.removeAll(toRemove);
+		
+		return toRemove;
 	}
 
 	@Override

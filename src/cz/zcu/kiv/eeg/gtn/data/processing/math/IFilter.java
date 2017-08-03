@@ -2,6 +2,8 @@ package cz.zcu.kiv.eeg.gtn.data.processing.math;
 
 /**
  *
+ * 
+ *
  * @author Lukas Vareka
  *
  */

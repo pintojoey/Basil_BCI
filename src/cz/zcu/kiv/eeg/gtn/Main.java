@@ -1,11 +1,7 @@
 package cz.zcu.kiv.eeg.gtn;
 
 import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
-
-import cz.zcu.kiv.eeg.gtn.data.providers.bva.OnLineDataProvider;
 import cz.zcu.kiv.eeg.gtn.gui.MainFrame;
-
 import java.io.IOException;
 import java.io.PrintStream;
 

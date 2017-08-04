@@ -14,14 +14,20 @@ import cz.zcu.kiv.eeg.gtn.utils.Const;
  * @author Prokop
  */
 public class SetupDialogContent extends javax.swing.JPanel {
-
-    /**
+    private static final String DEF_IP_ADDRESS = "127.0.0.1";
+	private static final String[] DEF_PORTS = {"51244"};
+	private static final String IPADDRESS_PATTERN
+	            = "^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\."
+	            + "([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\."
+	            + "([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\."
+	            + "([01]?\\d\\d?|2[0-4]\\d|25[0-5])$";
+	/**
      * Creates new form SetupDialogContent
      */
     public SetupDialogContent() {
         initComponents();
-        ipField.setText(Const.DEF_IP_ADDRESS);
-        portBox.setModel(new DefaultComboBoxModel(Const.DEF_PORTS));
+        ipField.setText(DEF_IP_ADDRESS);
+        portBox.setModel(new DefaultComboBoxModel(DEF_PORTS));
     }
 
     /**
@@ -32,7 +38,7 @@ public class SetupDialogContent extends javax.swing.JPanel {
      */
     public String getIP() {
         String ip = ipField.getText();
-        if (ip.matches(Const.IPADDRESS_PATTERN)) {
+        if (ip.matches(IPADDRESS_PATTERN)) {
             return ip;
         }
         return null;

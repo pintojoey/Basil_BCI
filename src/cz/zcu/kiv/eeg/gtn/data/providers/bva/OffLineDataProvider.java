@@ -20,7 +20,10 @@ import java.util.Map;
 
 public class OffLineDataProvider extends AbstractDataProvider {
 
-    private String vhdrFile;
+    private static final String VHDR_EXTENSION = ".vhdr";
+	private static final String VMRK_EXTENSION = ".vmrk";
+	private static final String EEG_EXTENSION  = ".eeg";
+	private String vhdrFile;
     private String vmrkFile;
     private String eegFile;
 
@@ -47,22 +50,12 @@ public class OffLineDataProvider extends AbstractDataProvider {
     private void setFileNames(String filename) {
         int index = filename.lastIndexOf(".");
         String baseName = filename.substring(0, index);
-        this.vhdrFile = baseName + Const.VHDR_EXTENSION;
-        this.vmrkFile = baseName + Const.VMRK_EXTENSION;
-        this.eegFile = baseName + Const.EEG_EXTENSION;
+        this.vhdrFile = baseName + VHDR_EXTENSION;
+        this.vmrkFile = baseName + VMRK_EXTENSION;
+        this.eegFile = baseName +  EEG_EXTENSION;
     }
 
-    private float[] toFloatArray(double[] arr) {
-        if (arr == null) {
-            return null;
-        }
-        int n = arr.length;
-        float[] ret = new float[n];
-        for (int i = 0; i < n; i++) {
-            ret[i] = (float) arr[i];
-        }
-        return ret;
-    }
+    
 
     @Override
     public void run() {

@@ -40,9 +40,12 @@ public class MLPClassifier extends ERPClassifierAdapter implements LearningEvent
     private double lastIteration = 0;
     private double maxValidationAccuracy = 0;
     private DataSet[] trainingTesting;
+    
+    private final static int DEFAULT_OUTPUT_NEURONS = 1;
+    private final static double LEARNING_RATE = 0.1;
 
     public MLPClassifier() {
-        neuralNetwork = new MultiLayerPerceptron(Const.DEFAULT_OUTPUT_NEURONS);
+        neuralNetwork = new MultiLayerPerceptron(DEFAULT_OUTPUT_NEURONS);
     }
 
     /**
@@ -191,7 +194,7 @@ public class MLPClassifier extends ERPClassifierAdapter implements LearningEvent
 
         // train the NN
         this.maxValidationAccuracy = 0;
-        this.train(trainingTesting[0], numberOfIter, Const.LEARNING_RATE);
+        this.train(trainingTesting[0], numberOfIter, LEARNING_RATE);
         this.load("best.txt");
         
         System.out.println("-----------------------------\nEnd of training: training data accuracy: " + this.testNeuralNetwork(trainingTesting[0]) +  ", testing data accuracy: " + this.testNeuralNetwork(trainingTesting[1]));

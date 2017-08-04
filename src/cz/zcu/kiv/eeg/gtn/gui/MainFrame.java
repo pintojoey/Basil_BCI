@@ -85,9 +85,22 @@ public class MainFrame extends JFrame implements Observer {
 
     private final SetupDialogContent content = new SetupDialogContent();
     private boolean existScenario = false;
+    
+    private final static String APP_NAME = "Guess the number";
+    private final static int MAIN_WINDOW_WIDTH = 960;
+    private final static int MAIN_WINDOW_HEIGHT = 380;
+
+	private final static String UNKNOWN_RESULT  = "?";
+	private final static String RESULT_FONT_NAME = "Arial";
+	private final static int RESULT_FONT_SIZE = 50;
+	private final static int RESULT_FONT_STYLE = Font.BOLD;
+
+	
+	
+
 
     public MainFrame() {
-        super(Const.APP_NAME);
+        super(APP_NAME);
 
         BasicConfigurator.configure();
         log = Logger.getLogger(MainFrame.class);
@@ -106,7 +119,7 @@ public class MainFrame extends JFrame implements Observer {
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         this.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height
                 / 2 - this.getSize().height / 2);
-        this.setSize(Const.MAIN_WINDOW_WIDTH, Const.MAIN_WINDOW_HEIGHT);
+        this.setSize(MAIN_WINDOW_WIDTH, MAIN_WINDOW_HEIGHT);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 
         loadConfiguration();
@@ -126,15 +139,7 @@ public class MainFrame extends JFrame implements Observer {
             FileReader fr = new FileReader(f);
             BufferedReader br = new BufferedReader(fr);
             String row = br.readLine();
-            if (row.equals("FilterAndSubsamplingFeatureExtraction")) {
-                fe = new FilterAndSubsamplingFeatureExtraction();
-                ((FilterAndSubsamplingFeatureExtraction) fe)
-                        .setEpochSize(Integer.parseInt(br.readLine()));
-                ((FilterAndSubsamplingFeatureExtraction) fe)
-                        .setSubsampling(Integer.parseInt(br.readLine()));
-                ((FilterAndSubsamplingFeatureExtraction) fe)
-                        .setSkipSamples(Integer.parseInt(br.readLine()));
-            } else if (row
+            if  (row
                     .equalsIgnoreCase("WaveletTransformFeatureExtraction")) {
                 fe = new WaveletTransformFeatureExtraction();
                 ((WaveletTransformFeatureExtraction) fe).setEpochSize(Integer
@@ -185,13 +190,6 @@ public class MainFrame extends JFrame implements Observer {
                 classifier = new KNNClassifier(Integer.parseInt(br.readLine()));
             } else if (row.equals("LinearDiscriminantAnalysisClassifier")) {
                 classifier = new LinearDiscriminantAnalysisClassifier();
-            } else if (row.equals("SVMClassifier")) {
-                try {
-                    classifier = new SVMClassifier(Double.parseDouble(br
-                            .readLine()));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
             } else if (row.equals("CorrelationClassifier")) {
                 classifier = new CorrelationClassifier();
             } else if (row.equals("DBNDeepLearning4j")) {
@@ -246,7 +244,7 @@ public class MainFrame extends JFrame implements Observer {
             setTrained(true);
         } else {
             classifier = new MLPClassifier();
-            fe = new FilterAndSubsamplingFeatureExtraction();
+            fe = new WaveletTransformFeatureExtraction();
             classifier.setFeatureExtraction(fe);
             setTrained(false);
         }
@@ -542,8 +540,7 @@ public class MainFrame extends JFrame implements Observer {
 
     private JTextPane createWinnerJTA() {
         winnerJTA = new JTextPane();
-        Font font = new Font(Const.RESULT_FONT_NAME, Const.RESULT_FONT_STYLE,
-                Const.RESULT_FONT_SIZE);
+        Font font = new Font(RESULT_FONT_NAME, RESULT_FONT_STYLE, RESULT_FONT_SIZE);
         winnerJTA.setFont(font);
         winnerJTA.setBackground(Color.BLACK);
         winnerJTA.setForeground(Color.WHITE);
@@ -551,15 +548,14 @@ public class MainFrame extends JFrame implements Observer {
         SimpleAttributeSet center = new SimpleAttributeSet();
         StyleConstants.setAlignment(center, StyleConstants.ALIGN_CENTER);
         doc.setParagraphAttributes(0, doc.getLength(), center, false);
-        winnerJTA.setText(Const.UNKNOWN_RESULT);
+        winnerJTA.setText(UNKNOWN_RESULT);
         return winnerJTA;
     }
 
     private JPanel createWinnerJP(){
         GridLayout gridLayout = new GridLayout(2,0);
         winnerJP = new JPanel(gridLayout);
-        Font font = new Font(Const.RESULT_FONT_NAME, Const.RESULT_FONT_STYLE,
-                Const.RESULT_FONT_SIZE);
+        Font font = new Font(RESULT_FONT_NAME, RESULT_FONT_STYLE, RESULT_FONT_SIZE);
         winnerJP.setFont(font);
         winnerJP.setBackground(Color.WHITE);
         //winnerJP.setForeground(Color.WHITE);

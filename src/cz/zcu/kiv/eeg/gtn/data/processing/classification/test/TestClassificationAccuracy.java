@@ -24,7 +24,6 @@ import java.util.concurrent.TimeUnit;
 public class TestClassificationAccuracy implements Observer {
 
     private final String infoFileName = "info.txt";
-
     private Map<String, Integer> results;
     private Integer[] result;
     private String filename;
@@ -32,6 +31,9 @@ public class TestClassificationAccuracy implements Observer {
     private Map<String, Statistics> stats;
     private Double humanAccuracy = null;
     public int sizeofStimuls;
+    
+    private final static String TRAINING_FILE_NAME = "data/new_models/winnermlpdwt.classifier";
+    private final static String[] DIRECTORIES = {"data/numbers"};
 
     public static void main(String[] args) throws InterruptedException, IOException {
         TestClassificationAccuracy testClassificationAccuracy = new TestClassificationAccuracy();
@@ -53,7 +55,7 @@ public class TestClassificationAccuracy implements Observer {
         File directory;
         File f;
         ExecutorService service = Executors.newFixedThreadPool(10);
-        for (String dirName : Const.DIRECTORIES) {
+        for (String dirName : DIRECTORIES) {
             directory = new File(dirName);
             if (directory.exists() && directory.isDirectory()) {
                 Map<String, Integer> map = loadExpectedResults(infoFileName, dirName);
@@ -71,7 +73,7 @@ public class TestClassificationAccuracy implements Observer {
                         if (classifier == null) {
                             //classifier = new KNNClassifier();
                             classifier = new MLPClassifier();
-                            classifier.load(Const.TRAINING_FILE_NAME);
+                            classifier.load(TRAINING_FILE_NAME);
                             IFeatureExtraction fe = new WaveletTransformFeatureExtraction();
                             classifier.setFeatureExtraction(fe);
                         }
@@ -100,7 +102,7 @@ public class TestClassificationAccuracy implements Observer {
     public double computeHumanAccuracy() throws IOException {
         int totalGood = 0;
         int fileCount = 0;
-        for (String dirName : Const.DIRECTORIES) {
+        for (String dirName : DIRECTORIES) {
             int[] res = getHumanGuessPercentage(infoFileName, dirName);
           
             totalGood += res[1];

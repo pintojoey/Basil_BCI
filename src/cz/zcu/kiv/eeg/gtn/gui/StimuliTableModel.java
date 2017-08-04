@@ -9,6 +9,8 @@ class StimuliTableModel extends AbstractTableModel {
 
     private Object[][] data;
     private int count;
+    
+    private final static String[] TABLE_COLUMN_NAMES = {"ID", "Name", "Score", "Trials"};
 
     StimuliTableModel(int count) {
         this.count = count;
@@ -20,12 +22,12 @@ class StimuliTableModel extends AbstractTableModel {
 
     @Override
     public String getColumnName(int column) {
-        return Const.TABLE_COLUMN_NAMES[column];
+        return TABLE_COLUMN_NAMES[column];
     }
 
     @Override
     public int getColumnCount() {
-        return Const.TABLE_COLUMN_NAMES.length;
+        return TABLE_COLUMN_NAMES.length;
     }
 
     @Override

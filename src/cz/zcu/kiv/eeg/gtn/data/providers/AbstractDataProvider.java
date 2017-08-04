@@ -14,6 +14,8 @@ public abstract class AbstractDataProvider implements Runnable {
     protected List<EEGMessageListener> listeners = new ArrayList<EEGMessageListener>();
 
     private String[] availableChannels;
+    
+    private int samplingRate;
 
     public abstract void run();
 
@@ -30,4 +32,10 @@ public abstract class AbstractDataProvider implements Runnable {
     protected void setAvailableChannels(String[] availableChannels) {
         this.availableChannels = availableChannels;
     }
+
+	public int getSamplingRate() {
+		return samplingRate;
+	}
+    
+    
 }

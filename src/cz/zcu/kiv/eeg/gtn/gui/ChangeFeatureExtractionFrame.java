@@ -25,7 +25,7 @@ import javax.swing.JSpinner;
 import javax.swing.KeyStroke;
 import javax.swing.SpinnerNumberModel;
 
-import cz.zcu.kiv.eeg.gtn.data.processing.featureExtraction.FilterAndSubsamplingFeatureExtraction;
+
 import cz.zcu.kiv.eeg.gtn.data.processing.featureExtraction.HHTFeatureExtraction;
 import cz.zcu.kiv.eeg.gtn.data.processing.featureExtraction.IFeatureExtraction;
 import cz.zcu.kiv.eeg.gtn.data.processing.featureExtraction.MatchingPursuitFeatureExtraction;
@@ -549,15 +549,8 @@ public class ChangeFeatureExtractionFrame extends JFrame {
 
 					mainFrame.setTrained(false);
 
-					IFeatureExtraction fe = new FilterAndSubsamplingFeatureExtraction();
-					((FilterAndSubsamplingFeatureExtraction) fe)
-							.setEpochSize((Integer) epochSpinner.getValue());
-					((FilterAndSubsamplingFeatureExtraction) fe)
-							.setSubsampling((Integer) subsampleSpinner
-									.getValue());
-					((FilterAndSubsamplingFeatureExtraction) fe)
-							.setSkipSamples((Integer) skipSpinner.getValue());
-
+					IFeatureExtraction fe = new WaveletTransformFeatureExtraction();
+					
 					c.dispose();
 
 					feParams = new ArrayList<String>();
@@ -574,7 +567,7 @@ public class ChangeFeatureExtractionFrame extends JFrame {
 					mainFrame.setTrained(false);
 
 					IFeatureExtraction fe = new WaveletTransformFeatureExtraction();
-					((WaveletTransformFeatureExtraction) fe)
+					/*((WaveletTransformFeatureExtraction) fe)
 							.setEpochSize((Integer) epochSpinner.getValue());
 					((WaveletTransformFeatureExtraction) fe)
 							.setSkipSamples((Integer) skipSpinner.getValue());
@@ -582,7 +575,7 @@ public class ChangeFeatureExtractionFrame extends JFrame {
 							.setWaveletName(waveletNameComboBox
 									.getSelectedIndex());
 					((WaveletTransformFeatureExtraction) fe)
-							.setFeatureSize((Integer) wtFeatureSize.getValue());
+							.setFeatureSize((Integer) wtFeatureSize.getValue());*/
 
 					c.dispose();
 

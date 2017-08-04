@@ -92,7 +92,7 @@ public class Buffer implements IBuffer {
 	}
 
 	@Override
-	public List<EEGMarker> getAndRemoveMarkers(int count) {
+	public synchronized List<EEGMarker> getAndRemoveMarkers(int count) {
 		List<EEGMarker> markersToRemove = this.markers.subList(0, count);
 		this.markers.removeAll(markersToRemove);
 		return markersToRemove;
@@ -125,6 +125,7 @@ public class Buffer implements IBuffer {
 	public synchronized void clear() {
 		this.data = null;
 		this.markers = new ArrayList<EEGMarker>();
+		System.gc();
 	}
 
 	

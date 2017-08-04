@@ -552,8 +552,7 @@ public class ChangeClassifierFrame extends JFrame {
 				} else if (svmBttn.isSelected()) {
 					IClassifier classifier;
 					try {
-						classifier = new SVMClassifier((Double) svmCost
-								.getValue());
+						classifier = new MLPClassifier();
 						classifier.setFeatureExtraction(fe);
 
 						List<String> classifierParams = new ArrayList<String>();

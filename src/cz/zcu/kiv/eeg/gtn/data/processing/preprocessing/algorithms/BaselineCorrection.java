@@ -22,8 +22,8 @@ public class BaselineCorrection implements IPreprocessing {
 	}
 
 	@Override
-    public EEGDataPackage preprocess(EEGDataPackage data) {
-        double[][] eegData = data.getData();
+    public EEGDataPackage preprocess(EEGDataPackage inputPackage) {
+        double[][] eegData = inputPackage.getData();
         
         // for all channels
         for (int i = 0; i < eegData.length; i++) {
@@ -35,8 +35,8 @@ public class BaselineCorrection implements IPreprocessing {
         		eegData[i][j] = eegData[i][j] - averageBaseline; 
         	}
         }
-        data.setData(eegData, this);
+        inputPackage.setData(eegData, this);
         
-        return data;
+        return inputPackage;
     }
 }

@@ -35,6 +35,9 @@ public class TrainUsingOfflineProvider implements Observer {
     private static String file;
     private IFilter filter;
     private int receivedEpochsCounter = 0;
+    
+    private static final String TRAINING_FILE_NAME = "data/new_models/winnermlpdwt.classifier";
+    private static final String INFO_DIR = "data/numbers";
 
     
     public TrainUsingOfflineProvider(IFeatureExtraction fe,
@@ -53,7 +56,7 @@ public class TrainUsingOfflineProvider implements Observer {
 
         OffLineDataProvider offLineData;
         try {
-			offLineData =  new OffLineDataProvider(Const.INFO_DIR);
+			offLineData =  new OffLineDataProvider(INFO_DIR);
 			Thread t = new Thread(offLineData);
 	        t.start();
 	        try {
@@ -76,7 +79,7 @@ public class TrainUsingOfflineProvider implements Observer {
         this.classifier = null;
 
         // used to open the thread for collecting single epochs from continuous EEG
-        OffLineDataProvider offLineData = new OffLineDataProvider(Const.INFO_DIR);
+        OffLineDataProvider offLineData = new OffLineDataProvider(INFO_DIR);
         Thread t = new Thread(offLineData);
         t.start();
         try {
@@ -186,7 +189,7 @@ public class TrainUsingOfflineProvider implements Observer {
         classifier.train(this.epochs, this.targets, this.iters, fe);
 
         if (file == null || file.equals("")) {
-            classifier.save(Const.TRAINING_FILE_NAME);
+            classifier.save(TRAINING_FILE_NAME);
         } else {
             classifier.save(file);
         }

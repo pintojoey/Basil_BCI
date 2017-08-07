@@ -27,6 +27,8 @@ public abstract class AbstractWorkflowController implements IWorkflowController 
 
     private int bufferMinSize;
 
+    private EEGStartMessage Metadata;
+
     public AbstractWorkflowController(AbstractDataProvider dataProvider, IBuffer buffer,
                                       AbstractDataPreprocessor preprocessor, List<IFeatureExtraction> featureExtractions, IClassifier classifier) {
         if(dataProvider == null || buffer == null || classifier == null)
@@ -41,6 +43,14 @@ public abstract class AbstractWorkflowController implements IWorkflowController 
         dataProvider.addListener(dataListener);
     }
 
+    public EEGStartMessage getMetadata() {
+        return Metadata;
+    }
+
+    public void setMetadata(EEGStartMessage metadata) {
+        Metadata = metadata;
+    }
+
     public int getBufferMinSize() {
         return bufferMinSize;
     }
@@ -49,17 +59,36 @@ public abstract class AbstractWorkflowController implements IWorkflowController 
         this.bufferMinSize = bufferMinSize;
     }
 
+    public AbstractDataProvider getDataProvider() {
+        return dataProvider;
+    }
+
+    public IBuffer getBuffer() {
+        return buffer;
+    }
+
+    public IDataPreprocessor getPreprocessor() {
+        return preprocessor;
+    }
+
+    public List<IFeatureExtraction> getFeatureExtractions() {
+        return featureExtractions;
+    }
+
+    public IClassifier getClassifier() {
+        return classifier;
+    }
+
     private EEGMessageListener dataListener = new EEGMessageListener() {
         @Override
         public void startMessageSent(EEGStartMessage msg) {
+            Metadata = msg;
             start(msg);
         }
 
         @Override
         public void dataMessageSent(EEGDataMessage msg) {
             storeData(msg);
-
-            //call processData() or check any condition first or fire event via new listener?
             processData();
         }
 

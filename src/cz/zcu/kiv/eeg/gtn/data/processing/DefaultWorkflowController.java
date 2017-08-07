@@ -1,5 +1,7 @@
 package cz.zcu.kiv.eeg.gtn.data.processing;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import cz.zcu.kiv.eeg.gtn.data.processing.classification.IClassifier;
@@ -9,6 +11,7 @@ import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.IDataPreprocessor;
 import cz.zcu.kiv.eeg.gtn.data.processing.structures.IBuffer;
 import cz.zcu.kiv.eeg.gtn.data.providers.AbstractDataProvider;
 import cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGDataMessage;
+import cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGMarker;
 import cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGStartMessage;
 import cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGStopMessage;
 
@@ -21,26 +24,25 @@ public class DefaultWorkflowController extends AbstractWorkflowController {
 
 	@Override
 	public void processData() {
-		// TODO Auto-generated method stub
-		
+		IBuffer buffer = getBuffer();
+		if (buffer.isFull() || buffer.size() >= getBufferMinSize()){
+
+        }
 	}
 
 	@Override
 	public void start(EEGStartMessage start) {
-		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void stop(EEGStopMessage stop) {
-		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void storeData(EEGDataMessage data) {
-		// TODO Auto-generated method stub
-		
+		getBuffer().add(data.getData(), Arrays.asList(data.getMarkers()));
 	}
 
 }

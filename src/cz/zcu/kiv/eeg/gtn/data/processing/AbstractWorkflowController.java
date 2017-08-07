@@ -15,19 +15,19 @@ import java.util.List;
 
 public abstract class AbstractWorkflowController implements IWorkflowController {
 
-    private final AbstractDataProvider dataProvider;
+    protected final AbstractDataProvider dataProvider;
 
-    private final IBuffer buffer;
+    protected final IBuffer buffer;
 
-    private final AbstractDataPreprocessor preprocessor;
+    protected final AbstractDataPreprocessor preprocessor;
 
-    private final List<IFeatureExtraction> featureExtractions;
+    protected final List<IFeatureExtraction> featureExtractions;
 
-    private final IClassifier classifier;
+    protected final IClassifier classifier;
 
-    private int bufferMinSize;
+    protected int bufferMinSize;
 
-    private EEGStartMessage Metadata;
+    protected EEGStartMessage Metadata;
 
     public AbstractWorkflowController(AbstractDataProvider dataProvider, IBuffer buffer,
                                       AbstractDataPreprocessor preprocessor, List<IFeatureExtraction> featureExtractions, IClassifier classifier) {
@@ -83,6 +83,7 @@ public abstract class AbstractWorkflowController implements IWorkflowController 
         @Override
         public void startMessageSent(EEGStartMessage msg) {
             Metadata = msg;
+            preprocessor.setMetadata(msg);
             start(msg);
         }
 

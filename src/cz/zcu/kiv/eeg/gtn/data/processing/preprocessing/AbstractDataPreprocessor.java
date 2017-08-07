@@ -1,7 +1,7 @@
 package cz.zcu.kiv.eeg.gtn.data.processing.preprocessing;
 
-import cz.zcu.kiv.eeg.gtn.data.processing.structures.EEGDataPackage;
 import cz.zcu.kiv.eeg.gtn.data.processing.structures.IBuffer;
+import cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGStartMessage;
 
 import java.util.List;
 
@@ -14,9 +14,24 @@ public abstract class AbstractDataPreprocessor implements IDataPreprocessor {
 
     protected final IBuffer buffer;
 
-    public AbstractDataPreprocessor(List<IPreprocessing> preprocessing, IBuffer buffer) {
+    protected final ISegmentation segmentation;
+
+    protected EEGStartMessage metadata;
+
+    public AbstractDataPreprocessor(List<IPreprocessing> preprocessing, IBuffer buffer, ISegmentation segmentation) {
     	this.preprocessing = preprocessing;
 		this.buffer = buffer;
+		this.segmentation = segmentation;
+	}
+
+	public EEGStartMessage getMetadata() {
+		return metadata;
+	}
+
+	@Override
+	public void setMetadata(EEGStartMessage metadata) {
+    	segmentation.setSampling((int)metadata.getSampling());
+		this.metadata = metadata;
 	}
 
 	public List<IPreprocessing> getPreprocessing() {

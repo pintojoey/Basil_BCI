@@ -1,6 +1,7 @@
 package cz.zcu.kiv.eeg.gtn.data.processing.preprocessing;
 
 import cz.zcu.kiv.eeg.gtn.data.processing.structures.EEGDataPackage;
+import cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGStartMessage;
 
 import java.util.List;
 
@@ -9,4 +10,5 @@ import java.util.List;
  */
 public interface IDataPreprocessor {
     List<EEGDataPackage> preprocessData();
+    void setMetadata(EEGStartMessage msg);
 }

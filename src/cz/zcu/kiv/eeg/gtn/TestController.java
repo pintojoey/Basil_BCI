@@ -6,12 +6,7 @@ import java.util.List;
 
 
 import cz.zcu.kiv.eeg.gtn.data.processing.featureExtraction.IFeatureExtraction;
-import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.AbstractDataPreprocessor;
-import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.ERPDataPreprocessor;
-import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.EpochExtraction;
-import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.IDataPreprocessor;
-import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.IEpochExtraction;
-import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.IPreprocessing;
+import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.*;
 import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.algorithms.BaselineCorrection;
 import cz.zcu.kiv.eeg.gtn.data.processing.structures.Buffer;
 import cz.zcu.kiv.eeg.gtn.data.processing.structures.IBuffer;
@@ -31,10 +26,10 @@ public class TestController {
 	    IBuffer buffer = new Buffer();
 	    
 	    // preprocessing
-	    IEpochExtraction epochExtraction = new EpochExtraction(0.1, 1);
+	    ISegmentation epochExtraction = new EpochExtraction(100, 1000);
 	    List<IPreprocessing> preprocessing = new ArrayList<IPreprocessing>();
 	    preprocessing.add(new BaselineCorrection(0, 0.1, provider.getSamplingRate()));
-	    AbstractDataPreprocessor dataPreprocessor = new ERPDataPreprocessor(epochExtraction, preprocessing);
+	    AbstractDataPreprocessor dataPreprocessor = new EpochDataPreprocessor(preprocessing, buffer, epochExtraction, preepochPreprocessingCount);
 	    
 	    // feature extraction
 	    List<IFeatureExtraction> featureExtraction = null;

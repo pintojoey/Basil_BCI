@@ -8,6 +8,7 @@ import cz.zcu.kiv.eeg.gtn.data.processing.classification.IClassifier;
 import cz.zcu.kiv.eeg.gtn.data.processing.featureExtraction.IFeatureExtraction;
 import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.AbstractDataPreprocessor;
 import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.IDataPreprocessor;
+import cz.zcu.kiv.eeg.gtn.data.processing.structures.EEGDataPackage;
 import cz.zcu.kiv.eeg.gtn.data.processing.structures.IBuffer;
 import cz.zcu.kiv.eeg.gtn.data.providers.AbstractDataProvider;
 import cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGDataMessage;
@@ -24,9 +25,13 @@ public class DefaultWorkflowController extends AbstractWorkflowController {
 
 	@Override
 	public void processData() {
-		IBuffer buffer = getBuffer();
 		if (buffer.isFull() || buffer.size() >= getBufferMinSize()){
+            List<EEGDataPackage> packs =  preprocessor.preprocessData();
+            if(packs.size() == 0) return;
 
+            for(EEGDataPackage pack : packs){
+
+            }
         }
 	}
 
@@ -42,7 +47,7 @@ public class DefaultWorkflowController extends AbstractWorkflowController {
 
 	@Override
 	public void storeData(EEGDataMessage data) {
-		getBuffer().add(data.getData(), Arrays.asList(data.getMarkers()));
+		buffer.add(data.getData(), Arrays.asList(data.getMarkers()));
 	}
 
 }

@@ -4,6 +4,7 @@ import cz.zcu.kiv.eeg.gtn.data.listeners.EEGMessageListener;
 import cz.zcu.kiv.eeg.gtn.data.processing.structures.IBuffer;
 import cz.zcu.kiv.eeg.gtn.data.processing.classification.IClassifier;
 import cz.zcu.kiv.eeg.gtn.data.processing.featureExtraction.IFeatureExtraction;
+import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.AbstractDataPreprocessor;
 import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.IDataPreprocessor;
 import cz.zcu.kiv.eeg.gtn.data.providers.AbstractDataProvider;
 import cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGDataMessage;
@@ -18,7 +19,7 @@ public abstract class AbstractWorkflowController implements IWorkflowController 
 
     private final IBuffer buffer;
 
-    private final IDataPreprocessor preprocessor;
+    private final AbstractDataPreprocessor preprocessor;
 
     private final List<IFeatureExtraction> featureExtractions;
 
@@ -27,7 +28,7 @@ public abstract class AbstractWorkflowController implements IWorkflowController 
     private int bufferMinSize;
 
     public AbstractWorkflowController(AbstractDataProvider dataProvider, IBuffer buffer,
-                                      IDataPreprocessor preprocessor, List<IFeatureExtraction> featureExtractions, IClassifier classifier) {
+                                      AbstractDataPreprocessor preprocessor, List<IFeatureExtraction> featureExtractions, IClassifier classifier) {
         if(dataProvider == null || buffer == null || classifier == null)
             throw new IllegalArgumentException("One or more arguments are null.");
 

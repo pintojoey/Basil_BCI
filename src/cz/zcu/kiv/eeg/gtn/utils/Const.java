@@ -8,7 +8,7 @@ import java.awt.Font;
 public class Const {
 
     //----------------------Epoch------------------------ TODO: remove
-    public static final int PREESTIMULUS_VALUES = 100;
+    //public static final int PREESTIMULUS_VALUES = 100;
     public static final int POSTSTIMULUS_VALUES = 750;
     public static final int SAMPLING_FQ = 1000;
 

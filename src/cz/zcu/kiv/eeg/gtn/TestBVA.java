@@ -52,6 +52,22 @@ public class TestBVA {
         TestBVA td = new TestBVA();
         File f = new File("data/numbers/17ZS/17ZS_14_4_2015_02.vhdr");
         OffLineDataProvider odp = new OffLineDataProvider(f);
+        odp.addListener(new EEGMessageListener() {
+            @Override
+            public void startMessageSent(EEGStartMessage msg) {
+                System.out.println(msg.toString());
+            }
+
+            @Override
+            public void dataMessageSent(EEGDataMessage msg) {
+                System.out.println(msg.toString());
+            }
+
+            @Override
+            public void stopMessageSent(EEGStopMessage msg) {
+                System.out.println(msg.toString());
+            }
+        });
         odp.run();
     }
 }

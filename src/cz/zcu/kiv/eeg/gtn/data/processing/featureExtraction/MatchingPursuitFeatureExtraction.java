@@ -1,5 +1,6 @@
 package cz.zcu.kiv.eeg.gtn.data.processing.featureExtraction;
 
+import cz.zcu.kiv.eeg.gtn.data.processing.structures.EEGDataPackage;
 import cz.zcu.kiv.eegdsp.matchingpursuit.MatchingPursuit;
 
 /**
@@ -10,29 +11,18 @@ import cz.zcu.kiv.eegdsp.matchingpursuit.MatchingPursuit;
 public class MatchingPursuitFeatureExtraction implements IFeatureExtraction {
 
 	/**
-	 * EEG channels to be transformed to feature vectors
-	 */
-	private static final int[] CHANNELS = { 1, 2, 3 };
-
-	/**
-	 * Number of samples to be used - Fs = 1000 Hz expected
-	 */
-	private int epochSize = 512;
-	
-	/**
 	 * Subsampling factor
 	 */
 	private int downSmplFactor = 8;
 
 	/**
-	 * Skip initial samples in each epoch
-	 */
-	private int skipSamples = 200;
-	
-	/**
 	 * Private instance of singleton.
 	 */
 	private MatchingPursuit instance;
+
+	private int epochSize = 0;
+
+	private int numOfChannels = 0;
 		
 	/**
 	 * Prepare instance for use.
@@ -53,16 +43,19 @@ public class MatchingPursuitFeatureExtraction implements IFeatureExtraction {
 	
 	
 	@Override
-	public double[] extractFeatures(double[][] epoch) {
-		
-		int numberOfChannels = CHANNELS.length;
+	public double[] extractFeatures(EEGDataPackage data) {
+
+		double[][] channels = data.getData();
+		numOfChannels = channels.length;
+		epochSize = channels[0].length;
+		int numberOfChannels = channels.length;
 		double[] signal = new double[getFeatureDimension()];
 		double[] processingPart = new double[epochSize / downSmplFactor];
 		
 		int k = 0;
 		for(int i = 0; i < numberOfChannels; i++) {
 			for(int j = 0; j < epochSize / downSmplFactor; j++) {
-				processingPart[j] = epoch[i][j * downSmplFactor + skipSamples];
+				processingPart[j] = channels[i][j * downSmplFactor];
 			}
 			processingPart = instance.processSignal(processingPart).getReconstruction();
 			for(int j = 0; j < processingPart.length; j++) {
@@ -75,7 +68,6 @@ public class MatchingPursuitFeatureExtraction implements IFeatureExtraction {
 		
 	}
 
-	
 	@Override
 	public int getFeatureDimension() {
 		int lenghtOfProcessedEpoch = epochSize / downSmplFactor;
@@ -83,7 +75,7 @@ public class MatchingPursuitFeatureExtraction implements IFeatureExtraction {
 		while(lenghtOfProcessedEpoch > Math.pow(2, i)) {
 			i++;
 		}
-		return ((int) Math.pow(2, i) * CHANNELS.length);
+		return ((int) Math.pow(2, i) * numOfChannels);
 	}
 	
 	
@@ -130,20 +122,6 @@ public class MatchingPursuitFeatureExtraction implements IFeatureExtraction {
 	}
 	
 	/**
-	 * Setter for skipSamples attribute. It requires value equal or greater than 0.
-	 * @param skipSamples
-	 * @throws IllegalArgumentException
-	 */
-	public void setSkipSamples(int skipSamples) {
-		if(skipSamples >= 0) {
-			this.skipSamples = skipSamples;
-		}
-		else {
-			throw new IllegalArgumentException("Number of skip samples must be >=0.");
-		}
-	}
-	
-	/**
 	 * Gets number of iterations.
 	 * 
 	 * @return iterationCount number of iterations
@@ -167,13 +145,4 @@ public class MatchingPursuitFeatureExtraction implements IFeatureExtraction {
 	public int getDownSmplFactor() {
 		return downSmplFactor;
 	}
-	
-	/**
-	 * Getter for skipSamples attribute.
-	 * @return skipSamples downSmplFactor
-	 */
-	public int getSkipSamples() {
-		return skipSamples;
-	}
-
 }

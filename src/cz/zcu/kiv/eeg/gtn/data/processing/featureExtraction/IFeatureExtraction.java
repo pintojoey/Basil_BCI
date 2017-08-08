@@ -1,5 +1,7 @@
 package cz.zcu.kiv.eeg.gtn.data.processing.featureExtraction;
 
+import cz.zcu.kiv.eeg.gtn.data.processing.structures.EEGDataPackage;
+
 /**
  * 
  * Interface for extracting features from an epoch
@@ -11,9 +13,9 @@ public interface IFeatureExtraction {
 	
 	/**
 	 * 
-	 * @param epoch source epoch 
-	 * @return feature vector
+	 * @param data data
+	 * @return array of features
 	 */
-    double[] extractFeatures(double[][] epoch);
+    double[] extractFeatures(EEGDataPackage data);
 	int getFeatureDimension();
 }

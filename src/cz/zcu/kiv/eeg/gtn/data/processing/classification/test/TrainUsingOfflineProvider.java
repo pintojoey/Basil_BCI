@@ -186,7 +186,7 @@ public class TrainUsingOfflineProvider implements Observer {
 
         // training
         //fe = new FilterAndSubsamplingFeatureExtraction();
-        classifier.train(this.epochs, this.targets, this.iters, fe);
+        //classifier.train(this.epochs, this.targets, this.iters);
 
         if (file == null || file.equals("")) {
             classifier.save(TRAINING_FILE_NAME);
@@ -225,7 +225,7 @@ public class TrainUsingOfflineProvider implements Observer {
         //classifier = new MLPDeepLearning4j();
         //classifier = new DBNDeepLearning4j();
         //classifier = new SVMClassifier();
-        classifier.setFeatureExtraction(fe);
+        //classifier.setFeatureExtraction(fe);
     }
 
     public IClassifier getClassifier() {

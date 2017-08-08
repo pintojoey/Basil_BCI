@@ -3,48 +3,43 @@ package cz.zcu.kiv.eeg.gtn.data.processing.featureExtraction;
 import cz.zcu.kiv.eeg.gtn.data.processing.math.ButterWorthFilter;
 import cz.zcu.kiv.eeg.gtn.data.processing.math.IFilter;
 import cz.zcu.kiv.eeg.gtn.data.processing.math.SignalProcessing;
+import cz.zcu.kiv.eeg.gtn.data.processing.structures.EEGDataPackage;
 
 public class FilterFeatureExtraction implements IFeatureExtraction {
 
-	private static final int[] CHANNELS = {1, 2, 3}; /* EEG channels to be transformed to feature vectors */
+    private final int downSampleFactor;
+    private IFilter filter;
+    private int numberOfChannels = 0;
+    private int epochSize = 0;
 
-	private static final int EPOCH_SIZE = 512; /* number of samples to be used - Fs = 1000 Hz expected */
+    public FilterFeatureExtraction(int downSampleFactor) {
+        this.downSampleFactor = downSampleFactor;
+        this.filter = new ButterWorthFilter();
+    }
 
-	private static final int DOWN_SMPL_FACTOR = 32;  /* subsampling factor */
+    @Override
+    public double[] extractFeatures(EEGDataPackage data) {
 
-	private static final int SKIP_SAMPLES = 0; /* skip initial samples in each epoch */
-	
-	private IFilter filter;
+        numberOfChannels = data.getChannelNames().length;
+        double[][] channels = data.getData();
+        epochSize = channels[0].length;
+        double[] features = new double[channels[0].length * numberOfChannels];
+        int i = 0;
 
-	
-	public FilterFeatureExtraction() {
-		this.filter = new ButterWorthFilter();
-	}
+        for (double[] channel : channels) {
+            for (int j = 0; j < channel.length; j++) {
+                features[i * channel.length + j] = filter.getOutputSample(channel[j]);
+            }
+            i++;
+        }
 
-   @Override
-   public double[] extractFeatures(double[][] epoch) {
-       // use 3 EEG channels
-       int numberOfChannels = CHANNELS.length;
-       double[] features = new double[EPOCH_SIZE * numberOfChannels];
-       int i = 0;
+        features = SignalProcessing.normalize(features);
+        return features;
+    }
 
-       
-       for (int channel : CHANNELS) {
-           double[] currChannelData = epoch[channel - 1];
-           for (int j = 0; j < EPOCH_SIZE; j++) {
-               features[i * EPOCH_SIZE + j] = filter.getOutputSample(currChannelData[j + SKIP_SAMPLES]);
-           }
-           i++;
-       }
-
-              
-       features = SignalProcessing.normalize(features);
-       return features;
-   }
-
-   @Override
-   public int getFeatureDimension() {
-       return CHANNELS.length * EPOCH_SIZE / DOWN_SMPL_FACTOR /* subsampling */;
-   }
+    @Override
+    public int getFeatureDimension() {
+        return numberOfChannels * epochSize / downSampleFactor;
+    }
 
 }

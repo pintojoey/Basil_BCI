@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import cz.zcu.kiv.eeg.gtn.data.processing.classification.IClassifier;
+import cz.zcu.kiv.eeg.gtn.data.processing.featureExtraction.FeatureVector;
 import cz.zcu.kiv.eeg.gtn.data.processing.featureExtraction.IFeatureExtraction;
 import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.AbstractDataPreprocessor;
 import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.IDataPreprocessor;
@@ -29,8 +30,16 @@ public class DefaultWorkflowController extends AbstractWorkflowController {
             List<EEGDataPackage> packs =  preprocessor.preprocessData();
             if(packs.size() == 0) return;
 
+            FeatureVector fv = null;
             for(EEGDataPackage pack : packs){
+                fv = new FeatureVector();
+                for(IFeatureExtraction fe : featureExtractions){
+                    double[] features = fe.extractFeatures(pack);
+                    fv.addFeatures(features);
+                }
 
+                double result = classifier.classify(fv);
+                //TODO use listener to send result?
             }
         }
 	}

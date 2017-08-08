@@ -75,7 +75,6 @@ public class TestClassificationAccuracy implements Observer {
                             classifier = new MLPClassifier();
                             classifier.load(TRAINING_FILE_NAME);
                             IFeatureExtraction fe = new WaveletTransformFeatureExtraction();
-                            classifier.setFeatureExtraction(fe);
                         }
                         
 

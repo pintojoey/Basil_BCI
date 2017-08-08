@@ -1,16 +1,14 @@
 package cz.zcu.kiv.eeg.gtn.data.processing.classification;
 
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.List;
 
+import cz.zcu.kiv.eeg.gtn.data.processing.featureExtraction.FeatureVector;
 import cz.zcu.kiv.eeg.gtn.data.processing.featureExtraction.IFeatureExtraction;
 import cz.zcu.kiv.eeg.gtn.data.processing.math.LinearDiscriminantAnalysisAlgorithms;
 
-public class LinearDiscriminantAnalysisClassifier extends ERPClassifierAdapter {
-
-	/**
-	 * Feature extractor
-	 */
-	private IFeatureExtraction fe;
+public class LinearDiscriminantAnalysisClassifier implements IClassifier {
 
 	private LinearDiscriminantAnalysisAlgorithms lda;
 
@@ -19,66 +17,55 @@ public class LinearDiscriminantAnalysisClassifier extends ERPClassifierAdapter {
 	}
 
 	/**
-	 * 
-	 * Predefine feature extraction method
-	 * 
-	 * @param fe
-	 */
-	public void setFeatureExtraction(IFeatureExtraction fe) {
-		this.fe = fe;
-	}
-
-	/**
 	 * Train the classifier using information from the supervisor
 	 * 
-	 * @param epochs
-	 *            - raw epochs - list of M channels x N time samples
+	 * @param featureVectors
+	 *            - feature vectors
 	 * @param targets
 	 *            - target classes - list of expected classes (0 or 1)
 	 * @param numberOfiter
 	 *            - number of training iterations
-	 * @param fe
-	 *            - method for feature extraction
 	 */
-	public void train(List<double[][]> epochs, List<Double> targets,
-			int numberOfiter, IFeatureExtraction fe) {
-		lda.train(epochs, targets, fe);
+	public void train(List<FeatureVector> featureVectors, List<Double> targets,
+					  int numberOfiter) {
+		lda.train(featureVectors, targets);
 	}
 
 	/**
 	 * Test the classifier using the data with known resulting classes
 	 * 
-	 * @param epochs
-	 *            - raw epochs - list of M channels x N time samples
+	 * @param featureVectors
+	 *            - feature vectors
 	 * @param targets
 	 *            - target classes - list of expected classes (0 or 1)
 	 * @return
 	 */
-	public ClassificationStatistics test(List<double[][]> epochs,
+	public ClassificationStatistics test(List<FeatureVector> featureVectors,
 			List<Double> targets) {
 		ClassificationStatistics resultsStats = new ClassificationStatistics();
 
-		for (int i = 0; i < epochs.size(); i++) {
-			double[][] epoch = epochs.get(i);
-			double result = this.classify(epoch);
+		for (int i = 0; i < featureVectors.size(); i++) {
+			double result = this.classify(featureVectors.get(i));
 			resultsStats.add(result, targets.get(i));
 		}
 
 		return resultsStats;
 	}
 
-	/**
-	 *
-	 * Calculate the output of the classifier for the selected epoch
-	 * 
-	 * @param epoch
-	 *            - number of channels x temporal samples
-	 * @return probability of the epoch to be target{} e.g. nontarget - 0,
-	 *         target - 1
-	 */
-	public double classify(double[][] epoch) {
-		double[] featureVector = this.fe.extractFeatures(epoch);
+	@Override
+	public double classify(FeatureVector fv) {
+		double[] featureVector = fv.getFeatureVector();
 		return lda.classify(featureVector);
+	}
+
+	@Override
+	public void load(InputStream is) {
+
+	}
+
+	@Override
+	public void save(OutputStream dest) {
+
 	}
 
 	public void save(String file) {

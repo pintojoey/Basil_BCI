@@ -1,10 +1,12 @@
 package cz.zcu.kiv.eeg.gtn.data.processing.classification;
 
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import cz.zcu.kiv.eeg.gtn.data.processing.featureExtraction.FeatureVector;
 import org.neuroph.core.Layer;
 import org.neuroph.core.NeuralNetwork;
 import org.neuroph.core.data.DataSet;
@@ -25,11 +27,9 @@ import cz.zcu.kiv.eeg.gtn.utils.Const;
  * @author Lukas Vareka
  *
  */
-public class MLPClassifier extends ERPClassifierAdapter implements LearningEventListener {
+public class MLPClassifier implements LearningEventListener, IClassifier {
 
     private NeuralNetwork<BackPropagation> neuralNetwork; 		/* neural network implementation */
-
-    private IFeatureExtraction fe; /* feature extraction used to decompose each epoch */
 
     private int numberOfIters = 0;
     
@@ -75,8 +75,8 @@ public class MLPClassifier extends ERPClassifierAdapter implements LearningEvent
     }
 
     @Override
-    public double classify(double[][] epoch) {
-    	double[] featureVector = this.fe.extractFeatures(epoch);
+    public double classify(FeatureVector fv) {
+    	double[] featureVector = fv.getFeatureVector();
 
         // feature vector dimension must correspond to the number of input neurons
         if (featureVector.length != neuralNetwork.getInputsCount()) {
@@ -92,37 +92,31 @@ public class MLPClassifier extends ERPClassifierAdapter implements LearningEvent
     }
 
     @Override
-    public void setFeatureExtraction(IFeatureExtraction fe) {
-        this.fe = fe;
-    }
-
-    @Override
-    public ClassificationStatistics test(List<double[][]> epochs, List<Double> targets) {
+    public ClassificationStatistics test(List<FeatureVector> featureVectors, List<Double> targets) {
         ClassificationStatistics resultsStats = new ClassificationStatistics();
-        for (int i = 0; i < epochs.size(); i++) {
-            double output = this.classify(epochs.get(i));
+        for (int i = 0; i < featureVectors.size(); i++) {
+            double output = this.classify(featureVectors.get(i));
             resultsStats.add(output, targets.get(i));
         }
         return resultsStats;
     }
 
     @Override
-    public void train(List<double[][]> epochs, List<Double> targets, int numberOfIter, IFeatureExtraction fe) {
-        this.fe = fe;
+    public void train(List<FeatureVector> featureVectors, List<Double> targets, int numberOfIter) {
         int targetsSize = neuralNetwork.getOutputsCount();
         this.numberOfIters = numberOfIter;
 
+        int len = featureVectors.get(0).getFeatureVector().length;
         // fill in the neuroph data structure for holding the training set
-        DataSet dataset = new DataSet(fe.getFeatureDimension(), targetsSize);
-        double[] sumTarget = new double[fe.getFeatureDimension()];
-        double[] sumNonTarget = new double[fe.getFeatureDimension()];
+        DataSet dataset = new DataSet(len, targetsSize);
+        double[] sumTarget = new double[len];
+        double[] sumNonTarget = new double[len];
         int countTarget = 0;
         int countNonTarget = 0;
         Arrays.fill(sumTarget, 0);
         Arrays.fill(sumNonTarget, 0);
-        for (int i = 0; i < epochs.size(); i++) {
-            double[][] epoch = epochs.get(i);
-            double[] features = this.fe.extractFeatures(epoch);
+        for (int i = 0; i < featureVectors.size(); i++) {
+            double[] features = featureVectors.get(i).getFeatureVector();
             double[] target = new double[targetsSize];
             target[0] = targets.get(i);
             if (target[0] == 0) {
@@ -207,6 +201,11 @@ public class MLPClassifier extends ERPClassifierAdapter implements LearningEvent
     }
 
     @Override
+    public void save(OutputStream dest) {
+
+    }
+
+    @Override
     public void save(String file) {
         this.neuralNetwork.save(file);
     }
@@ -226,11 +225,6 @@ public class MLPClassifier extends ERPClassifierAdapter implements LearningEvent
     	returnString  += ")";
     	returnString += ": iters: " + this.numberOfIters;
     	return returnString;
-    }
-    
-    @Override
-    public IFeatureExtraction getFeatureExtraction() {
-    	return fe;
     }
 
 	@Override

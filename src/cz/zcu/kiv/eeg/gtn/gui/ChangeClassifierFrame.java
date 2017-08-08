@@ -522,7 +522,6 @@ public class ChangeClassifierFrame extends JFrame {
 					nnStructure.add(output);
 
 					IClassifier classifier = new MLPClassifier(nnStructure);
-					classifier.setFeatureExtraction(fe);
 
 					List<String> classifierParams = new ArrayList<String>();
 					for (int p : nnStructure) {
@@ -536,16 +535,12 @@ public class ChangeClassifierFrame extends JFrame {
 
 					IClassifier classifier = new KNNClassifier(
 							neighborsNumber);
-					classifier.setFeatureExtraction(fe);
-
 					List<String> classifierParams = new ArrayList<String>();
 					classifierParams.add(neighborsNumber + "");
 
 					trainingDialog(c, mainFrame, classifier, classifierParams);
 				} else if (ldaBttn.isSelected()) {
 					IClassifier classifier = new LinearDiscriminantAnalysisClassifier();
-					classifier.setFeatureExtraction(fe);
-
 					List<String> classifierParams = new ArrayList<String>();
 
 					trainingDialog(c, mainFrame, classifier, classifierParams);
@@ -553,8 +548,6 @@ public class ChangeClassifierFrame extends JFrame {
 					IClassifier classifier;
 					try {
 						classifier = new MLPClassifier();
-						classifier.setFeatureExtraction(fe);
-
 						List<String> classifierParams = new ArrayList<String>();
 						classifierParams.add(svmCost.getValue() + "");
 
@@ -565,8 +558,6 @@ public class ChangeClassifierFrame extends JFrame {
 					}
 				} else if (correlationBttn.isSelected()) {
 					IClassifier classifier = new CorrelationClassifier();
-					classifier.setFeatureExtraction(fe);
-
 					List<String> classifierParams = new ArrayList<String>();
 
 					trainingDialog(c, mainFrame, classifier, classifierParams);
@@ -574,8 +565,6 @@ public class ChangeClassifierFrame extends JFrame {
 				else if (dbnBttn.isSelected()) {
 					int neurons = (Integer) dbnNeuron.getValue();
 					IClassifier classifier = new DBNDeepLearning4jClassifier(neurons);
-					classifier.setFeatureExtraction(fe);
-
 					List<String> classifierParams = new ArrayList<String>();
 					classifierParams.add(dbnNeuron.getValue() + "");
 					
@@ -584,8 +573,6 @@ public class ChangeClassifierFrame extends JFrame {
 				else if (saeBttn.isSelected()) {
 					int neurons = (Integer) sdaNeuron.getValue();
 					IClassifier classifier = new SDADeepLearning4jEarlyStopClassifier(neurons);
-					classifier.setFeatureExtraction(fe);
-
 					List<String> classifierParams = new ArrayList<String>();
 					classifierParams.add(sdaNeuron.getValue() + "");
 					

@@ -14,16 +14,12 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.util.List;
 
+import cz.zcu.kiv.eeg.gtn.data.processing.featureExtraction.FeatureVector;
 import cz.zcu.kiv.eeg.gtn.data.processing.featureExtraction.IFeatureExtraction;
 import cz.zcu.kiv.eeg.gtn.data.processing.math.KNearestNeighborsLocal;
 
-public class KNNClassifier extends ERPClassifierAdapter {
-	
-	/**
-	 * Attribute for the instance of selected FeatureExtraction class.
-	 */
-	private IFeatureExtraction fe;
-	
+public class KNNClassifier implements IClassifier {
+
 	/**
 	 * Attribute for the instance of KNearestNeighborsLocal classifier.
 	 */
@@ -57,39 +53,41 @@ public class KNNClassifier extends ERPClassifierAdapter {
 	}
 
 	@Override
-	public void setFeatureExtraction(IFeatureExtraction fe) {
-		this.fe = fe;
-	}
-
-	@Override
-	public void train(List<double[][]> epochs, List<Double> targets,
-			int numberOfiter, IFeatureExtraction fe) {
-		for(int i = 0; i < epochs.size(); i++) {
-			double[] vector = fe.extractFeatures(epochs.get(i));
+	public void train(List<FeatureVector> featureVectors, List<Double> targets, int numberOfiter) {
+		for(int i = 0; i < featureVectors.size(); i++) {
+			double[] vector = featureVectors.get(i).getFeatureVector();
 			classifier.addNeighbor(vector, targets.get(i));
 		}
 	}
 
 	@Override
-	public ClassificationStatistics test(List<double[][]> epochs,
-			List<Double> targets) {
-        ClassificationStatistics resultsStats = new ClassificationStatistics();
-        
-        for(int i = 0; i < epochs.size(); i++) {
-        	double[][] epoch = epochs.get(i);
-        	double result = this.classify(epoch);
-        	resultsStats.add(result, targets.get(i));
-        }
-		
+	public ClassificationStatistics test(List<FeatureVector> featureVectors, List<Double> targets) {
+		ClassificationStatistics resultsStats = new ClassificationStatistics();
+
+		for(int i = 0; i < featureVectors.size(); i++) {
+			double result = this.classify(featureVectors.get(i));
+			resultsStats.add(result, targets.get(i));
+		}
+
 		return resultsStats;
 	}
 
 	@Override
-	public double classify(double[][] epoch) {
-		double[] feature = fe.extractFeatures(epoch);
+	public double classify(FeatureVector fv) {
+		double[] feature = fv.getFeatureVector();
 		double score = classifier.getScore(feature);
-		
+
 		return score;
+	}
+
+	@Override
+	public void load(InputStream is) {
+
+	}
+
+	@Override
+	public void save(OutputStream dest) {
+
 	}
 
 	@Override

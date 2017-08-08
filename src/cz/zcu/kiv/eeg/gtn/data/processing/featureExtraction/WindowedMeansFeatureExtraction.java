@@ -1,25 +1,27 @@
 package cz.zcu.kiv.eeg.gtn.data.processing.featureExtraction;
 
 import cz.zcu.kiv.eeg.gtn.data.processing.math.SignalProcessing;
+import cz.zcu.kiv.eeg.gtn.data.processing.structures.EEGDataPackage;
 import cz.zcu.kiv.eeg.gtn.utils.Const;
 
 public class WindowedMeansFeatureExtraction implements IFeatureExtraction {
-	private static final int[] CHANNELS = {1, 2, 3}; /* EEG channels to be transformed to feature vectors */
-	
+
 	// time intervals after stimulus in seconds to extract
 	private double[][] windows = {{0.2, 0.25}, {0.25, 0.3}, {0.25, 0.3}, {0.3, 0.35}, {0.35, 0.4},
 			{0.4, 0.45}, {0.45, 0.5}, {0.5, 0.55}, {0.55, 0.6}, {0.6, 0.65}, {0.65, 0.7}};
-	
+
+	private int numOfChannels = 0;
 
 	@Override
-	public double[] extractFeatures(double[][] epoch) {
-		double[] features = new double[CHANNELS.length * windows.length];
+	public double[] extractFeatures(EEGDataPackage data) {
+		double[][] epoch = data.getData();
+		numOfChannels = epoch.length;
+		double[] features = new double[numOfChannels * windows.length];
 		
-		for (int i = 0; i < CHANNELS.length; i++) {
+		for (int i = 0; i < numOfChannels; i++) {
 			for (int j = 0; j < windows.length; j++) {
 				double avg = averageInterval(windows[j], epoch[i]);
 				features[i * windows.length + j] = avg;
-				
 			}
 		}
 		features = SignalProcessing.normalize(features);
@@ -41,7 +43,7 @@ public class WindowedMeansFeatureExtraction implements IFeatureExtraction {
 
 	@Override
 	public int getFeatureDimension() {
-		return CHANNELS.length * windows.length;
+		return numOfChannels * windows.length;
 	}
 
 }

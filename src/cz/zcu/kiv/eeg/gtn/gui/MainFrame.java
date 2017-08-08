@@ -142,10 +142,6 @@ public class MainFrame extends JFrame implements Observer {
             if  (row
                     .equalsIgnoreCase("WaveletTransformFeatureExtraction")) {
                 fe = new WaveletTransformFeatureExtraction();
-                ((WaveletTransformFeatureExtraction) fe).setEpochSize(Integer
-                        .parseInt(br.readLine()));
-                ((WaveletTransformFeatureExtraction) fe).setSkipSamples(Integer
-                        .parseInt(br.readLine()));
                 ((WaveletTransformFeatureExtraction) fe).setWaveletName(Integer
                         .parseInt(br.readLine()));
                 ((WaveletTransformFeatureExtraction) fe).setFeatureSize(Integer
@@ -156,15 +152,11 @@ public class MainFrame extends JFrame implements Observer {
                         .parseInt(br.readLine()));
                 ((MatchingPursuitFeatureExtraction) fe).setDownSmplFactor(Integer
                         .parseInt(br.readLine()));
-                ((MatchingPursuitFeatureExtraction) fe).setSkipSamples(Integer
-                        .parseInt(br.readLine()));
             } else if (row.equals("HHTFeatureExtraction")) {
                 fe = new HHTFeatureExtraction();
                 ((HHTFeatureExtraction) fe).setEpochSize(Integer
                         .parseInt(br.readLine()));
                 ((HHTFeatureExtraction) fe).setDownSmplFactor(Integer
-                        .parseInt(br.readLine()));
-                ((HHTFeatureExtraction) fe).setSkipSamples(Integer
                         .parseInt(br.readLine()));
                 ((HHTFeatureExtraction) fe).setSampleWindowSize(Integer
                         .parseInt(br.readLine()));
@@ -238,14 +230,12 @@ public class MainFrame extends JFrame implements Observer {
             readConfiguration(config);
             String path = config.getAbsolutePath();
             path = path.substring(0, path.lastIndexOf('.')) + ".classifier";
-            classifier.setFeatureExtraction(fe);
             classifier.load(path);
             //loadClassifier();
             setTrained(true);
         } else {
             classifier = new MLPClassifier();
             fe = new WaveletTransformFeatureExtraction();
-            classifier.setFeatureExtraction(fe);
             setTrained(false);
         }
     }
@@ -351,7 +341,6 @@ public class MainFrame extends JFrame implements Observer {
                 if (conf.exists()) {
                     readConfiguration(conf);
                     loadClassifier();
-                    classifier.setFeatureExtraction(fe);
                     setTrained(true);
 
                     setFeStatus("Feature Extraction: "

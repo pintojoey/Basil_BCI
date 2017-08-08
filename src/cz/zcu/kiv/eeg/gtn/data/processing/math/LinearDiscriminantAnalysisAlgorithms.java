@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import cz.zcu.kiv.eeg.gtn.data.processing.featureExtraction.FeatureVector;
 import org.apache.commons.math.linear.RealMatrix;
 import org.apache.commons.math.stat.correlation.Covariance;
 
@@ -74,16 +75,13 @@ public class LinearDiscriminantAnalysisAlgorithms {
 	/**
 	 * Classifier training
 	 * 
-	 * @param input
-	 *            - raw epochs - list of M channels x N time samples
+	 * @param featureVectors
+	 *            - feature vectors
 	 * @param targets
 	 *            - target classes - list of expected classes (0 or 1)
-	 * @param fe
-	 *            - method for feature extraction
 	 */
-	public void train(List<double[][]> input, List<Double> targets,
-			IFeatureExtraction fe) {
-		createInputAndTargetMatrix(input, targets, fe);
+	public void train(List<FeatureVector> featureVectors, List<Double> targets) {
+		createInputAndTargetMatrix(featureVectors, targets);
 		sizeOfInput = determineSizeOfInput();
 		classes = determineClasses();
 		classCount = determineClassCount();
@@ -204,20 +202,16 @@ public class LinearDiscriminantAnalysisAlgorithms {
 	/**
 	 * Creates matrices from input and target lists
 	 * 
-	 * @param input
-	 *            - raw epochs - list of M channels x N time samples
+	 * @param featureVectors
+	 *            - feature vectors
 	 * @param targets
 	 *            - target classes - list of expected classes (0 or 1)
-	 * @param fe
-	 *            - method for feature extraction
 	 */
-	public void createInputAndTargetMatrix(List<double[][]> input,
-			List<Double> targets, IFeatureExtraction fe) {
-		double[][] features = new double[input.size()][fe.getFeatureDimension()];
+	public void createInputAndTargetMatrix(List<FeatureVector> featureVectors, List<Double> targets) {
+		double[][] features = new double[featureVectors.size()][featureVectors.get(0).getFeatureVector().length];
 		double[][] target = new double[targets.size()][1];
-		for (int i = 0; i < input.size(); i++) {
-			double[][] epoch = input.get(i);
-			features[i] = fe.extractFeatures(epoch);
+		for (int i = 0; i < featureVectors.size(); i++) {
+			features[i] = featureVectors.get(i).getFeatureVector();
 			target[i][0] = targets.get(i);
 		}
 		this.input = Matrix.constructWithCopy(features);
@@ -391,9 +385,6 @@ public class LinearDiscriminantAnalysisAlgorithms {
 
 	/**
 	 * Creates part of matrix W for currently processed class
-	 * 
-	 * @param temp
-	 *            - coefficients for matrix W
 	 * @param i
 	 *            - currently processed class
 	 */

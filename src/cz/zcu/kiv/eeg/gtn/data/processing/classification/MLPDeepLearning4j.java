@@ -1,5 +1,6 @@
 package cz.zcu.kiv.eeg.gtn.data.processing.classification;
 
+import cz.zcu.kiv.eeg.gtn.data.processing.featureExtraction.FeatureVector;
 import org.apache.commons.io.FileUtils;
 import org.deeplearning4j.eval.Evaluation;
 import org.deeplearning4j.nn.api.Layer;
@@ -31,7 +32,6 @@ import java.util.List;
  */
 public class MLPDeepLearning4j implements IClassifier {
     private final int NEURON_COUNT_DEFAULT = 30;    //default number of neurons
-    private IFeatureExtraction fe;                //type of feature extraction (MatchingPursuit, FilterAndSubampling or WaveletTransform)
     private MultiLayerNetwork model;            //multi layer neural network with a logistic output layer and multiple hidden neuralNets
     private int neuronCount;                    // Number of neurons
     private int iterations;                    //Iterations used to classify
@@ -48,17 +48,16 @@ public class MLPDeepLearning4j implements IClassifier {
 
     /*Classifying features*/
     @Override
-    public double classify(double[][] epoch) {
-        double[] featureVector = this.fe.extractFeatures(epoch); // Extracting features to vector
+    public double classify(FeatureVector fv) {
+        double[] featureVector = fv.getFeatureVector(); // Extracting features to vector
         INDArray features = Nd4j.create(featureVector); // Creating INDArray with extracted features
         return model.output(features, Layer.TrainingMode.TEST).getDouble(0); // Result of classifying
     }
 
     @Override
-    public void train(List<double[][]> epochs, List<Double> targets, int numberOfiter, IFeatureExtraction fe) {
-
+    public void train(List<FeatureVector> featureVectors, List<Double> targets, int numberOfiter) {
         // Customizing params of classifier
-        final int numRows = fe.getFeatureDimension();   // number of targets on a line
+        final int numRows = featureVectors.get(0).getFeatureVector().length;   // number of targets on a line
         final int numColumns = 2;   // number of labels needed for classifying
         this.iterations = numberOfiter; // number of iteration in the learning phase
         int listenerFreq = numberOfiter / 10; // frequency of output strings
@@ -67,9 +66,8 @@ public class MLPDeepLearning4j implements IClassifier {
         //Load Data - when target is 0, label[0] is 0 and label[1] is 1.
         double[][] labels = new double[targets.size()][numColumns]; // Matrix of labels for classifier
         double[][] features_matrix = new double[targets.size()][numRows]; // Matrix of features
-        for (int i = 0; i < epochs.size(); i++) { // Iterating through epochs
-            double[][] epoch = epochs.get(i); // Each epoch
-            double[] features = fe.extractFeatures(epoch); // Feature of each epoch
+        for (int i = 0; i < featureVectors.size(); i++) { // Iterating through epochs
+            double[] features = featureVectors.get(i).getFeatureVector(); // Feature of each epoch
             for (int j = 0; j < numColumns; j++) {   //setting labels for each column
                 labels[i][0] = targets.get(i); // Setting label on position 0 as target
                 labels[i][1] = Math.abs(1 - targets.get(i));  // Setting label on position 1 to be different from label[0]
@@ -133,10 +131,10 @@ public class MLPDeepLearning4j implements IClassifier {
 
     // method for testing the classifier.
     @Override
-    public ClassificationStatistics test(List<double[][]> epochs, List<Double> targets) {
+    public ClassificationStatistics test(List<FeatureVector> featureVectors, List<Double> targets) {
         ClassificationStatistics resultsStats = new ClassificationStatistics(); // initialization of classifier statistics
-        for (int i = 0; i < epochs.size(); i++) {   //iterating epochs
-            double output = this.classify(epochs.get(i));   //   output means score of a classifier from method classify
+        for (int i = 0; i < featureVectors.size(); i++) {   //iterating epochs
+            double output = this.classify(featureVectors.get(i));   //   output means score of a classifier from method classify
             resultsStats.add(output, targets.get(i));   // calculating statistics
         }
         return resultsStats;    //  returns classifier statistics
@@ -158,14 +156,8 @@ public class MLPDeepLearning4j implements IClassifier {
     public void saveOld(String file) {
         OutputStream fos;
         // Choose the name of classifier and coefficient file to save based on the feature extraction, which is used
-        String coefficientsName = "wrong.bin";
-        if (fe.getClass().getSimpleName().equals("FilterAndSubsamplingFeatureExtraction")) {
-            coefficientsName = "coefficients19.bin";
-        } else if (fe.getClass().getSimpleName().equals("WaveletTransformFeatureExtraction")) {
-            coefficientsName = "coefficients20.bin";
-        } else if (fe.getClass().getSimpleName().equals("MatchingPursuitFeatureExtraction")) {
-            coefficientsName = "coefficients21.bin";
-        }
+        String coefficientsName = this.getClass().getName() +  ".bin";
+
         try {
             // Save classifier and coefficients, used methods come from Nd4j library
             fos = Files.newOutputStream(Paths.get("data/test_classifiers_and_settings/" + coefficientsName));
@@ -220,14 +212,8 @@ public class MLPDeepLearning4j implements IClassifier {
         MultiLayerConfiguration confFromJson = null;
         INDArray newParams = null;
         // Choose the name of coefficient file to load based on the feature extraction, which is used
-        String coefficientsName = "wrong.bin";
-        if (fe.getClass().getSimpleName().equals("FilterAndSubsamplingFeatureExtraction")) {
-            coefficientsName = "coefficients19.bin";
-        } else if (fe.getClass().getSimpleName().equals("WaveletTransformFeatureExtraction")) {
-            coefficientsName = "coefficients20.bin";
-        } else if (fe.getClass().getSimpleName().equals("MatchingPursuitFeatureExtraction")) {
-            coefficientsName = "coefficients21.bin";
-        }
+        String coefficientsName = this.getClass().getName() +  ".bin";
+
         try {
             // Load classifier and coefficients, used methods come from Nd4j library
             confFromJson = MultiLayerConfiguration.fromJson(FileUtils.readFileToString(new File(file)));
@@ -247,16 +233,4 @@ public class MLPDeepLearning4j implements IClassifier {
         System.out.println("Loaded");
 
     }
-
-    @Override
-    public IFeatureExtraction getFeatureExtraction() {
-        return fe;
-    }
-
-    @Override
-    public void setFeatureExtraction(IFeatureExtraction fe) {
-        this.fe = fe;
-    }
-
-
 }

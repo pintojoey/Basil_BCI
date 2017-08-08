@@ -14,6 +14,7 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.util.List;
 
+import cz.zcu.kiv.eeg.gtn.data.processing.featureExtraction.FeatureVector;
 import cz.zcu.kiv.eeg.gtn.data.processing.featureExtraction.IFeatureExtraction;
 import libsvm.LibSVM;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
@@ -25,8 +26,7 @@ import net.sf.javaml.core.Instance;
 
 public class JavaMLClassifier implements IClassifier {
 	private Classifier classifier;
-	private IFeatureExtraction fe;
-	
+
 	public JavaMLClassifier() {
 		//this.classifier = new  SOM(10, 10, GridType.HEXAGONAL, 1000, 0.1, 3, LearningType.EXPONENTIAL, NeighbourhoodFunction.GAUSSIAN);
 		//this.classifier = new  KNearestNeighbors(50);
@@ -35,23 +35,16 @@ public class JavaMLClassifier implements IClassifier {
 	}
 
 	@Override
-	public void setFeatureExtraction(IFeatureExtraction fe) {
-		this.fe = fe;
-		
-	}
-
-	@Override
-	public void train(List<double[][]> epochs, List<Double> targets,
-			int numberOfiter, IFeatureExtraction fe) {
-		Dataset dataset = createDataset(epochs, targets);
+	public void train(List<FeatureVector> featureVectors, List<Double> targets,
+			int numberOfiter) {
+		Dataset dataset = createDataset(featureVectors, targets);
 		classifier.buildClassifier(dataset);
 	}
 
 	@Override
-	public ClassificationStatistics test(List<double[][]> epochs,
-			List<Double> targets) {
+	public ClassificationStatistics test(List<FeatureVector> featureVectors, List<Double> targets) {
         ClassificationStatistics resultsStats = new ClassificationStatistics();
-		Dataset dataset = createDataset(epochs, targets);
+		Dataset dataset = createDataset(featureVectors, targets);
 		for (Instance inst : dataset) {
 			Object predictedClassValue = classifier.classify(inst);
 			Object realClassValue = inst.classValue();
@@ -61,8 +54,8 @@ public class JavaMLClassifier implements IClassifier {
 	}
 
 	@Override
-	public double classify(double[][] epoch) {
-		double[] feature = fe.extractFeatures(epoch);
+	public double classify(FeatureVector fv) {
+		double[] feature = fv.getFeatureVector();
 		Instance instance = new DenseInstance(feature);
 		Object predictedClassValue = classifier.classify(instance);
 
@@ -121,21 +114,15 @@ public class JavaMLClassifier implements IClassifier {
 		
 	}
 	
-	private Dataset createDataset(List<double[][]> epochs, List<Double> targets) {
+	private Dataset createDataset(List<FeatureVector> featureVectors, List<Double> targets) {
 		Dataset dataset= new DefaultDataset();
-        for (int i = 0; i < epochs.size(); i++ ) {
-			double[][] epoch = epochs.get(i);
-			double[] features = fe.extractFeatures(epoch);
+        for (int i = 0; i < featureVectors.size(); i++ ) {
+			double[] features = featureVectors.get(i).getFeatureVector();
 			Instance instance = new DenseInstance(features, targets.get(i));
 			dataset.add(instance);
 			
 		}
 		return dataset;
 		
-	}
-
-	@Override
-	public IFeatureExtraction getFeatureExtraction() {
-		return this.fe;
 	}
 }

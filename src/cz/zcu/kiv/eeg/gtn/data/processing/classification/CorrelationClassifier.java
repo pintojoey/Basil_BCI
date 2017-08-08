@@ -14,6 +14,7 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.util.List;
 
+import cz.zcu.kiv.eeg.gtn.data.processing.featureExtraction.FeatureVector;
 import cz.zcu.kiv.eeg.gtn.data.processing.featureExtraction.IFeatureExtraction;
 import cz.zcu.kiv.eeg.gtn.data.processing.math.CorrelationAlgorithms;
 
@@ -22,7 +23,7 @@ import cz.zcu.kiv.eeg.gtn.data.processing.math.CorrelationAlgorithms;
  * @author Karel Silhavy
  *
  */
-public class CorrelationClassifier extends ERPClassifierAdapter {
+public class CorrelationClassifier implements IClassifier {
 	
 	/**
 	 * Feature extractor
@@ -38,16 +39,6 @@ public class CorrelationClassifier extends ERPClassifierAdapter {
 	public CorrelationClassifier() {
 		this.classifier = new CorrelationAlgorithms();
 	}
-	
-	
-	/** 
-	 * Sets feature extraction method
-	 * @param fe	feature extraction method
-	 */
-	@Override
-	public void setFeatureExtraction(IFeatureExtraction fe) {
-		this.fe = fe;
-	}
 
 	/**
 	 * Training this classifier is just loading waveform of P3 from the file.
@@ -55,28 +46,34 @@ public class CorrelationClassifier extends ERPClassifierAdapter {
 	public void train() {
 		this.classifier.loadP300();
 	}
-	
-	/**
-	 * Training this classifier is just loading waveform of P3 from the file.
-	 * There are no needed parameters to train this classifier, so if you call
-	 * this method is used {@link #train()}.
-	 */
+
 	@Override
-	public void train(List<double[][]> epochs, List<Double> targets,
-			int numberOfiter, IFeatureExtraction fe) {
+	public void train(List<FeatureVector> featureVectors, List<Double> targets, int numberOfiter) {
 		train();
 	}
 
+	@Override
+	public ClassificationStatistics test(List<FeatureVector> featureVectors, List<Double> targets) {
+		return null;
+	}
 
 	@Override
-	public double classify(double[][] epoch) {
-		
-		double[] feature = fe.extractFeatures(epoch);
+	public double classify(FeatureVector fv) {
+		double[] feature = fv.getFeatureVector();
 		double score = classifier.getScore(feature);
-		
+
 		return score;
 	}
-	
+
+	@Override
+	public void load(InputStream is) {
+
+	}
+
+	@Override
+	public void save(OutputStream dest) {
+
+	}
 
 	@Override
 	public void load(String file) {
@@ -93,6 +90,7 @@ public class CorrelationClassifier extends ERPClassifierAdapter {
 			  e.printStackTrace();
 		}
 	}
+
 
 	@Override
 	public void save(String file) {

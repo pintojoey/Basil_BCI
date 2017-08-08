@@ -1,6 +1,7 @@
 package cz.zcu.kiv.eeg.gtn.data.processing.featureExtraction;
 
 import cz.zcu.kiv.eeg.gtn.data.processing.math.SignalProcessing;
+import cz.zcu.kiv.eeg.gtn.data.processing.structures.EEGDataPackage;
 import cz.zcu.kiv.eeg.gtn.utils.Const;
 import cz.zcu.kiv.eegdsp.common.ISignalProcessingResult;
 import cz.zcu.kiv.eegdsp.common.ISignalProcessor;
@@ -18,26 +19,15 @@ import cz.zcu.kiv.eegdsp.wavelet.discrete.algorithm.wavelets.WaveletDWT;
  *
  */
 public class WaveletTransformFeatureExtraction implements IFeatureExtraction {
-
-	/**
-	 * EEG channels to be transformed to feature vectors
-	 */
-	private static final int[] CHANNELS = { 1, 2, 3 };
-
 	/**
 	 * Number of samples to be used - Fs = 1000 Hz expected
 	 */
-	private int EPOCH_SIZE = 512;
+	private int epochSize = 0;
 
 	/**
 	 * Subsampling factor
 	 */
-	private static final int DOWN_SMPL_FACTOR = 1;
-
-	/**
-	 * Skip initial samples in each epoch
-	 */
-	private int SKIP_SAMPLES = 175;
+	private int downSmplFactor = 1;
 
 	/**
 	 * Name of the wavelet
@@ -49,6 +39,8 @@ public class WaveletTransformFeatureExtraction implements IFeatureExtraction {
 	 */
 	private int FEATURE_SIZE = 16;
 
+	private int numberOfChannels = 0;
+
 	/**
 	 * Constructor for the wavelet transform feature extraction with default
 	 * wavelet
@@ -57,11 +49,10 @@ public class WaveletTransformFeatureExtraction implements IFeatureExtraction {
 		this.NAME = 8;
 	}
 	
-	public WaveletTransformFeatureExtraction(int name, int epochSize, int skipSamples, int featureSize) {
+	public WaveletTransformFeatureExtraction(int name, int featureSize, int downSmplFactor) {
 		this.NAME = name;
-		this.EPOCH_SIZE = epochSize;
-		this.SKIP_SAMPLES = skipSamples;
 		this.FEATURE_SIZE = featureSize;
+		this.downSmplFactor = downSmplFactor;
 	}
 
 	/**
@@ -79,12 +70,14 @@ public class WaveletTransformFeatureExtraction implements IFeatureExtraction {
 	 * Method that creates a wavelet by a name using SignalProcessingFactory and
 	 * processes the signal
 	 * 
-	 * @param epoch
+	 * @param data
 	 *            - source epochs
 	 * @return - normalized feature vector with only approximation coefficients
 	 */
 	@Override
-	public double[] extractFeatures(double[][] epoch) {
+	public double[] extractFeatures(EEGDataPackage data) {
+		double[][] epoch = data.getData();
+
 		ISignalProcessor dwt = SignalProcessingFactory.getInstance()
 				.getWaveletDiscrete();
 		String[] names = ((WaveletTransformationDiscrete) dwt)
@@ -100,15 +93,11 @@ public class WaveletTransformFeatureExtraction implements IFeatureExtraction {
 		((WaveletTransformationDiscrete) dwt).setWavelet(wavelet);
 
 		ISignalProcessingResult res;
-		int numberOfChannels = CHANNELS.length;
+		numberOfChannels = epoch.length;
 		double[] features = new double[FEATURE_SIZE * numberOfChannels];
 		int i = 0;
-		for (int channel : CHANNELS) {
-			double[] currChannelData = new double[EPOCH_SIZE];
-			for (int j = 0; j < EPOCH_SIZE; j++) {
-				currChannelData[j] = epoch[channel - 1][j + SKIP_SAMPLES];
-			}
-			res = dwt.processSignal(currChannelData);
+		for (double[] channel : epoch) {
+			res = dwt.processSignal(channel);
 			for (int j = 0; j < FEATURE_SIZE; j++) {
 				features[i * FEATURE_SIZE + j] = ((WaveletResultDiscrete) res)
 						.getDwtCoefficients()[j];
@@ -127,7 +116,7 @@ public class WaveletTransformFeatureExtraction implements IFeatureExtraction {
 	 */
 	@Override
 	public int getFeatureDimension() {
-		return FEATURE_SIZE * CHANNELS.length / DOWN_SMPL_FACTOR;
+		return FEATURE_SIZE * numberOfChannels / downSmplFactor;
 	}
 
 	/**
@@ -142,37 +131,6 @@ public class WaveletTransformFeatureExtraction implements IFeatureExtraction {
 		} else
 			throw new IllegalArgumentException(
 					"Wavelet Name must be >= 0 and <= 17");
-	}
-
-	/**
-	 * Sets size of epoch to use for feature extraction
-	 * 
-	 * @param epochSize
-	 *            - size of epoch to use
-	 */
-	public void setEpochSize(int epochSize) {
-		if (epochSize > 0 && epochSize <= Const.POSTSTIMULUS_VALUES) {
-			this.EPOCH_SIZE = epochSize;
-		} else {
-			throw new IllegalArgumentException("Epoch Size must be > 0 and <= "
-					+ Const.POSTSTIMULUS_VALUES);
-		}
-	}
-
-	/**
-	 * Sets how many initiate samples of epoch to skip
-	 * 
-	 * @param skipSamples
-	 *            - number of samples to skip
-	 */
-	public void setSkipSamples(int skipSamples) {
-		if (skipSamples > 0 && skipSamples <= Const.POSTSTIMULUS_VALUES) {
-			this.SKIP_SAMPLES = skipSamples;
-		} else {
-			throw new IllegalArgumentException(
-					"Skip Samples must be > 0 and <= "
-							+ Const.POSTSTIMULUS_VALUES);
-		}
 	}
 
 	/**
@@ -192,10 +150,8 @@ public class WaveletTransformFeatureExtraction implements IFeatureExtraction {
 	
 	@Override
 	public String toString() {
-		return "DWT: EPOCH_SIZE: " + this.EPOCH_SIZE + 
+		return "DWT: EPOCH_SIZE: " + this.epochSize +
 				" FEATURE_SIZE: " + this.FEATURE_SIZE +
-				" WAVELETNAME: " + this.NAME +
-				" SKIP_SAMPLES: " + this.SKIP_SAMPLES +
-				"\n";
+				" WAVELETNAME: " + this.NAME + "\n";
 	}
 }

@@ -47,8 +47,10 @@ public class Buffer implements IBuffer {
 	 * @param markers - new markers to add onto the end of the array
 	 */
 	private void addMarkers(List<EEGMarker> markers) {
-		for (EEGMarker marker: markers) {
-			marker.incrementOffset(this.data[0].length);
+		if (this.data != null && this.data.length > 0) {
+			for (EEGMarker marker: markers) {
+				marker.incrementOffset(this.data[0].length);
+			}
 		}
 		
 		this.markers.addAll(markers);
@@ -64,8 +66,8 @@ public class Buffer implements IBuffer {
 		double[][] toRemove = new double[this.data.length][size];
 		double[][] newData  = new double[this.data.length][this.data[0].length - size]; 
 		for (int i = 0; i < this.data.length; i++) {
-			System.arraycopy(this.data[i], 0,    toRemove, 0, size);
-			System.arraycopy(this.data[i], size, newData, 0, this.data[0].length - size);
+			System.arraycopy(this.data[i], 0,    toRemove[i], 0, size);
+			System.arraycopy(this.data[i], size, newData[i], 0, this.data[0].length - size);
 		}
 		List<EEGMarker> markersToRemove = this.removeMarkers(size);
 		return new EEGDataPackage(newData, markersToRemove);

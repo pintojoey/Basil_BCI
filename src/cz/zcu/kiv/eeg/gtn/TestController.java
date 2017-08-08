@@ -14,6 +14,7 @@ import cz.zcu.kiv.eeg.gtn.data.providers.bva.OffLineDataProvider;
 import cz.zcu.kiv.eeg.gtn.data.processing.DefaultWorkflowController;
 import cz.zcu.kiv.eeg.gtn.data.processing.IWorkflowController;
 import cz.zcu.kiv.eeg.gtn.data.processing.classification.IClassifier;
+import cz.zcu.kiv.eeg.gtn.data.processing.classification.MLPClassifier;
 
 public class TestController {
 	
@@ -26,17 +27,27 @@ public class TestController {
 	    IBuffer buffer = new Buffer();
 	    
 	    // preprocessing
-		EpochExtraction epochExtraction = new EpochExtraction(100, 1000);
+	    ISegmentation epochExtraction = new EpochExtraction(100, 1000);
 	    List<IPreprocessing> preprocessing = new ArrayList<IPreprocessing>();
-	    preprocessing.add(new BaselineCorrection(0, 0.1, provider.getSamplingRate()));
+	    preprocessing.add(new BaselineCorrection(0, 100, provider.getSamplingRate()));
 	    AbstractDataPreprocessor dataPreprocessor = new EpochDataPreprocessor(preprocessing, buffer, epochExtraction, 0);
 	    
 	    // feature extraction
-	    List<IFeatureExtraction> featureExtraction = null;
-	    IClassifier classification       = null;
+	    List<IFeatureExtraction> featureExtraction = new ArrayList<IFeatureExtraction>();
+	    IClassifier classification       		   = new MLPClassifier();
 	    
 	    // controller
 	    IWorkflowController workFlowController = new DefaultWorkflowController(provider, buffer, dataPreprocessor, featureExtraction, classification);
+	    
+	    while (true) {
+	    	workFlowController.processData();
+	    	try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	    }
 	    
 	    
 	}

@@ -17,8 +17,8 @@ import java.util.Observer;
 public class TestBVA {
 
     public static void main(String[] args) {
-        testOffline();
-        //testOnline();
+        //testOffline();
+        testOnline();
     }
 
     private static void testOnline(){

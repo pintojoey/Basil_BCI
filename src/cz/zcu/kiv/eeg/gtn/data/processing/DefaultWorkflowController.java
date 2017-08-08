@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import cz.zcu.kiv.eeg.gtn.data.processing.classification.IClassifier;
-import cz.zcu.kiv.eeg.gtn.data.processing.featureExtraction.FeatureVector;
 import cz.zcu.kiv.eeg.gtn.data.processing.featureExtraction.IFeatureExtraction;
 import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.AbstractDataPreprocessor;
 import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.IDataPreprocessor;
@@ -38,8 +37,6 @@ public class DefaultWorkflowController extends AbstractWorkflowController {
                     fv.addFeatures(features);
                 }
 
-                double result = classifier.classify(fv);
-                //TODO use listener to send result?
             }
         }
 	}

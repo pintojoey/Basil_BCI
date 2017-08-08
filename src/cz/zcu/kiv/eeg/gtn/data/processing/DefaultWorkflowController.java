@@ -25,28 +25,37 @@ public class DefaultWorkflowController extends AbstractWorkflowController {
 
 	@Override
 	public void processData() {
+		System.out.println("Buffer size: " + buffer.size());
 		if (buffer.isFull() || buffer.size() >= getBufferMinSize()){
             List<EEGDataPackage> packs =  preprocessor.preprocessData();
-            if(packs.size() == 0) return;
+            if (packs == null || packs.size() == 0) return;
+            
 
-            for(EEGDataPackage pack : packs){
+            for (EEGDataPackage pack : packs) {
 
             }
         }
+        	
+        
 	}
 
+	// TODO
 	@Override
 	public void start(EEGStartMessage start) {
+		System.out.println("Starting: " + start);
 
 	}
 
+	// TODO
 	@Override
 	public void stop(EEGStopMessage stop) {
+		System.out.println("Stopping: " + stop);
 
 	}
 
 	@Override
 	public void storeData(EEGDataMessage data) {
+		//System.out.println("Adding: " + data);
 		buffer.add(data.getData(), Arrays.asList(data.getMarkers()));
 	}
 

@@ -14,8 +14,8 @@ public class EpochDataPreprocessor extends AbstractDataPreprocessor {
 
     private final int preepochPreprocessingCount;
 
-    public EpochDataPreprocessor(List<IPreprocessing> preprocessing, IBuffer buffer, EpochExtraction epochExtraction, int preepochPreprocessingCount) {
-        super(preprocessing, buffer, epochExtraction);
+    public EpochDataPreprocessor(List<IPreprocessing> preprocessing, IBuffer buffer, ISegmentation segmentation, int preepochPreprocessingCount) {
+        super(preprocessing, buffer, segmentation);
         this.preepochPreprocessingCount = preepochPreprocessingCount;
     }
 

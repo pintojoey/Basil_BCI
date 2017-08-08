@@ -10,10 +10,10 @@ import cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGDataMessage;
 import cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGStartMessage;
 import cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGStopMessage;
 
-public class TestData {
+public class TestLSL {
 
 	public static void main(String[] args) {
-		TestData td = new TestData();
+		TestLSL td = new TestLSL();
 		LSLEEGDataMessageProvider dataProvider = new LSLEEGDataMessageProvider();
 		dataProvider.addListener(new EEGMessageListener() {
 			@Override

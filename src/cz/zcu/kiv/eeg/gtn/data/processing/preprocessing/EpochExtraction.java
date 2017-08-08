@@ -46,7 +46,7 @@ public class EpochExtraction implements ISegmentation {
 			}
 			
 			for (int i = 0; i < data.length; i++) {
-				System.arraycopy(data[i], offset + startSample , epochData, 0, endSample - startSample);
+				System.arraycopy(data[i], offset + startSample , epochData[i], 0, endSample - startSample);
 			}
 			
 			

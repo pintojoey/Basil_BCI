@@ -13,8 +13,8 @@ import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.IPreprocessing;
  * 
  */
 public class BaselineCorrection implements IPreprocessing {
-	private double startTime;
-	private double endTime;
+	private double startTime; /* in milliseconds */
+	private double endTime;   /* in milliseconds */
 	private final int SAMPLING_RATE;
 	
     public BaselineCorrection(double startTime, double endTime, int SAMPLING_RATE) {
@@ -30,7 +30,7 @@ public class BaselineCorrection implements IPreprocessing {
         // for all channels
         for (int i = 0; i < eegData.length; i++) {
         	// calculate the baseline only in the requested interval
-        	double averageBaseline = SignalProcessing.average(eegData[i], (int) startTime * SAMPLING_RATE, (int) endTime * SAMPLING_RATE);
+        	double averageBaseline = SignalProcessing.average(eegData[i], (int) (0.001 * startTime * SAMPLING_RATE), (int) (0.001 * endTime * SAMPLING_RATE));
         	
         	// subtract the baseline from the rest of the signal
         	for (int j = 0; j < eegData[i].length; j++) {

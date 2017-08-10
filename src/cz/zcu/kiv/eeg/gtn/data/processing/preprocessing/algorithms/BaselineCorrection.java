@@ -5,12 +5,12 @@ import cz.zcu.kiv.eeg.gtn.data.processing.math.SignalProcessing;
 import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.IPreprocessing;
 
 /**
- * Created by Tomas Prokop on 01.08.2017.
  * 
  * Corrects the baseline by subtracting average voltage values in the baseline
  * correction part from the rest of the signal. Especially useful for ERP epochs.
  * 
- * 
+ * Created by Tomas Prokop on 01.08.2017.
+ *  
  */
 public class BaselineCorrection implements IPreprocessing {
 	private double startTime; /* in milliseconds */

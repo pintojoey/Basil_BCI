@@ -10,14 +10,14 @@ import cz.zcu.kiv.eeg.gtn.data.processing.featureExtraction.FeatureVector;
 /**
  * 
  * Interface for supervised classifiers
- * in the field of ERP classification
+ * for EEG-based feature vectors
  * 
  * @author Lukas Vareka
  *
  */
 public interface IClassifier {
 
-		/**
+	/**
 	 * Train the classifier using information from the supervizor
 	 * @param featureVectors list of feature vectors
 	 * @param targets target classes - list of expected classes (0 or 1)

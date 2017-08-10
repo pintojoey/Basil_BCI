@@ -18,6 +18,14 @@ import cz.zcu.kiv.eeg.gtn.data.processing.featureExtraction.FeatureVector;
 import cz.zcu.kiv.eeg.gtn.data.processing.featureExtraction.IFeatureExtraction;
 import cz.zcu.kiv.eeg.gtn.data.processing.math.KNearestNeighborsLocal;
 
+/**
+ * K Nearest Neighbors Classifier 
+ * (preselected number of nearest neighbors is evaluated from
+ * the perspective of their class labels and maximum votes decides the class)
+ * 
+ * @author lvareka
+ *
+ */
 public class KNNClassifier implements IClassifier {
 
 	/**

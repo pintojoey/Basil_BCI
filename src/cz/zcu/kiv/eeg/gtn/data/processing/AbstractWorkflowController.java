@@ -13,6 +13,17 @@ import cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGStopMessage;
 
 import java.util.List;
 
+
+/**
+ * 
+ * Abstract workflow controller powers the whole application. I receives data from a data
+ * provider, keeps the buffer that is filled from the data provider and collected by the preprocessor.
+ * Consequently, it runs feature extraction and classification on EEGDataPackages.
+ * 
+ * 
+ * @author lvareka
+ *
+ */
 public abstract class AbstractWorkflowController implements IWorkflowController {
 
     protected final AbstractDataProvider dataProvider;
@@ -27,7 +38,7 @@ public abstract class AbstractWorkflowController implements IWorkflowController 
 
     protected int bufferMinSize;
 
-    protected EEGStartMessage Metadata;
+    protected EEGStartMessage metadata;
 
     public AbstractWorkflowController(AbstractDataProvider dataProvider, IBuffer buffer,
                                       AbstractDataPreprocessor preprocessor, List<IFeatureExtraction> featureExtractions, IClassifier classifier) {
@@ -45,11 +56,11 @@ public abstract class AbstractWorkflowController implements IWorkflowController 
     }
 
     public EEGStartMessage getMetadata() {
-        return Metadata;
+        return metadata;
     }
 
     public void setMetadata(EEGStartMessage metadata) {
-        Metadata = metadata;
+        this.metadata = metadata;
     }
 
     public int getBufferMinSize() {
@@ -80,10 +91,14 @@ public abstract class AbstractWorkflowController implements IWorkflowController 
         return classifier;
     }
 
+    /**
+     * Receives and process the data from providers
+     * 
+     */
     private EEGMessageListener dataListener = new EEGMessageListener() {
         @Override
         public void startMessageSent(EEGStartMessage msg) {
-            Metadata = msg;
+            metadata = msg;
             preprocessor.setMetadata(msg);
             start(msg);
         }

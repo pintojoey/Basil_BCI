@@ -10,6 +10,12 @@ import java.io.PrintStream;
  */
 public class Main {
 
+	/**
+	 * Show graphical user interface to allow the
+	 * user to manually configure feature extraction, classification
+	 * and to display results
+	 * 
+	 */
     private static void runGui() {
         try {
             UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
@@ -24,6 +30,13 @@ public class Main {
     }
 
    
+    /**
+     * 
+     * Shows help about command line arguments
+     * 
+     * 
+     * @param out stream containing the output
+     */
     private static void printHelp(PrintStream out) {
         out.println("Guess the number - A demo BCI application." );
         out.println("Call with parameters:" );

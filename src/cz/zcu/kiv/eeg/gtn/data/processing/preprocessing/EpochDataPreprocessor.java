@@ -8,7 +8,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * 
+ * Pre-processing for ERP data: splits EEG into ERP trials
+ * using stimuli markers
+ * 
  * Created by Tomas Prokop on 07.08.2017.
+ * 
  */
 public class EpochDataPreprocessor extends AbstractDataPreprocessor {
 
@@ -24,7 +29,7 @@ public class EpochDataPreprocessor extends AbstractDataPreprocessor {
         EpochExtraction epochExtraction = (EpochExtraction) segmentation;
         EEGDataPackage pack = retrieve(epochExtraction);
 
-        if(pack == null) return null;
+        if (pack == null) return null;
 
         for(int i = 0; i < preepochPreprocessingCount; i++){
             pack = preprocessing.get(i).preprocess(pack);
@@ -45,7 +50,7 @@ public class EpochDataPreprocessor extends AbstractDataPreprocessor {
 
     private EEGDataPackage retrieve(EpochExtraction epochExtraction) {
         List<EEGMarker> markers = buffer.getMarkers();
-        if(markers.size() == 0) return null;
+        if (markers.size() == 0) return null;
 
         int bufferSize = buffer.size();
         EEGMarker m;

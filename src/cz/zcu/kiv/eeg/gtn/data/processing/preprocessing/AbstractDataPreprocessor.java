@@ -6,7 +6,12 @@ import cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGStartMessage;
 import java.util.List;
 
 /**
+ * 
+ * Introduces common code for EEG data pre-processing
+ * (consisting of segmentation and subsequent pre-processing methods) 
+ *
  * Created by Tomas Prokop on 04.07.2017.
+ * 
  */
 public abstract class AbstractDataPreprocessor implements IDataPreprocessor {
 
@@ -18,6 +23,12 @@ public abstract class AbstractDataPreprocessor implements IDataPreprocessor {
 
     protected EEGStartMessage metadata;
 
+    /**
+     * 
+     * @param preprocessing methods for preprocessing (such as frequency filtering)
+     * @param buffer reference to the buffer to remove data from
+     * @param segmentation method for segmentation or epoch extraction
+     */
     public AbstractDataPreprocessor(List<IPreprocessing> preprocessing, IBuffer buffer, ISegmentation segmentation) {
     	this.preprocessing = preprocessing;
 		this.buffer = buffer;

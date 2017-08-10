@@ -31,7 +31,6 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import cz.zcu.kiv.eeg.gtn.data.processing.classification.*;
-import cz.zcu.kiv.eeg.gtn.data.processing.classification.test.TrainUsingOfflineProvider;
 import cz.zcu.kiv.eeg.gtn.data.processing.featureExtraction.IFeatureExtraction;
 
 /**
@@ -564,7 +563,7 @@ public class ChangeClassifierFrame extends JFrame {
 				}
 				else if (dbnBttn.isSelected()) {
 					int neurons = (Integer) dbnNeuron.getValue();
-					IClassifier classifier = new DBNDeepLearning4jClassifier(neurons);
+					IClassifier classifier = new DBNDeepLearning4jClassifier();
 					List<String> classifierParams = new ArrayList<String>();
 					classifierParams.add(dbnNeuron.getValue() + "");
 					
@@ -631,7 +630,7 @@ public class ChangeClassifierFrame extends JFrame {
 
 					c.dispose();
 
-					new TrainUsingOfflineProvider(c.fe, classifier, classifierFile, MainFrame.dataFilter);
+					/*new TrainUsingOfflineProvider(c.fe, classifier, classifierFile, MainFrame.dataFilter);
 					mainFrame.setFe(fe);
 					mainFrame.setClassifier(classifier);
 					mainFrame.setFeStatus("Feature Extraction: "
@@ -642,7 +641,7 @@ public class ChangeClassifierFrame extends JFrame {
 					writeLastTrainedClassifier(fe.getClass().getSimpleName(),
 							feParams, classifier.getClass().getSimpleName(),
 							classifierParams, configurationFile);
-					mainFrame.setTrained(true);
+					mainFrame.setTrained(true);*/
 				}
 			}
 		} else {

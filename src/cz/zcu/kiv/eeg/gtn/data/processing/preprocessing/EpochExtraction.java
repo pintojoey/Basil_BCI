@@ -36,7 +36,6 @@ public class EpochExtraction implements ISegmentation {
 		for (EEGMarker currentMarker: markers) {
 			int startSample = (int) - (0.001 * this.preStimulus) /* time in s */ * this.sampling;
 			int endSample = (int) (0.001 * this.postStimulus) /* time in s */ * this.sampling;
-			
 			int offset = currentMarker.getOffset();
 			double[][] epochData = new double[data.length][endSample - startSample];
 			
@@ -44,17 +43,11 @@ public class EpochExtraction implements ISegmentation {
 				System.err.println("Epoch outside of the expected range");
 				continue; /* epoch prestimulus offset outside of the range */
 			}
-			
 			for (int i = 0; i < data.length; i++) {
 				System.arraycopy(data[i], offset + startSample , epochData[i], 0, endSample - startSample);
 			}
-			
-			
 			epochs.add(new EEGDataPackage(epochData, Arrays.asList(currentMarker)));
-			
 		}
-	
-		
 		return epochs;
 	}
 

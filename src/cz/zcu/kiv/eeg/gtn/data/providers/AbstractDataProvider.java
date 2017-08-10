@@ -7,6 +7,11 @@ import java.util.List;
 
 
 /**
+ * Data provider collects the data on-line or off-line
+ * and informs other layers using EEGMessageListener.
+ * 
+ * Provides basic metadata.
+ * 
  * Created by Tomas Prokop on 04.07.2017.
  */
 public abstract class AbstractDataProvider implements Runnable {

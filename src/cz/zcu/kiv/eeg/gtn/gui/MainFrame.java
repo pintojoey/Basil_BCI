@@ -1,8 +1,6 @@
 package cz.zcu.kiv.eeg.gtn.gui;
 
 import cz.zcu.kiv.eeg.gtn.data.processing.classification.*;
-import cz.zcu.kiv.eeg.gtn.data.processing.classification.test.TestClassificationAccuracy;
-import cz.zcu.kiv.eeg.gtn.data.processing.classification.test.TrainUsingOfflineProvider;
 import cz.zcu.kiv.eeg.gtn.data.processing.featureExtraction.*;
 import cz.zcu.kiv.eeg.gtn.data.processing.math.IArtifactDetection;
 import cz.zcu.kiv.eeg.gtn.data.processing.math.IFilter;
@@ -10,11 +8,8 @@ import cz.zcu.kiv.eeg.gtn.data.providers.AbstractDataProvider;
 import cz.zcu.kiv.eeg.gtn.data.providers.bva.OffLineDataProvider;
 import cz.zcu.kiv.eeg.gtn.data.providers.bva.OnLineDataProvider;
 import cz.zcu.kiv.eeg.gtn.utils.ColorUtils;
-import cz.zcu.kiv.eeg.gtn.utils.Const;
-
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
-
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.AbstractTableModel;
@@ -31,8 +26,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.ExecutionException;
-import java.util.logging.Level;
+
 
 @SuppressWarnings("serial")
 public class MainFrame extends JFrame implements Observer {
@@ -186,8 +180,7 @@ public class MainFrame extends JFrame implements Observer {
                 classifier = new CorrelationClassifier();
             } else if (row.equals("DBNDeepLearning4j")) {
                 try {
-                    classifier = new DBNDeepLearning4jClassifier(Integer.parseInt(br
-                            .readLine()));
+                    classifier = new DBNDeepLearning4jClassifier();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -390,9 +383,9 @@ public class MainFrame extends JFrame implements Observer {
                     file = save.getSelectedFile().getPath();
                     file += ".classifier";
 
-                    new TrainUsingOfflineProvider(fe, classifier, file, dataFilter);
+                   /* new TrainUsingOfflineProvider(fe, classifier, file, dataFilter);
 
-                    setTrained(true);
+                    setTrained(true);*/
                 }
             }
         });
@@ -757,9 +750,9 @@ public class MainFrame extends JFrame implements Observer {
                 if (saveResult == JFileChooser.APPROVE_OPTION) {
                     file = save.getSelectedFile().getPath();
                     file += ".classifier";
-                    new TrainUsingOfflineProvider(fe, classifier, file, dataFilter);
+                    /*new TrainUsingOfflineProvider(fe, classifier, file, dataFilter);
 
-                    setTrained(true);
+                    setTrained(true);*/
                 }
             } else {
                 JOptionPane.showMessageDialog(this,
@@ -913,7 +906,7 @@ public class MainFrame extends JFrame implements Observer {
             }else if (!isTrained()){
                 trainingDialog();
             } else {
-                try {
+                /*try {
                     TestClassificationAccuracy testClassificationAccuracy = new TestClassificationAccuracy(mainFrame.classifier);
                 } catch (InterruptedException ex) {
                     java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
@@ -921,7 +914,7 @@ public class MainFrame extends JFrame implements Observer {
                     java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (ExecutionException ex) {
                     java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                }*/
             }
 
         }

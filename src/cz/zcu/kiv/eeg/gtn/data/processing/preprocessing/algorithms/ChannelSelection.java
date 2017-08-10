@@ -9,6 +9,9 @@ import java.util.List;
 import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.IPreprocessing;
 
 /**
+ * 
+ * Selects only a subset of channels according to their names
+ * 
  * Created by Tomas Prokop on 01.08.2017.
  */
 public class ChannelSelection implements IPreprocessing {

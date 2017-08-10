@@ -9,9 +9,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import cz.zcu.kiv.eeg.gtn.data.processing.classification.test.Statistics;
-import cz.zcu.kiv.eeg.gtn.data.processing.classification.test.TestClassificationAccuracy;
-import cz.zcu.kiv.eeg.gtn.data.processing.classification.test.TrainUsingOfflineProvider;
+
 
 /**
  * 

@@ -27,23 +27,22 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 
-// creates instance of Deep Belief Network @author Pumprdlici group
+/**
+ * Creates an instance of Deep Belief Network 
+ * @author Pumprdlici group
+ * 
+ *
+ */
 public class DBNDeepLearning4jClassifier implements IClassifier {
 
-    private final int NEURON_COUNT = 15; //default number of neurons
+    
     private MultiLayerNetwork model;    //multi layer neural network with a logistic output layer and multiple hidden neuralNets
     private int iterations;             //Iterations used to classify
-    private int neuronCount;            // Number of neurons
-
-    /*Default constructor*/
+    
+    /* Default constructor*/
     public DBNDeepLearning4jClassifier() {
-        this.neuronCount = NEURON_COUNT; // sets count of neurons to default number
     }
 
-    /*Parametric constructor */
-    public DBNDeepLearning4jClassifier(int neuronCount) {
-        this.neuronCount = neuronCount;     // sets count of neurons to parameter
-    }
 
     @Override
     public double classify(FeatureVector fv){
@@ -55,6 +54,7 @@ public class DBNDeepLearning4jClassifier implements IClassifier {
     @Override
     public void train(List<FeatureVector> featureVectors, List<Double> targets, int numberOfiter){
         this.iterations = numberOfiter;
+        
         // Customizing params of classifier
         final int numRows = featureVectors.get(0).getFeatureVector().length;   // number of targets on a line
         final int numColumns = 2;   // number of labels needed for classifying
@@ -78,7 +78,7 @@ public class DBNDeepLearning4jClassifier implements IClassifier {
         INDArray input_data = Nd4j.create(features_matrix); // Create INDArray with features(data)
         DataSet dataSet = new DataSet(input_data, output_data); // Create dataSet with features and labels
         SplitTestAndTrain tat = dataSet.splitTestAndTrain(0.8);
-        //DataSetIterator dataSetIterator = new ListDataSetIterator(dataSet.batchBy(32));
+       
 
         // Building a neural net
         build(numRows, numColumns, seed, listenerFreq);
@@ -150,13 +150,7 @@ public class DBNDeepLearning4jClassifier implements IClassifier {
         return resultsStats;    //  returns classifier statistics
     }
 
-   /* public RecordReader loadData(List<double[][]> epochs, List<Double> targets) throws Exception {
 
-
-
-        return null;
-    }
-*/
     // method not implemented. For saving use method save(String file)
     @Override
     public void load(InputStream is) {

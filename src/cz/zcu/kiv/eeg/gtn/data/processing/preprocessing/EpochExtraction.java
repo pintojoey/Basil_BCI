@@ -34,7 +34,7 @@ public class EpochExtraction implements ISegmentation {
 		double[][]        data  = eegData.getData();
 		
 		for (EEGMarker currentMarker: markers) {
-			int startSample = (int) - (0.001 * this.preStimulus) /* time in s */ * this.sampling;
+			int startSample =  - (int)((0.001 * this.preStimulus) /* time in s */ * (double)this.sampling);
 			int endSample = (int) (0.001 * this.postStimulus) /* time in s */ * this.sampling;
 			int offset = currentMarker.getOffset();
 			double[][] epochData = new double[data.length][endSample - startSample];

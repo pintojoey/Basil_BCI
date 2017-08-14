@@ -38,18 +38,9 @@ public class TestController {
 	    
 	    // controller
 	    IWorkflowController workFlowController = new DefaultWorkflowController(provider, buffer, dataPreprocessor, featureExtraction, classification);
-	    
-	    while (true) {
-	    	workFlowController.processData();
-	    	try {
-				Thread.sleep(500);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-	    }
-	    
-	    
+
+	    	Thread t = new Thread(provider);
+	    	t.start();
 	}
     
     

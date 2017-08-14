@@ -32,8 +32,8 @@ public class Buffer implements IBuffer {
 			// merge two float arrays by creating a new connected one
 			double [][] mergedData = new double[this.data.length][this.data[0].length + newData[0].length];
 			for (int i = 0; i < this.data.length; i++) {
-				System.arraycopy(this.data[i], 0, mergedData, 0, this.data[i].length);
-				System.arraycopy(newData[i],   0, mergedData, this.data[i].length, mergedData[i].length);
+				System.arraycopy(this.data[i], 0, mergedData[i], 0, this.data[i].length);
+				System.arraycopy(newData[i],   0, mergedData[i], this.data[i].length - 1, newData[i].length);
 			}
 			this.data = mergedData;
 		}
@@ -69,8 +69,10 @@ public class Buffer implements IBuffer {
 			System.arraycopy(this.data[i], 0,    toRemove[i], 0, size);
 			System.arraycopy(this.data[i], size, newData[i], 0, this.data[0].length - size);
 		}
+
 		List<EEGMarker> markersToRemove = this.removeMarkers(size);
-		return new EEGDataPackage(newData, markersToRemove);
+		this.data = newData;
+		return new EEGDataPackage(toRemove, markersToRemove);
 	}
 
 	private List<EEGMarker> removeMarkers(int size) {

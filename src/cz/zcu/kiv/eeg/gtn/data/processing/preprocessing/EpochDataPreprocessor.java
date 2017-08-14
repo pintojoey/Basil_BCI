@@ -60,7 +60,7 @@ public class EpochDataPreprocessor extends AbstractDataPreprocessor {
         for(int i = markers.size() - 1; i >= 0; i--){
             m = markers.get(i);
             samples = m.getOffset() + postStimulus;
-            if(samples >= bufferSize){
+            if(samples <= bufferSize){
                 break;
             }
         }

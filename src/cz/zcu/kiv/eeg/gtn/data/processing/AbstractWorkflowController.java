@@ -36,8 +36,6 @@ public abstract class AbstractWorkflowController implements IWorkflowController 
 
     protected final IClassifier classifier;
 
-    protected int bufferMinSize;
-
     protected EEGStartMessage metadata;
 
     public AbstractWorkflowController(AbstractDataProvider dataProvider, IBuffer buffer,
@@ -61,14 +59,6 @@ public abstract class AbstractWorkflowController implements IWorkflowController 
 
     public void setMetadata(EEGStartMessage metadata) {
         this.metadata = metadata;
-    }
-
-    public int getBufferMinSize() {
-        return bufferMinSize;
-    }
-
-    public void setBufferMinSize(int bufferMinSize) {
-        this.bufferMinSize = bufferMinSize;
     }
 
     public AbstractDataProvider getDataProvider() {

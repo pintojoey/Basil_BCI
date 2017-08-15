@@ -17,7 +17,7 @@ public class FeatureVector {
     /**
      * Join two feature vectors
      * 
-     * @param new feature vector
+     * @param features feature vector
      */
     public void addFeatures(double[] features) {
         if (featureVector == null)
@@ -37,4 +37,9 @@ public class FeatureVector {
     public void normalize() {
         this.featureVector = SignalProcessing.normalize(featureVector);
     }
+
+    public int size(){
+        return featureVector == null ? 0 : featureVector.length;
+    }
+
 }

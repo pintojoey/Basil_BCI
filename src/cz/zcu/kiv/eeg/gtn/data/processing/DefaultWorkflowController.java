@@ -19,42 +19,50 @@ import cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGStopMessage;
 
 public class DefaultWorkflowController extends AbstractWorkflowController {
 
-	public DefaultWorkflowController(AbstractDataProvider dataProvider, IBuffer buffer, AbstractDataPreprocessor preprocessor,
-			List<IFeatureExtraction> featureExtractions, IClassifier classifier) {
-		super(dataProvider, buffer, preprocessor, featureExtractions, classifier);
-	}
+    private boolean finished = false;
+    private int minMarkers = 5;
 
-	@Override
-	public void processData() {
-		if (buffer.isFull() || buffer.size() >= getBufferMinSize()){
-            List<EEGDataPackage> packs =  preprocessor.preprocessData();
-            if(packs.size() == 0) return;
+    public DefaultWorkflowController(AbstractDataProvider dataProvider, IBuffer buffer, AbstractDataPreprocessor preprocessor,
+                                     List<IFeatureExtraction> featureExtractions, IClassifier classifier, int minMarkers) {
+        super(dataProvider, buffer, preprocessor, featureExtractions, classifier);
+        this.minMarkers = minMarkers;
+    }
+
+    @Override
+    public void processData() {
+        if (finished || buffer.isFull() || buffer.getMarkersSize() > minMarkers) {
+            List<EEGDataPackage> packs = preprocessor.preprocessData();
+            if (packs.size() == 0) return;
 
             FeatureVector fv = null;
-            for(EEGDataPackage pack : packs){
+            for (EEGDataPackage pack : packs) {
                 fv = new FeatureVector();
-                for(IFeatureExtraction fe : featureExtractions){
+                for (IFeatureExtraction fe : featureExtractions) {
                     double[] features = fe.extractFeatures(pack);
                     fv.addFeatures(features);
                 }
 
+                if(fv.size() > 0 && classifier != null){
+                    classifier.classify(fv);
+                }
             }
         }
-	}
+    }
 
-	@Override
-	public void start(EEGStartMessage start) {
+    @Override
+    public void start(EEGStartMessage start) {
+        finished = false;
+    }
 
-	}
+    @Override
+    public void stop(EEGStopMessage stop) {
+        finished = true;
+        processData();
+    }
 
-	@Override
-	public void stop(EEGStopMessage stop) {
-
-	}
-
-	@Override
-	public void storeData(EEGDataMessage data) {
-		buffer.add(data.getData(), Arrays.asList(data.getMarkers()));
-	}
+    @Override
+    public void storeData(EEGDataMessage data) {
+        buffer.add(data.getData(), Arrays.asList(data.getMarkers()));
+    }
 
 }

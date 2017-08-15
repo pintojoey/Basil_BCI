@@ -53,7 +53,7 @@ public class EpochExtraction implements ISegmentation {
 
 	@Override
 	public int getSegmentSize() {
-		return postStimulus;
+		return (int)(0.001 * this.preStimulus * this.postStimulus);
 	}
 
     @Override

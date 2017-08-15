@@ -1,5 +1,6 @@
 package cz.zcu.kiv.eeg.gtn.data.processing;
 
+import cz.zcu.kiv.eeg.gtn.data.listeners.EEGDataProcessingListener;
 import cz.zcu.kiv.eeg.gtn.data.listeners.EEGMessageListener;
 import cz.zcu.kiv.eeg.gtn.data.processing.structures.IBuffer;
 import cz.zcu.kiv.eeg.gtn.data.processing.classification.IClassifier;
@@ -11,6 +12,7 @@ import cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGDataMessage;
 import cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGStartMessage;
 import cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGStopMessage;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -25,6 +27,8 @@ import java.util.List;
  *
  */
 public abstract class AbstractWorkflowController implements IWorkflowController {
+
+    protected List<EEGDataProcessingListener> listeners = new ArrayList<>();
 
     protected final AbstractDataProvider dataProvider;
 
@@ -79,6 +83,10 @@ public abstract class AbstractWorkflowController implements IWorkflowController 
 
     public IClassifier getClassifier() {
         return classifier;
+    }
+
+    public void addListener(EEGDataProcessingListener listener){
+        listeners.add(listener);
     }
 
     /**

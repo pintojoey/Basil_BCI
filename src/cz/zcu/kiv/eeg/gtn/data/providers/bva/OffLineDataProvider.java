@@ -93,7 +93,7 @@ public class OffLineDataProvider extends AbstractDataProvider {
                 int target = fileEntry.getValue();
                 for (EEGMarker m : markers) {
                     eegMarkers[i] = new cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGMarker(m.getName(), m.getPosition());
-                    eegMarkers[i].setTarget(getStimulusNumber(m.getStimulus()) == target);
+                    eegMarkers[i].setExpectedClass(target);
                     i++;
                 }
 

@@ -3,6 +3,9 @@ package cz.zcu.kiv.eeg.gtn.data.processing.structures;
 import java.util.ArrayList;
 import java.util.List;
 
+import cz.zcu.kiv.eeg.gtn.data.processing.classification.IClassifier;
+import cz.zcu.kiv.eeg.gtn.data.processing.featureExtraction.FeatureVector;
+import cz.zcu.kiv.eeg.gtn.data.processing.featureExtraction.IFeatureExtraction;
 import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.IPreprocessing;
 import cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGMarker;
 
@@ -14,6 +17,11 @@ import cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGMarker;
 public class EEGDataPackage {
 
     private ArrayList<IPreprocessing> preprocessingSteps;
+
+    private List<IFeatureExtraction> featureExtractions;
+
+    private IClassifier classifier;
+
     private String[] channelNames;
 
     /**
@@ -22,6 +30,14 @@ public class EEGDataPackage {
     private double[][] data;
     
     private List<EEGMarker> markers;
+
+    private List<FeatureVector> featureVectors;
+
+    private int expectedClass;
+
+    private int outputClass;
+
+    private double classificationResult;
 
     public EEGDataPackage(){
         preprocessingSteps = new ArrayList<>();
@@ -32,9 +48,8 @@ public class EEGDataPackage {
         this.markers = markers;
         this.channelNames = null;
         this.preprocessingSteps = new ArrayList<>();
+        this.featureExtractions = new ArrayList<>();
     }
-    
-    
 
     public EEGDataPackage(double[][] data, List<EEGMarker> markers, String[] channelNames) {
 		this(data, markers);
@@ -91,6 +106,63 @@ public class EEGDataPackage {
 	public void setChannelNames(String[] channelNames) {
 		this.channelNames = channelNames;
 	}
-    
-    
+
+    public IClassifier getClassifier() {
+        return classifier;
+    }
+
+    public void setClassifier(IClassifier classifier) {
+        this.classifier = classifier;
+    }
+
+    public int getExpectedClass() {
+        return expectedClass;
+    }
+
+    public void setExpectedClass(int expectedClass) {
+        this.expectedClass = expectedClass;
+    }
+
+    public int getOutputClass() {
+        return outputClass;
+    }
+
+    public void setOutputClass(int outputClass) {
+        this.outputClass = outputClass;
+    }
+
+    public double getClassificationResult() {
+        return classificationResult;
+    }
+
+    public void setClassificationResult(double classificationResult) {
+        this.classificationResult = classificationResult;
+    }
+
+    public void setPreprocessingSteps(ArrayList<IPreprocessing> preprocessingSteps) {
+        this.preprocessingSteps = preprocessingSteps;
+    }
+
+    public List<IFeatureExtraction> getFeatureExtractions() {
+        return featureExtractions;
+    }
+
+    public void setFeatureExtractions(List<IFeatureExtraction> featureExtractions) {
+        this.featureExtractions = featureExtractions;
+    }
+
+    public List<FeatureVector> getFeatureVectors() {
+        return featureVectors;
+    }
+
+    public void setFeatureVectors(List<FeatureVector> featureVectors) {
+        this.featureVectors = featureVectors;
+    }
+
+    public void addFeatureVector(FeatureVector fv){
+        if(featureVectors == null)
+            featureVectors = new ArrayList<>();
+
+        featureVectors.add(fv);
+    }
 }

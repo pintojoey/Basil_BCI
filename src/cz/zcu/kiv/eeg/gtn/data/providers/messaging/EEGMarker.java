@@ -16,19 +16,19 @@ public class EEGMarker {
 
     private int offset;
 
-    private boolean isTarget = false;
+    private int expectedClass;
 
     public EEGMarker(String name, int offset) {
         this.name = name;
         this.offset = offset;
     }
 
-    public boolean isTarget() {
-        return isTarget;
+    public int getExpectedClass() {
+        return expectedClass;
     }
 
-    public void setTarget(boolean target) {
-        isTarget = target;
+    public void setExpectedClass(int expectedClass) {
+        this.expectedClass = expectedClass;
     }
 
     public String getName() {
@@ -45,12 +45,10 @@ public class EEGMarker {
     }
 
 	public void incrementOffset(int length) {
-		this.offset += length; 
-		
+		this.offset += length;
 	}
 
 	public void decrementOffset(int length) {
 		this.offset = this.offset - length;
-		
 	}
 }

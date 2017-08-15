@@ -19,14 +19,12 @@ public class ErpTrainCondition implements ITrainCondition {
 
     @Override
     public boolean canAddSample(int expectedClass, String marker) {
-        int val = 0;
-        try {
-            val = Integer.parseInt(marker);
-        } catch (NumberFormatException e) {
-            return false;
-        }
+        boolean isTarget = isTraget(expectedClass, marker);
+        return  canAddSample(isTarget);
+    }
 
-        if (val == expectedClass) {
+    private boolean canAddSample(boolean isTarget){
+        if (isTarget) {
             if (targetCnt <= nontargetCnt)
                 return true;
         } else {
@@ -39,10 +37,15 @@ public class ErpTrainCondition implements ITrainCondition {
 
     @Override
     public void addSample(FeatureVector fv, int expectedClass, String marker) {
-        if (canAddSample(expectedClass, marker)) {
+        boolean isTarget = isTraget(expectedClass, marker);
+        if (canAddSample(isTarget)) {
             featureVectors.add(fv);
-            expectedClasses.add((double) expectedClass);
+            expectedClasses.add(isTarget ? 1.0 : 0.0);
         }
+    }
+
+    boolean isTraget(int expectedClass, String marker){
+        return (expectedClass) + "" == marker;
     }
 
     @Override

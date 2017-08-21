@@ -1,6 +1,5 @@
 package cz.zcu.kiv.eeg.gtn.data.processing;
 
-import cz.zcu.kiv.eeg.gtn.data.processing.structures.EEGDataPackage;
 import cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGDataMessage;
 import cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGStartMessage;
 import cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGStopMessage;
@@ -21,19 +20,19 @@ public interface IWorkflowController {
     
     /**
      * Start message received
-     * @param start
+     * @param start start message
      */
     void start(EEGStartMessage start);
     
     /**
      * Data message received
-     * @param stop
+     * @param stop stop message
      */
     void stop(EEGStopMessage stop);
     
     /**
      * Store the current data message
-     * @param data
+     * @param data data message
      */
     void storeData(EEGDataMessage data);
 }

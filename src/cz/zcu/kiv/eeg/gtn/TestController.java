@@ -26,7 +26,7 @@ public class TestController {
 	    // buffer
 	    IBuffer buffer = new Buffer();
 	    
-	    // preprocessing
+	    // preprocessings
 	    ISegmentation epochExtraction = new EpochExtraction(100, 1000);
 	    List<IPreprocessing> preprocessing = new ArrayList<IPreprocessing>();
 	    preprocessing.add(new BaselineCorrection(0, 100, provider.getSamplingRate()));

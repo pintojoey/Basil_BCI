@@ -42,7 +42,7 @@ public class DefaultWorkflowController extends AbstractWorkflowController {
                 ls.dataPreprocessed(packs);
             }
 
-            FeatureVector fv = null;
+            FeatureVector fv;
             for (EEGDataPackage pack : packs) {
                 fv = new FeatureVector();
                 for (IFeatureExtraction fe : featureExtractions) {
@@ -53,6 +53,7 @@ public class DefaultWorkflowController extends AbstractWorkflowController {
                 if(fv.size() > 0 && classifier != null){
                     pack.addFeatureVector(fv);
                     pack.setFeatureExtractions(featureExtractions);
+                    fv.normalize();
 
                     for(EEGDataProcessingListener ls : listeners){
                         ls.featuresExtracted(pack);

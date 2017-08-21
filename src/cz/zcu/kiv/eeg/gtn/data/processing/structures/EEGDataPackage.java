@@ -68,7 +68,7 @@ public class EEGDataPackage {
     /**
      * Set EEG data
      * @param data data
-     * @param step Last preprocessing step
+     * @param step Last preprocessings step
      */
     public void setData(double[][] data, IPreprocessing step) {
         preprocessingSteps.add(step);
@@ -92,8 +92,8 @@ public class EEGDataPackage {
     }
 
     /**
-     * Get all preprocessing steps performed on current data
-     * @return ordered preprocessing steps
+     * Get all preprocessings steps performed on current data
+     * @return ordered preprocessings steps
      */
     public List<IPreprocessing> getPreprocessingSteps() {
         return preprocessingSteps;

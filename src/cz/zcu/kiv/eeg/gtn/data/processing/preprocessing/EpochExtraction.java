@@ -10,7 +10,7 @@ import cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGMarker;
 /**
  * Extract epochs using stimuli markers. Each epoch
  * is defined by the occurrence of stimuli (offset) and
- * preStimulus and postStimulus intervals (in miliseconds)
+ * preStimulus and postStimulus intervals (in milliseconds)
  * 
  * @author lvareka
  *
@@ -29,7 +29,7 @@ public class EpochExtraction implements ISegmentation {
 
 	@Override
 	public List<EEGDataPackage> split(EEGDataPackage eegData) {
-		List<EEGDataPackage> epochs = new ArrayList<EEGDataPackage>();
+		List<EEGDataPackage> epochs = new ArrayList<>();
 		List<EEGMarker> markers = eegData.getMarkers();
 		double[][]        data  = eegData.getData();
 		

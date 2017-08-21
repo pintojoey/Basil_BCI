@@ -15,21 +15,18 @@ import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.IPreprocessing;
  * Created by Tomas Prokop on 01.08.2017.
  */
 public class ChannelSelection implements IPreprocessing {
+
 	private String[] selectedChannels;
-	
-		
-	
+
     public ChannelSelection(String[] selectedChannels) {
 		this.selectedChannels = selectedChannels;
 	}
 
-
-    // TODO: pokud nektere kanaly chybi, vratit mensi pole, nebo vyhodit vyjimku?
 	@Override
     public EEGDataPackage preprocess(EEGDataPackage inputPackage) {
-        List<String> currentChannelNames  = new ArrayList<String>(Arrays.asList(inputPackage.getChannelNames()));
-        List<String> selectedChannelNames = new ArrayList<String>(Arrays.asList(selectedChannels));
-        List<Integer> selectedPointers    = new ArrayList<Integer>();
+        List<String> currentChannelNames  = new ArrayList<>(Arrays.asList(inputPackage.getChannelNames()));
+        List<String> selectedChannelNames = new ArrayList<>(Arrays.asList(selectedChannels));
+        List<Integer> selectedPointers    = new ArrayList<>();
         
         for (String selectedChannel: selectedChannelNames) {
         	int index = currentChannelNames.indexOf(selectedChannel);

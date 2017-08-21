@@ -15,7 +15,9 @@ import java.util.List;
  */
 public abstract class AbstractDataPreprocessor implements IDataPreprocessor {
 
-    protected final List<IPreprocessing> preprocessing;
+    protected final List<IPreprocessing> preprocessings;
+
+    protected final List<IPreprocessing> preSegmentationPreprocessings;
 
     protected final IBuffer buffer;
 
@@ -24,13 +26,14 @@ public abstract class AbstractDataPreprocessor implements IDataPreprocessor {
     protected EEGStartMessage metadata;
 
     /**
-     * 
-     * @param preprocessing methods for preprocessing (such as frequency filtering)
-     * @param buffer reference to the buffer to remove data from
-     * @param segmentation method for segmentation or epoch extraction
-     */
-    public AbstractDataPreprocessor(List<IPreprocessing> preprocessing, IBuffer buffer, ISegmentation segmentation) {
-    	this.preprocessing = preprocessing;
+     *  @param preprocessings methods for preprocessings (such as frequency filtering)
+     * @param preSegmentationPreprocessings
+	 * @param buffer reference to the buffer to remove data from
+	 * @param segmentation method for segmentation or epoch extraction
+	 */
+    public AbstractDataPreprocessor(List<IPreprocessing> preprocessings, List<IPreprocessing> preSegmentationPreprocessings, IBuffer buffer, ISegmentation segmentation) {
+    	this.preprocessings = preprocessings;
+		this.preSegmentationPreprocessings = preSegmentationPreprocessings;
 		this.buffer = buffer;
 		this.segmentation = segmentation;
 	}
@@ -45,8 +48,17 @@ public abstract class AbstractDataPreprocessor implements IDataPreprocessor {
 		this.metadata = metadata;
 	}
 
-	public List<IPreprocessing> getPreprocessing() {
-		return preprocessing;
+	public List<IPreprocessing> getPreprocessings() {
+		return preprocessings;
+	}
+
+	public ISegmentation getSegmentation() {
+		return segmentation;
+	}
+
+	public List<IPreprocessing> getPreSegmentationPreprocessings() {
+
+		return preSegmentationPreprocessings;
 	}
 
 	public IBuffer getBuffer() {

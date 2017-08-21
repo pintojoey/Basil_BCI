@@ -35,14 +35,14 @@ public interface IBuffer {
 
     /**
      * Get all markers
-     * @return
+     * @return markers
      */
     List<EEGMarker> getMarkers();
 
     /**
      * get required number of markers
-     * @param count
-     * @return
+     * @param count max number of returned and deleted markers
+     * @return markers
      */
     List<EEGMarker> getAndRemoveMarkers(int count);
 

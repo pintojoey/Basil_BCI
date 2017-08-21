@@ -19,7 +19,7 @@ public class Buffer implements IBuffer {
 	
 	public Buffer() {
 		this.data = null;
-		this.markers = new ArrayList<EEGMarker>();
+		this.markers = new ArrayList<>();
 	}
 	
 	@Override
@@ -76,7 +76,7 @@ public class Buffer implements IBuffer {
 	}
 
 	private List<EEGMarker> removeMarkers(int size) {
-		List<EEGMarker> toRemove = new ArrayList<EEGMarker>();
+		List<EEGMarker> toRemove = new ArrayList<>();
 		
 		for (EEGMarker marker : this.markers) {
 			if (marker.getOffset() < size) {
@@ -128,7 +128,7 @@ public class Buffer implements IBuffer {
 	@Override
 	public synchronized void clear() {
 		this.data = null;
-		this.markers = new ArrayList<EEGMarker>();
+		this.markers = new ArrayList<>();
 		System.gc();
 	}
 

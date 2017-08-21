@@ -23,11 +23,20 @@ public class ErpTrainCondition implements ITrainCondition {
         return  canAddSample(isTarget);
     }
 
+    public int getTargetCnt() {
+        return targetCnt;
+    }
+
+    public int getNontargetCnt() {
+        return nontargetCnt;
+    }
+
     private boolean canAddSample(boolean isTarget){
         if (isTarget) {
             if (targetCnt <= nontargetCnt)
                 return true;
         } else {
+
             if (nontargetCnt <= targetCnt)
                 return true;
         }
@@ -44,8 +53,8 @@ public class ErpTrainCondition implements ITrainCondition {
         }
     }
 
-    boolean isTraget(int expectedClass, String marker){
-        return (expectedClass) + "" == marker;
+    private boolean isTraget(int expectedClass, String marker){
+        return ((expectedClass) + "").equals(marker);
     }
 
     @Override

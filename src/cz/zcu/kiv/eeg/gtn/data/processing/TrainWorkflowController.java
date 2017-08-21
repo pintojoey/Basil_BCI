@@ -39,10 +39,10 @@ public class TrainWorkflowController extends AbstractWorkflowController {
             List<EEGDataPackage> packs = preprocessor.preprocessData();
             if (packs.size() == 0) return;
 
-            FeatureVector fv = null;
+            FeatureVector fv;
             for (EEGDataPackage pack : packs) {
 
-                String marker = null;
+                String marker;
                 if(pack.getMarkers() == null || pack.getMarkers().get(0) == null)
                     continue;
 

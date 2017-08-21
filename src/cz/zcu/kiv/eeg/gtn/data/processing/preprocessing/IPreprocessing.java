@@ -1,7 +1,5 @@
 package cz.zcu.kiv.eeg.gtn.data.processing.preprocessing;
 
-import java.util.Map;
-
 import cz.zcu.kiv.eeg.gtn.data.processing.structures.EEGDataPackage;
 
 /**

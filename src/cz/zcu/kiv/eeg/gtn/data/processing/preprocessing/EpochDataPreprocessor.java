@@ -17,11 +17,8 @@ import java.util.List;
  */
 public class EpochDataPreprocessor extends AbstractDataPreprocessor {
 
-    private final int preepochPreprocessingCount;
-
-    public EpochDataPreprocessor(List<IPreprocessing> preprocessing, IBuffer buffer, ISegmentation segmentation, int preepochPreprocessingCount) {
-        super(preprocessing, buffer, segmentation);
-        this.preepochPreprocessingCount = preepochPreprocessingCount;
+    public EpochDataPreprocessor(List<IPreprocessing> preprocessings, List<IPreprocessing> preSegmentationPreprocessings, IBuffer buffer, ISegmentation segmentation) {
+        super(preprocessings, preSegmentationPreprocessings, buffer, segmentation);
     }
 
     @Override
@@ -31,15 +28,15 @@ public class EpochDataPreprocessor extends AbstractDataPreprocessor {
 
         if (pack == null) return null;
 
-        for(int i = 0; i < preepochPreprocessingCount; i++){
-            pack = preprocessing.get(i).preprocess(pack);
+        for(IPreprocessing p : preSegmentationPreprocessings){
+            pack = p.preprocess(pack);
         }
 
         List<EEGDataPackage> epochs = epochExtraction.split(pack);
         ArrayList<EEGDataPackage> preprocessed = new ArrayList<>(epochs.size());
         for(EEGDataPackage epoch : epochs) {
-            for (int i = preepochPreprocessingCount; i < preprocessing.size(); i++) {
-                epoch = preprocessing.get(i).preprocess(epoch);
+            for(IPreprocessing p : preprocessings){
+                epoch = p.preprocess(epoch);
             }
 
             preprocessed.add(epoch);
@@ -54,7 +51,6 @@ public class EpochDataPreprocessor extends AbstractDataPreprocessor {
 
         int bufferSize = buffer.size();
         EEGMarker m;
-        int preStimulus = epochExtraction.getPreStimulus();
         int postStimulus = epochExtraction.getPostStimulus();
         int samples = 0;
         for(int i = markers.size() - 1; i >= 0; i--){

@@ -98,7 +98,7 @@ public class MainFrame extends JFrame implements Observer {
 
         BasicConfigurator.configure();
         log = Logger.getLogger(MainFrame.class);
-        epochCharts = new ShowChart(this);
+        epochCharts = new ShowChart();
 
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 

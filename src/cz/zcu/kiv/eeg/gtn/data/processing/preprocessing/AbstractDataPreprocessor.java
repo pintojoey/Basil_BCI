@@ -26,7 +26,7 @@ public abstract class AbstractDataPreprocessor implements IDataPreprocessor {
     protected EEGStartMessage metadata;
 
     /**
-     *  @param preprocessings methods for preprocessings (such as frequency filtering)
+     * @param preprocessings methods for preprocessings (such as frequency filtering)
      * @param preSegmentationPreprocessings
 	 * @param buffer reference to the buffer to remove data from
 	 * @param segmentation method for segmentation or epoch extraction

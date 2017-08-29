@@ -74,12 +74,12 @@ public class EpochCharts extends JFrame {
         return chartComponent;
     }
 
-    public void update(double[][] pzAvg) {
+    public void update(double[][] signal) {
         final XYSeriesCollection dataset = new XYSeriesCollection();
-        for (int i = 0; i < pzAvg.length; i++) {
+        for (int i = 0; i < signal.length; i++) {
             final XYSeries series = new XYSeries("Number " + (i + 1));
-            for (int j = 0; j < pzAvg[i].length; j++) {
-                series.add(j, pzAvg[i][j]);
+            for (int j = 0; j < signal[i].length; j++) {
+                series.add(j, signal[i][j]);
 
             }
             dataset.addSeries(series);

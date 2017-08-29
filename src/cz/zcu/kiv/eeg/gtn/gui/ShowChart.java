@@ -11,7 +11,6 @@ import org.jfree.ui.RefineryUtilities;
 public class ShowChart extends AbstractAction {
 
     private static final long serialVersionUID = 1L;
-    private final MainFrame mainFrame;
     private final EpochCharts chart;
 
     @Override
@@ -21,15 +20,14 @@ public class ShowChart extends AbstractAction {
         this.chart.setVisible(true);
     }
 
-    public ShowChart(MainFrame mainFrame) {
+    public ShowChart() {
         super();
         this.chart = new EpochCharts("Epoch averages");
-        this.mainFrame = mainFrame;
         putValue("AcceleratorKey", KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.CTRL_MASK));
         putValue("Name", "Show charts");
     }
 
-    public void update(double[][] pzAvg) {
-        this.chart.update(pzAvg);
+    public void update(double[][] signal) {
+        this.chart.update(signal);
     }
 }

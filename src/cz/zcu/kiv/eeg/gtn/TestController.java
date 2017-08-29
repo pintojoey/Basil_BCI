@@ -29,8 +29,9 @@ public class TestController {
 	    // preprocessings
 	    ISegmentation epochExtraction = new EpochExtraction(100, 1000);
 	    List<IPreprocessing> preprocessing = new ArrayList<IPreprocessing>();
+		List<IPreprocessing> prepreprocessing = new ArrayList<IPreprocessing>();
 	    preprocessing.add(new BaselineCorrection(0, 100, provider.getSamplingRate()));
-	    AbstractDataPreprocessor dataPreprocessor = new EpochDataPreprocessor(preprocessing, buffer, epochExtraction, 0);
+	    AbstractDataPreprocessor dataPreprocessor = new EpochDataPreprocessor(preprocessing, prepreprocessing, buffer, epochExtraction);
 	    
 	    // feature extraction
 	    List<IFeatureExtraction> featureExtraction = new ArrayList<IFeatureExtraction>();

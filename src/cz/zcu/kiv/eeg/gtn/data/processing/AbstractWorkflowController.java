@@ -54,7 +54,6 @@ public abstract class AbstractWorkflowController implements IWorkflowController 
         this.classifier = classifier;
 
         dataProvider.addListener(dataListener);
-        dataProvider.run();
     }
 
     public EEGStartMessage getMetadata() {

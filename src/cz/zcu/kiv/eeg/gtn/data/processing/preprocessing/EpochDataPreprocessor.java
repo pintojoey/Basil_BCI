@@ -33,6 +33,9 @@ public class EpochDataPreprocessor extends AbstractDataPreprocessor {
         }
 
         List<EEGDataPackage> epochs = epochExtraction.split(pack);
+
+        System.out.println("Created " + epochs.size() + " epochs");
+
         ArrayList<EEGDataPackage> preprocessed = new ArrayList<>(epochs.size());
         for(EEGDataPackage epoch : epochs) {
             for(IPreprocessing p : preprocessings){
@@ -47,7 +50,10 @@ public class EpochDataPreprocessor extends AbstractDataPreprocessor {
 
     private EEGDataPackage retrieve(EpochExtraction epochExtraction) {
         List<EEGMarker> markers = buffer.getMarkers();
-        if (markers.size() == 0) return null;
+        if (markers.size() == 0) {
+            System.out.println("No markers");
+            return null;
+        }
 
         int bufferSize = buffer.size();
         EEGMarker m;

@@ -36,7 +36,7 @@ public class DefaultWorkflowController extends AbstractWorkflowController {
         if (finished || buffer.isFull() || buffer.getMarkersSize() > minMarkers) {
             List<EEGDataPackage> packs = preprocessor.preprocessData();
 
-            if (packs.size() == 0) return;
+            if (packs == null || packs.size() == 0) return;
 
             for(EEGDataProcessingListener ls : listeners){
                 ls.dataPreprocessed(packs);

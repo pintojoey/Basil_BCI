@@ -40,8 +40,9 @@ public class TestController {
 	    // controller
 	    IWorkflowController workFlowController = new DefaultWorkflowController(provider, buffer, dataPreprocessor, featureExtraction, classification);
 
-	    	Thread t = new Thread(provider);
-	    	t.start();
+	    // run data provider thread
+	    Thread t = new Thread(provider);
+	    t.start();
 	}
     
     

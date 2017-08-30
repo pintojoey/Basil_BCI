@@ -18,15 +18,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Provides off-line data recorded with the BrainVision
+ * format
+ * 
+ * @author Tomas Prokop
+ *
+ */
 public class OffLineDataProvider extends AbstractDataProvider {
-
     private static final String VHDR_EXTENSION = ".vhdr";
 	private static final String VMRK_EXTENSION = ".vmrk";
 	private static final String EEG_EXTENSION  = ".eeg";
 	private String vhdrFile;
     private String vmrkFile;
     private String eegFile;
-
     private Map<String, Integer> files;
     private boolean running;
 
@@ -74,7 +79,7 @@ public class OffLineDataProvider extends AbstractDataProvider {
                 }
 
                 //Send start msg
-                EEGStartMessage start = CreateStartMessage(dt, vhdrFile, cnt);
+                EEGStartMessage start = createStartMessage(dt, vhdrFile, cnt);
                 cnt++;
                 for (EEGMessageListener ls : super.listeners) {
                     ls.startMessageSent(start);
@@ -114,14 +119,8 @@ public class OffLineDataProvider extends AbstractDataProvider {
         }
     }
 
-    private int getStimulusNumber(String stimulus) {
-        String sNumber = stimulus.replaceAll("[\\D]", "");
-        if (sNumber.length() == 0) return -1;
-        return Integer.parseInt(sNumber);
-    }
-
-    private EEGStartMessage CreateStartMessage(DataTransformer dt, String vhdrFile, int cnt) throws IOException {
-
+    
+    private EEGStartMessage createStartMessage(DataTransformer dt, String vhdrFile, int cnt) throws IOException {
         List<ChannelInfo> channels = dt.getChannelInfo(vhdrFile);
         String[] chNames = new String[channels.size()];
         double[] resolutions = new double[chNames.length];

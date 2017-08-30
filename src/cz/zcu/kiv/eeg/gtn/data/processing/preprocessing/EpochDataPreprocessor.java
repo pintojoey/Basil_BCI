@@ -24,21 +24,21 @@ public class EpochDataPreprocessor extends AbstractDataPreprocessor {
     @Override
     public List<EEGDataPackage> preprocessData() {
         EpochExtraction epochExtraction = (EpochExtraction) segmentation;
-        EEGDataPackage pack = retrieve(epochExtraction);
+        EEGDataPackage dataPackage = retrieve(epochExtraction);
 
-        if (pack == null) return null;
+        if (dataPackage == null) return null;
 
-        for(IPreprocessing p : preSegmentationPreprocessings){
-            pack = p.preprocess(pack);
+        for (IPreprocessing p : preSegmentationPreprocessings) {
+            dataPackage = p.preprocess(dataPackage);
         }
 
-        List<EEGDataPackage> epochs = epochExtraction.split(pack);
+        List<EEGDataPackage> epochs = epochExtraction.split(dataPackage);
 
         System.out.println("Created " + epochs.size() + " epochs");
 
         ArrayList<EEGDataPackage> preprocessed = new ArrayList<>(epochs.size());
-        for(EEGDataPackage epoch : epochs) {
-            for(IPreprocessing p : preprocessings){
+        for (EEGDataPackage epoch : epochs) {
+            for (IPreprocessing p : preprocessings){
                 epoch = p.preprocess(epoch);
             }
 

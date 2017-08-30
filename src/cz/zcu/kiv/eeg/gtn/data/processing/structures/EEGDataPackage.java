@@ -1,6 +1,7 @@
 package cz.zcu.kiv.eeg.gtn.data.processing.structures;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import cz.zcu.kiv.eeg.gtn.data.processing.classification.IClassifier;
@@ -164,5 +165,10 @@ public class EEGDataPackage {
             featureVectors = new ArrayList<>();
 
         featureVectors.add(fv);
+    }
+    
+    @Override
+    public String toString() {
+    	return Arrays.deepToString(data);
     }
 }

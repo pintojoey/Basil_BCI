@@ -19,7 +19,7 @@ public class ErpTrainCondition implements ITrainCondition {
 
     @Override
     public boolean canAddSample(int expectedClass, String marker) {
-        boolean isTarget = isTraget(expectedClass, marker);
+        boolean isTarget = isTarget(expectedClass, marker);
         return  canAddSample(isTarget);
     }
 
@@ -46,14 +46,14 @@ public class ErpTrainCondition implements ITrainCondition {
 
     @Override
     public void addSample(FeatureVector fv, int expectedClass, String marker) {
-        boolean isTarget = isTraget(expectedClass, marker);
+        boolean isTarget = isTarget(expectedClass, marker);
         if (canAddSample(isTarget)) {
             featureVectors.add(fv);
             expectedClasses.add(isTarget ? 1.0 : 0.0);
         }
     }
 
-    private boolean isTraget(int expectedClass, String marker){
+    private boolean isTarget(int expectedClass, String marker){
         return ((expectedClass) + "").equals(marker);
     }
 

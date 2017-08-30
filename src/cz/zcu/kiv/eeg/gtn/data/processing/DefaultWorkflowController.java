@@ -34,36 +34,42 @@ public class DefaultWorkflowController extends AbstractWorkflowController {
     @Override
     public void processData() {
         if (finished || buffer.isFull() || buffer.getMarkersSize() > minMarkers) {
-            List<EEGDataPackage> packs = preprocessor.preprocessData();
+            List<EEGDataPackage> dataPackages = preprocessor.preprocessData();
 
-            if (packs == null || packs.size() == 0) return;
+            if (dataPackages == null || dataPackages.size() == 0) return;
 
-            for(EEGDataProcessingListener ls : listeners){
-                ls.dataPreprocessed(packs);
+            // just for testing purposes
+            for (EEGDataPackage dataPackage: dataPackages) {
+            	System.out.println(dataPackage);
+            }
+            
+            
+            for(EEGDataProcessingListener ls : listeners) {
+                ls.dataPreprocessed(dataPackages);
             }
 
             FeatureVector fv;
-            for (EEGDataPackage pack : packs) {
+            for (EEGDataPackage dataPackage : dataPackages) {
                 fv = new FeatureVector();
                 for (IFeatureExtraction fe : featureExtractions) {
-                    double[] features = fe.extractFeatures(pack);
+                    double[] features = fe.extractFeatures(dataPackage);
                     fv.addFeatures(features);
                 }
 
                 if(fv.size() > 0 && classifier != null){
-                    pack.addFeatureVector(fv);
-                    pack.setFeatureExtractions(featureExtractions);
+                    dataPackage.addFeatureVector(fv);
+                    dataPackage.setFeatureExtractions(featureExtractions);
                     fv.normalize();
 
                     for(EEGDataProcessingListener ls : listeners){
-                        ls.featuresExtracted(pack);
+                        ls.featuresExtracted(dataPackage);
                     }
 
                     double res = classifier.classify(fv);
-                    pack.setClassificationResult(res);
+                    dataPackage.setClassificationResult(res);
 
                     for(EEGDataProcessingListener ls : listeners){
-                        ls.dataClassified(pack);
+                        ls.dataClassified(dataPackage);
                     }
                 }
             }

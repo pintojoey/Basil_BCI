@@ -20,7 +20,7 @@ public class TestController {
 	
 	public static void main(String[] args) {
 		// data provider
-		File f = new File("data/numbers/17ZS/17ZS_14_4_2015_02.vhdr");
+		File f = new File("data/P300/LED_28_06_2012_104.vhdr");
 	    OffLineDataProvider provider = new OffLineDataProvider(f);
 	    
 	    // buffer

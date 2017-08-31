@@ -169,6 +169,16 @@ public class EEGDataPackage {
     
     @Override
     public String toString() {
-    	return Arrays.deepToString(data);
+    	String returnString = "";
+    	boolean channelsOK = true;
+    	if (channelNames == null || channelNames.length != data.length) {
+    		returnString = "ChannelNames missing or its size and data size are different!\n";
+    		channelsOK = false;
+       	}
+    	
+    	for (int i = 0; i < data.length; i++) {
+    		returnString += channelsOK? channelNames[i] : "?" + ": " + Arrays.toString(data[i]) + "\n";
+    	}
+    	return returnString;
     }
 }

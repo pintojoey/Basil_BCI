@@ -8,10 +8,12 @@ import cz.zcu.kiv.eeg.gtn.data.processing.featureExtraction.FeatureVector;
 import cz.zcu.kiv.eeg.gtn.data.processing.classification.IClassifier;
 import cz.zcu.kiv.eeg.gtn.data.processing.featureExtraction.IFeatureExtraction;
 import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.AbstractDataPreprocessor;
+import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.Averaging;
 import cz.zcu.kiv.eeg.gtn.data.processing.structures.EEGDataPackage;
 import cz.zcu.kiv.eeg.gtn.data.processing.structures.IBuffer;
 import cz.zcu.kiv.eeg.gtn.data.providers.AbstractDataProvider;
 import cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGDataMessage;
+import cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGMarker;
 import cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGStartMessage;
 import cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGStopMessage;
 
@@ -38,10 +40,12 @@ public class DefaultWorkflowController extends AbstractWorkflowController {
 
             if (dataPackages == null || dataPackages.size() == 0) return;
 
+            
+            Averaging averaging = new Averaging(Arrays.asList(new EEGMarker("S  2", -1)));
+            EEGDataPackage average = averaging.average(dataPackages);
             // just for testing purposes
-            for (EEGDataPackage dataPackage: dataPackages) {
-            	System.out.println(dataPackage);
-            }
+            System.out.println(average);
+            
             
             
             for(EEGDataProcessingListener ls : listeners) {

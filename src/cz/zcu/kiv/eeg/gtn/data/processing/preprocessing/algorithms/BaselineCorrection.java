@@ -1,6 +1,7 @@
 package cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.algorithms;
 
 import cz.zcu.kiv.eeg.gtn.data.processing.structures.EEGDataPackage;
+import cz.zcu.kiv.eeg.gtn.data.providers.AbstractDataProvider;
 import cz.zcu.kiv.eeg.gtn.data.processing.math.SignalProcessing;
 import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.IPreprocessing;
 
@@ -17,10 +18,10 @@ public class BaselineCorrection implements IPreprocessing {
 	private double endTime;   /* in milliseconds */
 	private final int SAMPLING_RATE;
 	
-    public BaselineCorrection(double startTime, double endTime, int SAMPLING_RATE) {
+    public BaselineCorrection(double startTime, double endTime, int samplingRate) {
 		this.startTime = startTime;
 		this.endTime = endTime;
-		this.SAMPLING_RATE = SAMPLING_RATE;
+		this.SAMPLING_RATE = samplingRate;
 	}
 
 	@Override

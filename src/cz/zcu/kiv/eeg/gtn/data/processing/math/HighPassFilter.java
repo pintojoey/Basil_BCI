@@ -59,4 +59,10 @@ public class HighPassFilter implements IFilter{
 		return previousInput;
 	}
 
+	@Override
+	public void reset() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

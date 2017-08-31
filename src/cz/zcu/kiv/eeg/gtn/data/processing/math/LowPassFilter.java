@@ -52,4 +52,10 @@ public class LowPassFilter implements IFilter{
 	public double getPreviousOutput() {
 		return previousOutput;
 	}
+
+	@Override
+	public void reset() {
+		// TODO Auto-generated method stub
+		
+	}
 }

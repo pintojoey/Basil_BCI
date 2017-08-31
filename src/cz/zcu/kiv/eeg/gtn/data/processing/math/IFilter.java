@@ -9,4 +9,5 @@ package cz.zcu.kiv.eeg.gtn.data.processing.math;
  */
 public interface IFilter {
     double getOutputSample(double inputSample);
+    void reset();
 }

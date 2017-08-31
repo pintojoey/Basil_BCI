@@ -1,8 +1,6 @@
 package cz.zcu.kiv.eeg.gtn.data.processing.preprocessing;
 
-import java.util.Arrays;
 import java.util.List;
-
 import cz.zcu.kiv.eeg.gtn.data.processing.structures.EEGDataPackage;
 import cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGMarker;
 

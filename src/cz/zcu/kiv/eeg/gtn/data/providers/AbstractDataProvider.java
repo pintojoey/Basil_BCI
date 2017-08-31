@@ -20,7 +20,7 @@ public abstract class AbstractDataProvider implements Runnable {
 
     private String[] availableChannels;
     
-    private int samplingRate;
+    protected int samplingRate;
 
     public abstract void run();
 

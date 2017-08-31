@@ -102,4 +102,10 @@ public class ButterWorthFilter implements IFilter {
 	public String toString() {
 		return "Butterworth: Fa = " + Fa + " Fb = " + Fb + "\n";
 	}
+
+	@Override
+	public void reset() {
+		this.filter = new IirFilter(coeffs);
+		
+	}
 }

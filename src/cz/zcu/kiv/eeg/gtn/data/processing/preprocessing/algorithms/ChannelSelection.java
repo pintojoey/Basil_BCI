@@ -10,7 +10,8 @@ import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.IPreprocessing;
 
 /**
  * 
- * Selects only a subset of channels according to their names
+ * Selects only a subset of channels according to their names.
+ * Requires that channel names are part of the data packages.
  * 
  * Created by Tomas Prokop on 01.08.2017.
  */
@@ -24,6 +25,10 @@ public class ChannelSelection implements IPreprocessing {
 
 	@Override
     public EEGDataPackage preprocess(EEGDataPackage inputPackage) {
+		if (inputPackage.getChannelNames() == null || inputPackage.getChannelNames().length == 0)
+			return inputPackage; // no channel selection possible - names missing in the data
+		
+		
         List<String> currentChannelNames  = new ArrayList<>(Arrays.asList(inputPackage.getChannelNames()));
         List<String> selectedChannelNames = new ArrayList<>(Arrays.asList(selectedChannels));
         List<Integer> selectedPointers    = new ArrayList<>();

@@ -5,6 +5,7 @@ import cz.zcu.kiv.eeg.gtn.data.processing.structures.IBuffer;
 import cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGMarker;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -16,9 +17,11 @@ import java.util.List;
  * 
  */
 public class EpochDataPreprocessor extends AbstractDataPreprocessor {
+	private Averaging averaging;
 
-    public EpochDataPreprocessor(List<IPreprocessing> preprocessings, List<IPreprocessing> preSegmentationPreprocessings, IBuffer buffer, ISegmentation segmentation) {
+    public EpochDataPreprocessor(List<IPreprocessing> preprocessings, List<IPreprocessing> preSegmentationPreprocessings, Averaging averaging, IBuffer buffer, ISegmentation segmentation) {
         super(preprocessings, preSegmentationPreprocessings, buffer, segmentation);
+        this.averaging = averaging;
     }
 
     @Override
@@ -38,14 +41,19 @@ public class EpochDataPreprocessor extends AbstractDataPreprocessor {
 
         ArrayList<EEGDataPackage> preprocessed = new ArrayList<>(epochs.size());
         for (EEGDataPackage epoch : epochs) {
-            for (IPreprocessing p : preprocessings){
+            for (IPreprocessing p : preprocessings) {
                 epoch = p.preprocess(epoch);
             }
 
             preprocessed.add(epoch);
         }
+        
+        EEGDataPackage average = averaging.average(preprocessed);
+       
+        // just for testing purposes
+        System.out.println(average);
 
-        return preprocessed;
+        return Arrays.asList(average);
     }
 
     private EEGDataPackage retrieve(EpochExtraction epochExtraction) {

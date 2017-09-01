@@ -2,6 +2,7 @@ package cz.zcu.kiv.eeg.gtn;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -10,13 +11,24 @@ import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.*;
 import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.algorithms.BandpassFilter;
 import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.algorithms.BaselineCorrection;
 import cz.zcu.kiv.eeg.gtn.data.processing.structures.Buffer;
+import cz.zcu.kiv.eeg.gtn.data.processing.structures.EEGDataPackage;
 import cz.zcu.kiv.eeg.gtn.data.processing.structures.IBuffer;
 import cz.zcu.kiv.eeg.gtn.data.providers.bva.OffLineDataProvider;
+import cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGMarker;
 import cz.zcu.kiv.eeg.gtn.data.processing.DefaultWorkflowController;
 import cz.zcu.kiv.eeg.gtn.data.processing.IWorkflowController;
 import cz.zcu.kiv.eeg.gtn.data.processing.classification.IClassifier;
 import cz.zcu.kiv.eeg.gtn.data.processing.classification.MLPClassifier;
 
+
+/**
+ * Can be used to test data providers,
+ * processing, feature extraction and classification.
+ * 
+ * 
+ * @author lvareka
+ *
+ */
 public class TestController {
 	
 	public static void main(String[] args) {
@@ -29,12 +41,14 @@ public class TestController {
 	    IBuffer buffer = new Buffer();
 	    
 	    // preprocessings
+	    int samplingFq = 1000; // TODO: get correctly from the data provider
 	    ISegmentation epochExtraction = new EpochExtraction(100, 1000);
 	    List<IPreprocessing> preprocessing = new ArrayList<IPreprocessing>();
 		List<IPreprocessing> prepreprocessing = new ArrayList<IPreprocessing>();
-	    preprocessing.add(new BaselineCorrection(0, 100, 1000));
-	    prepreprocessing.add(new BandpassFilter(0.1, 8, 1000));
-	    AbstractDataPreprocessor dataPreprocessor = new EpochDataPreprocessor(preprocessing, prepreprocessing, buffer, epochExtraction);
+	    preprocessing.add(new BaselineCorrection(0, 100, samplingFq));
+	    prepreprocessing.add(new BandpassFilter(0.1, 8, samplingFq));
+	    Averaging averaging = new Averaging(Arrays.asList(new EEGMarker("S  2", -1)));
+	    AbstractDataPreprocessor dataPreprocessor = new EpochDataPreprocessor(preprocessing, prepreprocessing, averaging, buffer, epochExtraction);
 	    
 	    // feature extraction
 	    List<IFeatureExtraction> featureExtraction = new ArrayList<IFeatureExtraction>();

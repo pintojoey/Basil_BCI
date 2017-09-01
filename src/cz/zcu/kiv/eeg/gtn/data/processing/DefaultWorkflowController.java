@@ -8,19 +8,17 @@ import cz.zcu.kiv.eeg.gtn.data.processing.featureExtraction.FeatureVector;
 import cz.zcu.kiv.eeg.gtn.data.processing.classification.IClassifier;
 import cz.zcu.kiv.eeg.gtn.data.processing.featureExtraction.IFeatureExtraction;
 import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.AbstractDataPreprocessor;
-import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.Averaging;
 import cz.zcu.kiv.eeg.gtn.data.processing.structures.EEGDataPackage;
 import cz.zcu.kiv.eeg.gtn.data.processing.structures.IBuffer;
 import cz.zcu.kiv.eeg.gtn.data.providers.AbstractDataProvider;
 import cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGDataMessage;
-import cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGMarker;
 import cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGStartMessage;
 import cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGStopMessage;
 
 public class DefaultWorkflowController extends AbstractWorkflowController {
 
     private boolean finished = false;
-    private int minMarkers = 5;
+    private int minMarkers = 5; // ???
 
     public DefaultWorkflowController(AbstractDataProvider dataProvider, IBuffer buffer, AbstractDataPreprocessor preprocessor,
                                      List<IFeatureExtraction> featureExtractions, IClassifier classifier) {
@@ -39,16 +37,8 @@ public class DefaultWorkflowController extends AbstractWorkflowController {
             List<EEGDataPackage> dataPackages = preprocessor.preprocessData();
 
             if (dataPackages == null || dataPackages.size() == 0) return;
-
             
-            Averaging averaging = new Averaging(Arrays.asList(new EEGMarker("S  2", -1)));
-            EEGDataPackage average = averaging.average(dataPackages);
-            // just for testing purposes
-            System.out.println(average);
-            
-            
-            
-            for(EEGDataProcessingListener ls : listeners) {
+            for (EEGDataProcessingListener ls : listeners) {
                 ls.dataPreprocessed(dataPackages);
             }
 
@@ -60,19 +50,19 @@ public class DefaultWorkflowController extends AbstractWorkflowController {
                     fv.addFeatures(features);
                 }
 
-                if(fv.size() > 0 && classifier != null){
+                if (fv.size() > 0 && classifier != null){
                     dataPackage.addFeatureVector(fv);
                     dataPackage.setFeatureExtractions(featureExtractions);
                     fv.normalize();
 
-                    for(EEGDataProcessingListener ls : listeners){
+                    for (EEGDataProcessingListener ls : listeners){
                         ls.featuresExtracted(dataPackage);
                     }
 
                     double res = classifier.classify(fv);
                     dataPackage.setClassificationResult(res);
 
-                    for(EEGDataProcessingListener ls : listeners){
+                    for (EEGDataProcessingListener ls : listeners) {
                         ls.dataClassified(dataPackage);
                     }
                 }

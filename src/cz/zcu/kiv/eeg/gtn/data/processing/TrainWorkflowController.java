@@ -48,7 +48,7 @@ public class TrainWorkflowController extends AbstractWorkflowController {
 
                 marker = pack.getMarkers().get(0).getName();
 
-                if(!trainCondition.canAddSample(pack.getExpectedClass(), marker))
+                if (!trainCondition.canAddSample(pack.getExpectedClass(), marker))
                     continue;
 
                 fv = new FeatureVector();

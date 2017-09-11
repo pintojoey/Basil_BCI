@@ -15,16 +15,20 @@ import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
-public class EpochCharts extends JFrame {
+public class EEGCharts extends JFrame {
 
-    private XYDataset dataset;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 6331107099427920835L;
+	private XYDataset dataset;
     private JFreeChart chart;
     private ChartPanel chartPanel;
 
-    public EpochCharts(final String title) {
+    public EEGCharts(final String title) {
         super(title);
         dataset = null;
-        chart = createChart(dataset);
+        chart = createChart(dataset, title);
         chartPanel = new ChartPanel(chart);
         chartPanel.setPreferredSize(new java.awt.Dimension(500, 270));
         setContentPane(chartPanel);
@@ -37,11 +41,11 @@ public class EpochCharts extends JFrame {
      *
      * @return a chart.
      */
-    private JFreeChart createChart(XYDataset dataset) {
+    private JFreeChart createChart(XYDataset dataset, String chartTitle) {
 
         // create the chart...
         final JFreeChart chartComponent = ChartFactory.createXYLineChart(
-                "Pz channel average", // chart title
+                chartTitle, // chart title
                 "Sample [ms]", // x axis label
                 "Value  [microV]", // y axis label
                 dataset, // data
@@ -74,17 +78,25 @@ public class EpochCharts extends JFrame {
         return chartComponent;
     }
 
-    public void update(double[][] signal) {
+    public void update(double[][] signal, String[] labels) {
+    	boolean labelsAvailable = !(labels == null || labels.length != signal.length); 
+    	
         final XYSeriesCollection dataset = new XYSeriesCollection();
+        
+                
         for (int i = 0; i < signal.length; i++) {
-            final XYSeries series = new XYSeries("Number " + (i + 1));
-            for (int j = 0; j < signal[i].length; j++) {
+        	final XYSeries series;
+        	if (labelsAvailable)
+        		series = new XYSeries(labels[i]);
+        	else
+        		series = new XYSeries("" + (i + 1));
+        	
+        	for (int j = 0; j < signal[i].length; j++) {
                 series.add(j, signal[i][j]);
-
             }
             dataset.addSeries(series);
         }
-        chart = createChart(dataset);
+        chart = createChart(dataset, this.getTitle());
         chartPanel.setChart(chart);
         chartPanel.repaint();
 

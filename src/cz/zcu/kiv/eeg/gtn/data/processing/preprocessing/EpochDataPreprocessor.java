@@ -3,6 +3,7 @@ package cz.zcu.kiv.eeg.gtn.data.processing.preprocessing;
 import cz.zcu.kiv.eeg.gtn.data.processing.structures.EEGDataPackage;
 import cz.zcu.kiv.eeg.gtn.data.processing.structures.IBuffer;
 import cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGMarker;
+import cz.zcu.kiv.eeg.gtn.gui.ShowChart;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -52,6 +53,8 @@ public class EpochDataPreprocessor extends AbstractDataPreprocessor {
        
         // just for testing purposes
         System.out.println(average);
+        ShowChart showCharts = new ShowChart("Target epoch averages, all channels");
+        showCharts.update(average.getData(), null); // TODO: provide channel names
 
         return Arrays.asList(average);
     }

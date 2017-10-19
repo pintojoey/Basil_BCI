@@ -34,7 +34,7 @@ public class EEGDataPackage {
 
     private List<FeatureVector> featureVectors;
 
-    private int expectedClass;
+    private String targetMarker;
 
     private int outputClass;
 
@@ -116,12 +116,12 @@ public class EEGDataPackage {
         this.classifier = classifier;
     }
 
-    public int getExpectedClass() {
-        return expectedClass;
+    public String getTargetMarker() {
+        return targetMarker;
     }
 
-    public void setExpectedClass(int expectedClass) {
-        this.expectedClass = expectedClass;
+    public void setTargetMarker(String targetMarker) {
+        this.targetMarker = targetMarker;
     }
 
     public int getOutputClass() {

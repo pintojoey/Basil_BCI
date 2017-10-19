@@ -15,11 +15,11 @@ public class ErpTrainCondition implements ITrainCondition {
 
     private ArrayList<FeatureVector> featureVectors = new ArrayList<>();
 
-    private ArrayList<Double> expectedClasses = new ArrayList<>();
+    private ArrayList<Double> expectedOutput = new ArrayList<>();
 
     @Override
-    public boolean canAddSample(int expectedClass, String marker) {
-        boolean isTarget = isTarget(expectedClass, marker);
+    public boolean canAddSample(String targetMarker, String marker) {
+        boolean isTarget = isTarget(targetMarker, marker);
         return  canAddSample(isTarget);
     }
 
@@ -32,7 +32,7 @@ public class ErpTrainCondition implements ITrainCondition {
     }
 
     private boolean canAddSample(boolean isTarget){
-        if (isTarget) {
+       /* if (isTarget) {
             if (targetCnt <= nontargetCnt)
                 return true;
         } else {
@@ -41,20 +41,22 @@ public class ErpTrainCondition implements ITrainCondition {
                 return true;
         }
 
-        return false;
+        return false;*/
+    	return true;
     }
 
     @Override
-    public void addSample(FeatureVector fv, int expectedClass, String marker) {
-        boolean isTarget = isTarget(expectedClass, marker);
+    public void addSample(FeatureVector fv, String targetMarker, String marker) {
+        boolean isTarget = isTarget(targetMarker, marker);
         if (canAddSample(isTarget)) {
             featureVectors.add(fv);
-            expectedClasses.add(isTarget ? 1.0 : 0.0);
+            expectedOutput.add(isTarget ? 1.0 : 0.0);
         }
     }
 
-    private boolean isTarget(int expectedClass, String marker){
-        return ((expectedClass) + "").equals(marker);
+    private boolean isTarget(String targetMarker, String marker){
+    	if (targetMarker == null) return false;
+        return targetMarker.equals(marker);
     }
 
     @Override
@@ -64,6 +66,6 @@ public class ErpTrainCondition implements ITrainCondition {
 
     @Override
     public List<Double> getExpectedClasses() {
-        return expectedClasses;
+        return expectedOutput;
     }
 }

@@ -12,9 +12,17 @@ import cz.zcu.kiv.eeg.gtn.data.processing.math.SignalProcessing;
  * Created by Tomas Prokop on 07.08.2017.
  */
 public class FeatureVector {
-    private double[] featureVector = null;
+    private double[] featureVector;
+    
+    public FeatureVector() {
+    	this.featureVector = null;
+    }
+    
+    public FeatureVector(double[] featureVector) {
+		this.featureVector = featureVector;
+	}
 
-    /**
+	/**
      * Join two feature vectors
      * 
      * @param features feature vector

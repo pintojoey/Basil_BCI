@@ -26,6 +26,8 @@ public class TrainWorkflowController extends AbstractWorkflowController {
     private final ITrainCondition trainCondition;
 
     private int numOfIterations = 1000;
+    
+    private final String TARGET_MARKER = "S  2"; // TODO: place somewhere else - this is just for testing
 
     public TrainWorkflowController(AbstractDataProvider dataProvider, IBuffer buffer, AbstractDataPreprocessor preprocessor,
                                    List<IFeatureExtraction> featureExtractions, IClassifier classifier, ITrainCondition trainCondition) {
@@ -36,29 +38,22 @@ public class TrainWorkflowController extends AbstractWorkflowController {
     @Override
     public void processData() {
         if (buffer.isFull() || buffer.getMarkersSize() > minMarkers || finished) {
-            List<EEGDataPackage> packs = preprocessor.preprocessData();
-            if (packs.size() == 0) return;
-
-            FeatureVector fv;
-            for (EEGDataPackage pack : packs) {
-
+            List<EEGDataPackage> dataPackages = preprocessor.preprocessData();
+            if (dataPackages == null || dataPackages.size() == 0) return;
+            for (EEGDataPackage dataPackage : dataPackages) {
+            	dataPackage.setTargetMarker(TARGET_MARKER); // TODO: place somewhere else
+            	
                 String marker;
-                if(pack.getMarkers() == null || pack.getMarkers().get(0) == null)
+                if(dataPackage.getMarkers() == null || dataPackage.getMarkers().get(0) == null)
                     continue;
-
-                marker = pack.getMarkers().get(0).getName();
-
-                if (!trainCondition.canAddSample(pack.getExpectedClass(), marker))
-                    continue;
-
-                fv = new FeatureVector();
-
+                marker = dataPackage.getMarkers().get(0).getName();
+                
+                FeatureVector fv = new FeatureVector();
                 for (IFeatureExtraction fe : featureExtractions) {
-                    double[] features = fe.extractFeatures(pack);
+                    double[] features = fe.extractFeatures(dataPackage);
                     fv.addFeatures(features);
                 }
-
-                trainCondition.addSample(fv, pack.getExpectedClass(), marker);
+                trainCondition.addSample(fv, dataPackage.getTargetMarker(), marker);
             }
         }
     }

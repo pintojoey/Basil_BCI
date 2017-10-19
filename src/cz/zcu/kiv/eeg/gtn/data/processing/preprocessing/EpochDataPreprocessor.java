@@ -32,7 +32,7 @@ public class EpochDataPreprocessor extends AbstractDataPreprocessor {
 
         if (dataPackage == null) return null;
 
-        for (IPreprocessing p : preSegmentationPreprocessings) {
+        for (IPreprocessing p : this.preSegmentationPreprocessings) {
             dataPackage = p.preprocess(dataPackage);
         }
 
@@ -40,7 +40,7 @@ public class EpochDataPreprocessor extends AbstractDataPreprocessor {
 
         System.out.println("Created " + epochs.size() + " epochs");
 
-        ArrayList<EEGDataPackage> preprocessed = new ArrayList<>(epochs.size());
+        List<EEGDataPackage> preprocessed = new ArrayList<>(epochs.size());
         for (EEGDataPackage epoch : epochs) {
             for (IPreprocessing p : preprocessings) {
                 epoch = p.preprocess(epoch);
@@ -48,15 +48,14 @@ public class EpochDataPreprocessor extends AbstractDataPreprocessor {
 
             preprocessed.add(epoch);
         }
-        
-        EEGDataPackage average = averaging.average(preprocessed);
-       
-        // just for testing purposes
-        System.out.println(average);
-        ShowChart showCharts = new ShowChart("Target epoch averages, all channels");
-        showCharts.update(average.getData(), null); // TODO: provide channel names
-
-        return Arrays.asList(average);
+        if (this.averaging != null) {
+        	EEGDataPackage average = averaging.average(preprocessed);
+        	// just for testing purposes
+            //System.out.println(average);
+            //ShowChart showCharts = new ShowChart("Target epoch averages, all channels");
+            //showCharts.update(average.getData(), null); // TODO: provide channel names
+        	return Arrays.asList(average);
+        } else return preprocessed;
     }
 
     private EEGDataPackage retrieve(EpochExtraction epochExtraction) {

@@ -106,93 +106,29 @@ public class MLPClassifier implements LearningEventListener, IClassifier {
         int targetsSize = neuralNetwork.getOutputsCount();
         this.numberOfIters = numberOfIter;
 
+        if (featureVectors == null || featureVectors.size() == 0 || featureVectors.get(0).getFeatureVector() == null) {
+        	System.out.println("Missing data in feature vectors!");
+        	return;
+        }
+        
         int len = featureVectors.get(0).getFeatureVector().length;
         // fill in the neuroph data structure for holding the training set
         DataSet dataset = new DataSet(len, targetsSize);
-        double[] sumTarget = new double[len];
-        double[] sumNonTarget = new double[len];
-        int countTarget = 0;
-        int countNonTarget = 0;
-        Arrays.fill(sumTarget, 0);
-        Arrays.fill(sumNonTarget, 0);
+       
         for (int i = 0; i < featureVectors.size(); i++) {
             double[] features = featureVectors.get(i).getFeatureVector();
             double[] target = new double[targetsSize];
             target[0] = targets.get(i);
-            if (target[0] == 0) {
-            	
-            	/*if (i < 10) {
-            		Chart chartNonTarget = new Chart("Non-Target feature training data trial " + i);
-            		chartNonTarget.update(features);
-            		chartNonTarget.pack();
-            		chartNonTarget.setVisible(true);
-            	}*/
-                 
-            	countNonTarget++;
-            	for (int j = 0; j < sumNonTarget.length; j++) {
-            		sumNonTarget[j] += features[j];
-            	}
-            	/*if (countNonTarget == 10) {
-            		
-            		for (int j = 0; j < sumNonTarget.length; j++) {
-            	    	sumNonTarget[j] /= countNonTarget;
-            		}
-            		countNonTarget = 0;
-            		dataset.addRow(sumNonTarget, target);
-            		Arrays.fill(sumNonTarget, 0);
-            	}*/
-            	
-            } else {
-            	/*if (i < 10) {
-            		Chart chartTarget = new Chart("Target feature training data trial " + i);
-            		chartTarget.update(features);
-            		chartTarget.pack();
-            		chartTarget.setVisible(true);
-            	}*/
-            	countTarget++;
-            	for (int j = 0; j < sumTarget.length; j++) {
-            		sumTarget[j] += features[j];
-            	}
-            	/*if (countTarget == 10) {
-            		
-            		for (int j = 0; j < sumTarget.length; j++) {
-            	    	sumTarget[j] /= countTarget;
-            		}
-            		countTarget = 0;
-            		dataset.addRow(sumTarget, target);
-            		Arrays.fill(sumTarget, 0);
-            	}*/
-            }
-            
-           
-            
-            
-            
             dataset.addRow(features, target);
         }
-        
-        for (int j = 0; j < sumNonTarget.length; j++) {
-    		sumNonTarget[j] /= countNonTarget;
-    	}
-        
-        for (int j = 0; j < sumTarget.length; j++) {
-    		sumTarget[j] /= countTarget;
-    	}
-        
-        
       
         dataset.shuffle();
-        dataset.save("default_training_dataset");
         trainingTesting = dataset.createTrainingAndTestSubsets(80, 20);
-        
-
+     
         // train the NN
         this.maxValidationAccuracy = 0;
         this.train(trainingTesting[0], numberOfIter, LEARNING_RATE);
-        this.load("best.txt");
-        
         System.out.println("-----------------------------\nEnd of training: training data accuracy: " + this.testNeuralNetwork(trainingTesting[0]) +  ", testing data accuracy: " + this.testNeuralNetwork(trainingTesting[1]));
-       
     }
 
     @Override

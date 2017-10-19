@@ -15,21 +15,22 @@ import cz.zcu.kiv.eeg.gtn.data.processing.structures.EEGDataPackage;
 import cz.zcu.kiv.eeg.gtn.data.processing.structures.IBuffer;
 import cz.zcu.kiv.eeg.gtn.data.providers.bva.OffLineDataProvider;
 import cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGMarker;
-import cz.zcu.kiv.eeg.gtn.data.processing.DefaultWorkflowController;
+import cz.zcu.kiv.eeg.gtn.data.processing.TestingWorkflowController;
 import cz.zcu.kiv.eeg.gtn.data.processing.IWorkflowController;
 import cz.zcu.kiv.eeg.gtn.data.processing.classification.IClassifier;
 import cz.zcu.kiv.eeg.gtn.data.processing.classification.MLPClassifier;
 
 
 /**
- * Can be used to test data providers,
- * processing, feature extraction and classification.
+ * This class can be used to test data providers,
+ * processing, feature extraction and classification
+ * (if the classifier is already trained).
  * 
  * 
  * @author lvareka
  *
  */
-public class TestController {
+public class RunTestingController {
 	
 	public static void main(String[] args) {
 		// data provider
@@ -55,7 +56,7 @@ public class TestController {
 	    IClassifier classification       		   = new MLPClassifier();
 	    
 	    // controller
-	    IWorkflowController workFlowController = new DefaultWorkflowController(provider, buffer, dataPreprocessor, featureExtraction, classification);
+	    IWorkflowController workFlowController = new TestingWorkflowController(provider, buffer, dataPreprocessor, featureExtraction, classification);
 	   
 	    // run data provider thread
 	    Thread t = new Thread(provider);

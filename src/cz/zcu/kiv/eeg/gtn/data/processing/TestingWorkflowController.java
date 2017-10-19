@@ -15,17 +15,27 @@ import cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGDataMessage;
 import cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGStartMessage;
 import cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGStopMessage;
 
-public class DefaultWorkflowController extends AbstractWorkflowController {
+
+/**
+ * 
+ * This workflow controller can be used
+ * for example for preprocessing, feature extraction
+ * and training of the classifiers 
+ * 
+ * @author lvareka
+ *
+ */
+public class TestingWorkflowController extends AbstractWorkflowController {
 
     private boolean finished = false;
-    private int minMarkers = 5; // ???
+    private int minMarkers = 5; // TODO: ???
 
-    public DefaultWorkflowController(AbstractDataProvider dataProvider, IBuffer buffer, AbstractDataPreprocessor preprocessor,
+    public TestingWorkflowController(AbstractDataProvider dataProvider, IBuffer buffer, AbstractDataPreprocessor preprocessor,
                                      List<IFeatureExtraction> featureExtractions, IClassifier classifier) {
         super(dataProvider, buffer, preprocessor, featureExtractions, classifier);
     }
 
-    public DefaultWorkflowController(AbstractDataProvider dataProvider, IBuffer buffer, AbstractDataPreprocessor preprocessor,
+    public TestingWorkflowController(AbstractDataProvider dataProvider, IBuffer buffer, AbstractDataPreprocessor preprocessor,
                                      List<IFeatureExtraction> featureExtractions, IClassifier classifier, int minMarkers) {
         super(dataProvider, buffer, preprocessor, featureExtractions, classifier);
         this.minMarkers = minMarkers;

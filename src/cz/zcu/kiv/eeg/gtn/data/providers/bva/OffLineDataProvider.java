@@ -81,8 +81,10 @@ public class OffLineDataProvider extends AbstractDataProvider {
                 //Send start msg
                 EEGStartMessage start = createStartMessage(dt, vhdrFile, cnt);
                 cnt++;
-                for (EEGMessageListener ls : super.listeners) {
-                    ls.startMessageSent(start);
+                synchronized (super.listeners) {
+                    for (EEGMessageListener ls : super.listeners) {
+                        ls.startMessageSent(start);
+                    }
                 }
 
                 ByteOrder order = ByteOrder.LITTLE_ENDIAN;
@@ -103,15 +105,19 @@ public class OffLineDataProvider extends AbstractDataProvider {
                 }
 
                 EEGDataMessage dataMsg = new EEGDataMessage(MessageType.DATA, 1, eegMarkers, data);
-                for (EEGMessageListener ls : super.listeners) {
-                    ls.dataMessageSent(dataMsg);
+                synchronized (super.listeners) {
+                    for (EEGMessageListener ls : super.listeners) {
+                        ls.dataMessageSent(dataMsg);
+                    }
                 }
                 cnt++;
             }
 
             EEGStopMessage stop = new EEGStopMessage(MessageType.END, cnt);
-            for (EEGMessageListener ls : super.listeners) {
-                ls.stopMessageSent(stop);
+            synchronized (super.listeners) {
+                for (EEGMessageListener ls : super.listeners) {
+                    ls.stopMessageSent(stop);
+                }
             }
 
         } catch (IOException e) {

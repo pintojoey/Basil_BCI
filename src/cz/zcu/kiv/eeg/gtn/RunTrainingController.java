@@ -74,8 +74,8 @@ public class RunTrainingController {
 			   
 		// run data provider thread
 		Thread t = new Thread(provider);
+		t.setName("DataProviderThread");
 		t.start();
-
 	}
 
 }

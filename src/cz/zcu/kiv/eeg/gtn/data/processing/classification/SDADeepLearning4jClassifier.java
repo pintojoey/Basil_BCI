@@ -144,10 +144,10 @@ public class SDADeepLearning4jClassifier implements IClassifier {
         model.init(); // Initialize mode
 
 
-        UIServer uiServer = UIServer.getInstance();
+        //UIServer uiServer = UIServer.getInstance();
         StatsStorage statsStorage = new InMemoryStatsStorage();         //Alternative: new FileStatsStorage(File), for saving and loading later
         //Attach the StatsStorage instance to the UI: this allows the contents of the StatsStorage to be visualized
-        uiServer.attach(statsStorage);
+        //uiServer.attach(statsStorage);
 
         ArrayList listenery = new ArrayList();
         listenery.add(new ScoreIterationListener(500));

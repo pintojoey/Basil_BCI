@@ -88,6 +88,9 @@ public abstract class AbstractWorkflowController implements IWorkflowController 
         listeners.add(listener);
     }
 
+    public void removeDataListener(){
+        dataProvider.removeListener(dataListener);
+    }
     /**
      * Receives and process the data from providers
      * 

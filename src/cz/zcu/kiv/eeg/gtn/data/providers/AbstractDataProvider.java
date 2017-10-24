@@ -3,6 +3,7 @@ package cz.zcu.kiv.eeg.gtn.data.providers;
 import cz.zcu.kiv.eeg.gtn.data.listeners.EEGMessageListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -16,7 +17,7 @@ import java.util.List;
  */
 public abstract class AbstractDataProvider implements Runnable {
 
-    protected List<EEGMessageListener> listeners = new ArrayList<EEGMessageListener>();
+    protected List<EEGMessageListener> listeners = Collections.synchronizedList(new ArrayList<EEGMessageListener>());
 
     private String[] availableChannels;
     
@@ -26,8 +27,14 @@ public abstract class AbstractDataProvider implements Runnable {
 
     public abstract void stop();
 
-    public void addListener(EEGMessageListener listener){
+    public synchronized void addListener(EEGMessageListener listener){
         listeners.add(listener);
+    }
+
+    public synchronized void removeListener(EEGMessageListener listener){
+        if(listeners.contains(listener)){
+            listeners.remove(listener);
+        }
     }
 
     public String[] getAvailableChannels() {

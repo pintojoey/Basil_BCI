@@ -10,5 +10,4 @@ import java.util.List;
  */
 public interface IDataPreprocessor {
     List<EEGDataPackage> preprocessData();
-    void setMetadata(EEGStartMessage msg);
 }

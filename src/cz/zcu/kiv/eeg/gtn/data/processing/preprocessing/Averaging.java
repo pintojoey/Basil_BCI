@@ -47,7 +47,7 @@ public class Averaging {
 			}
 		}
 		
-		EEGDataPackage averagePackage = new EEGDataPackage(average, markers);
+		EEGDataPackage averagePackage = new EEGDataPackage(average, markers, epochs.get(0).getMetadata());
 		return averagePackage;
 	}
 }

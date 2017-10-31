@@ -15,24 +15,25 @@ import cz.zcu.kiv.eeg.gtn.data.processing.structures.EEGDataPackage;
  *
  */
 public class BandpassFilter implements IPreprocessing {
+	private double lowFreq;
+	private double highFreq;
 	private IFilter filter;
-	private final int SAMPLING_RATE;
 	
 	/**
 	 * 
 	 * @param lowFreq low frequency edge of the band-pass in Hz
 	 * @param highFreq high frequency edge of the band-pass in Hz
-	 * @param samplingRate sampling rate in Hz
 	 */
-	public BandpassFilter(double lowFreq, double highFreq, int samplingRate) {
-		this.SAMPLING_RATE = samplingRate;
-		this.filter = new ButterWorthFilter(lowFreq, highFreq, SAMPLING_RATE);
+	public BandpassFilter(double lowFreq, double highFreq) {
+		this.lowFreq=lowFreq;
+		this.highFreq=highFreq;
 	}
-
-
 
 	@Override
 	public EEGDataPackage preprocess(EEGDataPackage eegData) {
+		if(filter == null)
+			this.filter = new ButterWorthFilter(lowFreq, highFreq, (int)eegData.getMetadata().getSampling());
+
 		double[][] data = eegData.getData();
 		
 		for (int i = 0; i < data.length; i++) {

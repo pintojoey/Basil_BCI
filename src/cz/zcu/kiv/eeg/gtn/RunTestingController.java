@@ -46,8 +46,8 @@ public class RunTestingController {
 	    ISegmentation epochExtraction = new EpochExtraction(100, 1000);
 	    List<IPreprocessing> preprocessing = new ArrayList<IPreprocessing>();
 		List<IPreprocessing> prepreprocessing = new ArrayList<IPreprocessing>();
-	    preprocessing.add(new BaselineCorrection(0, 100, samplingFq));
-	    prepreprocessing.add(new BandpassFilter(0.1, 8, samplingFq));
+	    preprocessing.add(new BaselineCorrection(0, 100));
+	    prepreprocessing.add(new BandpassFilter(0.1, 8));
 	    Averaging averaging = new Averaging(Arrays.asList(new EEGMarker("S  2", -1)));
 	    AbstractDataPreprocessor dataPreprocessor = new EpochDataPreprocessor(preprocessing, prepreprocessing, averaging, buffer, epochExtraction);
 	    

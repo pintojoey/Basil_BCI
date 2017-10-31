@@ -27,8 +27,7 @@ public class ChannelSelection implements IPreprocessing {
     public EEGDataPackage preprocess(EEGDataPackage inputPackage) {
 		if (inputPackage.getChannelNames() == null || inputPackage.getChannelNames().length == 0)
 			return inputPackage; // no channel selection possible - names missing in the data
-		
-		
+
         List<String> currentChannelNames  = new ArrayList<>(Arrays.asList(inputPackage.getChannelNames()));
         List<String> selectedChannelNames = new ArrayList<>(Arrays.asList(selectedChannels));
         List<Integer> selectedPointers    = new ArrayList<>();

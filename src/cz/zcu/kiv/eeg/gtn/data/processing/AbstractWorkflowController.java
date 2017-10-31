@@ -40,8 +40,6 @@ public abstract class AbstractWorkflowController implements IWorkflowController 
 
     protected final IClassifier classifier;
 
-    protected EEGStartMessage metadata;
-
     public AbstractWorkflowController(AbstractDataProvider dataProvider, IBuffer buffer,
                                       AbstractDataPreprocessor preprocessor, List<IFeatureExtraction> featureExtractions, IClassifier classifier) {
         if(dataProvider == null || buffer == null || classifier == null)
@@ -54,14 +52,6 @@ public abstract class AbstractWorkflowController implements IWorkflowController 
         this.classifier = classifier;
 
         dataProvider.addListener(dataListener);
-    }
-
-    public EEGStartMessage getMetadata() {
-        return metadata;
-    }
-
-    public void setMetadata(EEGStartMessage metadata) {
-        this.metadata = metadata;
     }
 
     public AbstractDataProvider getDataProvider() {
@@ -98,8 +88,7 @@ public abstract class AbstractWorkflowController implements IWorkflowController 
     private EEGMessageListener dataListener = new EEGMessageListener() {
         @Override
         public void startMessageSent(EEGStartMessage msg) {
-            metadata = msg;
-            preprocessor.setMetadata(msg);
+            buffer.initialize(msg);
             start(msg);
         }
 

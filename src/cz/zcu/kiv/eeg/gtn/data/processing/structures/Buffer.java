@@ -3,6 +3,7 @@ package cz.zcu.kiv.eeg.gtn.data.processing.structures;
 import java.util.ArrayList;
 import java.util.List;
 import cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGMarker;
+import cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGStartMessage;
 
 /**
  * Implementation of the buffer. Can add / remove
@@ -16,13 +17,24 @@ public class Buffer implements IBuffer {
 	private volatile double[][] data;
 	private volatile List<EEGMarker> markers;
 	private final int CAPACITY = 100000;
+	private  EEGStartMessage metadata;
 	
 	public Buffer() {
 		this.data = null;
 		this.markers = new ArrayList<>();
 	}
-	
+
 	@Override
+	public synchronized void initialize(EEGStartMessage meta){
+        this.metadata = meta;
+	}
+
+    @Override
+    public EEGStartMessage getMetadata() {
+        return  metadata;
+    }
+
+    @Override
 	public synchronized void add(double[][] newData, List<EEGMarker> markers) {
 		this.addMarkers(markers);
 		
@@ -58,7 +70,7 @@ public class Buffer implements IBuffer {
 
 	@Override
 	public EEGDataPackage get() {
-		return new EEGDataPackage(this.data, this.markers);
+		return new EEGDataPackage(this.data, this.markers, this.metadata);
 	}
 
 	@Override
@@ -72,7 +84,7 @@ public class Buffer implements IBuffer {
 
 		List<EEGMarker> markersToRemove = this.removeMarkers(size);
 		this.data = newData;
-		return new EEGDataPackage(toRemove, markersToRemove);
+		return new EEGDataPackage(toRemove, markersToRemove, this.metadata);
 	}
 
 	private List<EEGMarker> removeMarkers(int size) {

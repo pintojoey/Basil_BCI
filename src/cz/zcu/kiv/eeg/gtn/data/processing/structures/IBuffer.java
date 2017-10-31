@@ -3,11 +3,24 @@ package cz.zcu.kiv.eeg.gtn.data.processing.structures;
 import java.util.List;
 
 import cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGMarker;
+import cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGStartMessage;
 
 /**
  * Created by Tomas Prokop on 31.07.2017.
  */
 public interface IBuffer {
+
+    /**
+     * Initializes buffer
+     * @param meta EEG start message containing recording metadata - sampling frequency, channel info, etc.
+     */
+    void initialize(EEGStartMessage meta);
+
+    /**
+     * Get EEG recoring metadata - sampling frequency, channel info, etc.
+     * @return metadata
+     */
+    EEGStartMessage getMetadata();
 
     /**
      * Adds data into buffer

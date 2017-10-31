@@ -23,8 +23,6 @@ public abstract class AbstractDataPreprocessor implements IDataPreprocessor {
 
     protected final ISegmentation segmentation;
 
-    protected EEGStartMessage metadata;
-
     /**
      * @param preprocessings methods for preprocessings (such as frequency filtering)
      * @param preSegmentationPreprocessings
@@ -36,16 +34,6 @@ public abstract class AbstractDataPreprocessor implements IDataPreprocessor {
 		this.preSegmentationPreprocessings = preSegmentationPreprocessings;
 		this.buffer = buffer;
 		this.segmentation = segmentation;
-	}
-
-	public EEGStartMessage getMetadata() {
-		return metadata;
-	}
-
-	@Override
-	public void setMetadata(EEGStartMessage metadata) {
-    	segmentation.setSampling((int)metadata.getSampling());
-		this.metadata = metadata;
 	}
 
 	public List<IPreprocessing> getPreprocessings() {

@@ -9,6 +9,7 @@ import cz.zcu.kiv.eeg.gtn.data.processing.featureExtraction.FeatureVector;
 import cz.zcu.kiv.eeg.gtn.data.processing.featureExtraction.IFeatureExtraction;
 import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.IPreprocessing;
 import cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGMarker;
+import cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGStartMessage;
 
 /**
  * Class represents EEG data. It remembers data processing steps performed on the data it carries.
@@ -16,6 +17,8 @@ import cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGMarker;
  * Created by Tomas Prokop on 04.07.2017.
  */
 public class EEGDataPackage {
+
+    private final EEGStartMessage metadata;
 
     private ArrayList<IPreprocessing> preprocessingSteps;
 
@@ -42,18 +45,20 @@ public class EEGDataPackage {
 
     public EEGDataPackage(){
         preprocessingSteps = new ArrayList<>();
+        metadata = null;
     }
 
-    public EEGDataPackage(double[][] data, List<EEGMarker> markers) {
+    public EEGDataPackage(double[][] data, List<EEGMarker> markers, EEGStartMessage metadata) {
         this.data = data;
         this.markers = markers;
         this.channelNames = null;
         this.preprocessingSteps = new ArrayList<>();
         this.featureExtractions = new ArrayList<>();
+        this.metadata = metadata;
     }
 
-    public EEGDataPackage(double[][] data, List<EEGMarker> markers, String[] channelNames) {
-		this(data, markers);
+    public EEGDataPackage(double[][] data, List<EEGMarker> markers, String[] channelNames, EEGStartMessage metadata) {
+		this(data, markers, metadata);
 		this.channelNames = channelNames;
 		
 	}
@@ -74,6 +79,10 @@ public class EEGDataPackage {
     public void setData(double[][] data, IPreprocessing step) {
         preprocessingSteps.add(step);
         this.data = data;
+    }
+
+    public EEGStartMessage getMetadata() {
+        return  metadata;
     }
 
     public List<EEGMarker> getMarkers() {
@@ -169,16 +178,16 @@ public class EEGDataPackage {
     
     @Override
     public String toString() {
-    	String returnString = "";
+    	StringBuilder returnString = new StringBuilder();
     	boolean channelsOK = true;
     	if (channelNames == null || channelNames.length != data.length) {
-    		returnString = "ChannelNames missing or its size and data size are different!\n";
+    		returnString = new StringBuilder("ChannelNames missing or its size and data size are different!\n");
     		channelsOK = false;
        	}
     	
     	for (int i = 0; i < data.length; i++) {
-    		returnString += channelsOK? channelNames[i] : "?" + ": " + Arrays.toString(data[i]) + "\n";
+    		returnString.append(channelsOK ? channelNames[i] : "?" + ": " + Arrays.toString(data[i]) + "\n");
     	}
-    	return returnString;
+    	return returnString.toString();
     }
 }

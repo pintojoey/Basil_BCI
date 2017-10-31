@@ -3,7 +3,6 @@ package cz.zcu.kiv.eeg.gtn.data.processing.classification;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import cz.zcu.kiv.eeg.gtn.data.processing.featureExtraction.FeatureVector;
@@ -16,9 +15,6 @@ import org.neuroph.core.events.LearningEventListener;
 import org.neuroph.nnet.MultiLayerPerceptron;
 import org.neuroph.nnet.learning.BackPropagation;
 import org.neuroph.util.random.NguyenWidrowRandomizer;
-
-import cz.zcu.kiv.eeg.gtn.data.processing.featureExtraction.IFeatureExtraction;
-import cz.zcu.kiv.eeg.gtn.utils.Const;
 
 /**
  *

@@ -2,7 +2,6 @@ package cz.zcu.kiv.eeg.gtn.data.processing.featureExtraction;
 
 import cz.zcu.kiv.eeg.gtn.data.processing.math.SignalProcessing;
 import cz.zcu.kiv.eeg.gtn.data.processing.structures.EEGDataPackage;
-import cz.zcu.kiv.eeg.gtn.utils.Const;
 import cz.zcu.kiv.eegdsp.common.ISignalProcessingResult;
 import cz.zcu.kiv.eegdsp.common.ISignalProcessor;
 import cz.zcu.kiv.eegdsp.main.SignalProcessingFactory;

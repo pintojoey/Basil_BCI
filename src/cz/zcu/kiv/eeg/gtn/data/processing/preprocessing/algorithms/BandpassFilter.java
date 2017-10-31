@@ -1,6 +1,6 @@
 package cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.algorithms;
 
-import cz.zcu.kiv.eeg.gtn.data.processing.math.ButterWorthFilter;
+import cz.zcu.kiv.eeg.gtn.data.processing.math.IirBandpassFilter;
 import cz.zcu.kiv.eeg.gtn.data.processing.math.IFilter;
 import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.IPreprocessing;
 import cz.zcu.kiv.eeg.gtn.data.processing.structures.EEGDataPackage;
@@ -32,7 +32,7 @@ public class BandpassFilter implements IPreprocessing {
 	@Override
 	public EEGDataPackage preprocess(EEGDataPackage eegData) {
 		if(filter == null)
-			this.filter = new ButterWorthFilter(lowFreq, highFreq, (int)eegData.getMetadata().getSampling());
+			this.filter = new IirBandpassFilter(lowFreq, highFreq, (int)eegData.getMetadata().getSampling());
 
 		double[][] data = eegData.getData();
 		

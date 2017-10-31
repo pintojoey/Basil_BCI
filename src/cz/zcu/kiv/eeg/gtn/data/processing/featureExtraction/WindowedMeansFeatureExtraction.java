@@ -2,7 +2,6 @@ package cz.zcu.kiv.eeg.gtn.data.processing.featureExtraction;
 
 import cz.zcu.kiv.eeg.gtn.data.processing.math.SignalProcessing;
 import cz.zcu.kiv.eeg.gtn.data.processing.structures.EEGDataPackage;
-import cz.zcu.kiv.eeg.gtn.utils.Const;
 
 public class WindowedMeansFeatureExtraction implements IFeatureExtraction {
 
@@ -12,6 +11,12 @@ public class WindowedMeansFeatureExtraction implements IFeatureExtraction {
 
 	private int numOfChannels = 0;
 
+	private int postStimulus = 750;
+
+	public WindowedMeansFeatureExtraction(int postStimulus) {
+		this.postStimulus = postStimulus;
+	}
+
 	@Override
 	public double[] extractFeatures(EEGDataPackage data) {
 		double[][] epoch = data.getData();
@@ -20,7 +25,7 @@ public class WindowedMeansFeatureExtraction implements IFeatureExtraction {
 		
 		for (int i = 0; i < numOfChannels; i++) {
 			for (int j = 0; j < windows.length; j++) {
-				double avg = averageInterval(windows[j], epoch[i]);
+				double avg = averageInterval(windows[j], epoch[i], data.getMetadata().getSampling());
 				features[i * windows.length + j] = avg;
 			}
 		}
@@ -28,11 +33,11 @@ public class WindowedMeansFeatureExtraction implements IFeatureExtraction {
 		return  features;
 	}
 
-	private double averageInterval(double[] fromToSec, double[] epoch) {
-		int first_sample = (int) Math.round(Const.SAMPLING_FQ * fromToSec[0]);
-		int second_sample = (int) Math.round(Const.SAMPLING_FQ * fromToSec[1]);
+	private double averageInterval(double[] fromToSec, double[] epoch, double sampling) {
+		int first_sample = (int) Math.round(sampling * fromToSec[0]);
+		int second_sample = (int) Math.round(sampling * fromToSec[1]);
 		
-		if (first_sample > second_sample || second_sample > Const.POSTSTIMULUS_VALUES)
+		if (first_sample > second_sample || second_sample > postStimulus)
 			throw new IllegalArgumentException("Incorrectly selected time windows");
 		double sum = 0;
 		for (int i = first_sample; i < second_sample; i++ ) {

@@ -6,7 +6,6 @@ import java.util.Vector;
 
 import cz.zcu.kiv.eeg.gtn.data.processing.math.SignalProcessing;
 import cz.zcu.kiv.eeg.gtn.data.processing.structures.EEGDataPackage;
-import cz.zcu.kiv.eeg.gtn.utils.Const;
 import hht.HhtSimpleRunner;
 import hht.HilbertHuangTransform;
 import hht.hilbertTransform.HilbertTransform;
@@ -80,7 +79,7 @@ public class HHTFeatureExtraction implements IFeatureExtraction {
         int featureIndex = 0;
         epochSize = channels[0].length;
         for (double[] channel : channels) {
-            double[] processedFeatures = processFeatures(channel);
+            double[] processedFeatures = processFeatures(channel, (int)data.getMetadata().getSampling());
 
             for (int i = 0; i < channel.length; i++) {
                 featureVector[i + featureIndex] = processedFeatures[i];
@@ -108,12 +107,12 @@ public class HHTFeatureExtraction implements IFeatureExtraction {
      * @param epochSamples - array of input samples, which will by processed by HHT library
      * @return array with processed features (double[])
      */
-    private double[] processFeatures(double[] epochSamples) {
+    private double[] processFeatures(double[] epochSamples, int sampling) {
 
         double[] processedFeatures = new double[epochSize];
 
         try {
-            HilbertHuangTransform hht = HhtSimpleRunner.runHht(EMD_CONF_FILE, epochSamples, Const.SAMPLING_FQ);
+            HilbertHuangTransform hht = HhtSimpleRunner.runHht(EMD_CONF_FILE, epochSamples, sampling);
             Vector<HilbertTransform> hTransforms = hht.getHilbertTransform();
 
             if (hTransforms.size() > 0) {

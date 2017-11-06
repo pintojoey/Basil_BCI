@@ -139,10 +139,12 @@ public class OffLineDataProvider extends AbstractDataProvider {
         int sampling;
         String val = getProperty("samplinginterval", dt);
         sampling = Integer.parseInt(val);
+        val = getProperty("DataFile", dt);
         this.samplingRate = sampling;
 
         super.setAvailableChannels(chNames);
         EEGStartMessage msg = new EEGStartMessage(MessageType.START, cnt, chNames, resolutions, chNames.length, sampling);
+        msg.setDataFileName(val);
         return msg;
     }
 

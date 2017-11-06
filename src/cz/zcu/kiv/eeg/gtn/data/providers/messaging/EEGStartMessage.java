@@ -13,12 +13,22 @@ public class EEGStartMessage extends EEGMessage {
 
     private final double sampling;
 
+    private String DataFileName;
+
     public EEGStartMessage(MessageType msgType, int messageNumber, String[] availableChannels, double[] resolutions, int channelCount, double sampling) {
         super(msgType, messageNumber);
         this.availableChannels = availableChannels;
         this.resolutions = resolutions;
         this.channelCount = channelCount;
         this.sampling = sampling;
+    }
+
+    public String getDataFileName() {
+        return DataFileName;
+    }
+
+    public void setDataFileName(String dataFileName) {
+        DataFileName = dataFileName;
     }
 
     public String[] getAvailableChannels() {

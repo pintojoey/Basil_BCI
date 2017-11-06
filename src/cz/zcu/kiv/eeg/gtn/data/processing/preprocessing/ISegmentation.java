@@ -27,10 +27,4 @@ public interface ISegmentation {
 	 * @return segment size
 	 */
 	int getSegmentSize();
-
-	/**
-	 * Sets sampling frequency
-	 * @param sampling sampling frequency in samples/second
-	 */
-	void setSampling(int sampling);
 }

@@ -19,7 +19,6 @@ public class EpochExtraction implements ISegmentation {
 
 	private final int preStimulus;  /* time before the stimulus onset in ms */
 	private final int postStimulus; /* time after the stimulus onset in ms */
-	private int sampling; /* sampling frequency */
 	
 	public EpochExtraction(int preStimulus, int postStimulus) {
 		super();
@@ -32,10 +31,11 @@ public class EpochExtraction implements ISegmentation {
 		List<EEGDataPackage> epochs = new ArrayList<>();
 		List<EEGMarker> markers = eegData.getMarkers();
 		double[][]        data  = eegData.getData();
+		double sampling = eegData.getMetadata().getSampling();
 		
 		for (EEGMarker currentMarker: markers) {
-			int startSample =  - (int)((0.001 * this.preStimulus) /* time in s */ * (double)this.sampling);
-			int endSample = (int) (0.001 * this.postStimulus) /* time in s */ * this.sampling;
+			int startSample =  - (int)((0.001 * this.preStimulus) /* time in s */ * sampling);
+			int endSample = (int) ((0.001 * this.postStimulus) /* time in s */ * sampling);
 			int offset = currentMarker.getOffset();
 			double[][] epochData = new double[data.length][endSample - startSample];
 			
@@ -56,20 +56,11 @@ public class EpochExtraction implements ISegmentation {
 		return (int)(0.001 * this.preStimulus * this.postStimulus);
 	}
 
-    @Override
-    public void setSampling(int sampling) {
-        this.sampling = sampling;
-    }
-
     public int getPreStimulus() {
         return preStimulus;
     }
 
     public int getPostStimulus() {
         return postStimulus;
-    }
-
-    public int getSampling() {
-        return sampling;
     }
 }

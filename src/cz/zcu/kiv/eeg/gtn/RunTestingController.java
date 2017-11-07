@@ -42,14 +42,13 @@ public class RunTestingController {
 	    IBuffer buffer = new Buffer();
 	    
 	    // preprocessings
-	    int samplingFq = 1000; // TODO: get correctly from the data provider
 	    ISegmentation epochExtraction = new EpochExtraction(100, 1000);
 	    List<IPreprocessing> preprocessing = new ArrayList<IPreprocessing>();
 		List<IPreprocessing> prepreprocessing = new ArrayList<IPreprocessing>();
 	    preprocessing.add(new BaselineCorrection(0, 100));
 	    prepreprocessing.add(new BandpassFilter(0.1, 8));
 	    Averaging averaging = new Averaging(Arrays.asList(new EEGMarker("S  2", -1)));
-	    AbstractDataPreprocessor dataPreprocessor = new EpochDataPreprocessor(preprocessing, prepreprocessing, averaging, buffer, epochExtraction);
+	    AbstractDataPreprocessor dataPreprocessor = new EpochDataPreprocessor(preprocessing, prepreprocessing, averaging, epochExtraction);
 	    
 	    // feature extraction
 	    List<IFeatureExtraction> featureExtraction = new ArrayList<IFeatureExtraction>();
@@ -60,6 +59,7 @@ public class RunTestingController {
 	   
 	    // run data provider thread
 	    Thread t = new Thread(provider);
+	    t.setName("DataProviderThread");
 	    t.start();
 	   
 	   

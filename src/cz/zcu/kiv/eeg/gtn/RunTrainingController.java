@@ -1,8 +1,12 @@
 package cz.zcu.kiv.eeg.gtn;
 
 import java.io.File;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import cz.zcu.kiv.eeg.gtn.data.processing.TestingWorkflowController;
@@ -24,6 +28,8 @@ import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.IPreprocessing;
 import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.ISegmentation;
 import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.algorithms.BandpassFilter;
 import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.algorithms.BaselineCorrection;
+import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.algorithms.ChannelSelectionNames;
+import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.algorithms.ChannelSelectionPointers;
 import cz.zcu.kiv.eeg.gtn.data.processing.structures.Buffer;
 import cz.zcu.kiv.eeg.gtn.data.processing.structures.IBuffer;
 import cz.zcu.kiv.eeg.gtn.data.providers.bva.OffLineDataProvider;
@@ -50,14 +56,14 @@ public class RunTrainingController {
 		IBuffer buffer = new Buffer();
 			    
 		// preprocessings
-		int samplingFq = 1000; // TODO: get correctly from the data provider
 		ISegmentation epochExtraction = new EpochExtraction(100, 1000);
 		List<IPreprocessing> preprocessing = new ArrayList<IPreprocessing>();
 		List<IPreprocessing> prepreprocessing = new ArrayList<IPreprocessing>();
 		preprocessing.add(new BaselineCorrection(0, 100));
 		prepreprocessing.add(new BandpassFilter(0.1, 8));
+		prepreprocessing.add(new ChannelSelectionPointers(Arrays.asList(16, 17, 18)));
 		
-		AbstractDataPreprocessor dataPreprocessor = new EpochDataPreprocessor(preprocessing, prepreprocessing, null, buffer, epochExtraction);
+		AbstractDataPreprocessor dataPreprocessor = new EpochDataPreprocessor(preprocessing, prepreprocessing, null, epochExtraction);
 			    
 		// feature extraction
 		List<IFeatureExtraction> featureExtraction = new ArrayList<IFeatureExtraction>();
@@ -65,17 +71,28 @@ public class RunTrainingController {
 		featureExtraction.add(fe);
 		
 		// classification
-		IClassifier classification       		   = new SDADeepLearning4jClassifier(fe.getFeatureDimension());
+		IClassifier classification       		   = new SDADeepLearning4jClassifier();
 			    
 		ITrainCondition trainCondition = new ErpTrainCondition();
 		
 		// controller
 		IWorkflowController workFlowController = new TrainWorkflowController(provider, buffer, dataPreprocessor, featureExtraction, classification, trainCondition);
-			   
+		
 		// run data provider thread
 		Thread t = new Thread(provider);
 		t.setName("DataProviderThread");
 		t.start();
+		
+		try {
+			t.join();
+			System.out.println("Saving the classifier");
+			String timeStamp = new SimpleDateFormat("yyyyMMddHHmm'.txt'").format(new Date());
+			classification.save("data/classifiers/save" + timeStamp);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 
 }

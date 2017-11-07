@@ -27,22 +27,16 @@ import java.util.List;
  *
  */
 public abstract class AbstractWorkflowController implements IWorkflowController {
-
     protected List<EEGDataProcessingListener> listeners = new ArrayList<>();
-
-    protected final AbstractDataProvider dataProvider;
-
+    protected AbstractDataProvider dataProvider;
     protected final IBuffer buffer;
-
     protected final AbstractDataPreprocessor preprocessor;
-
     protected final List<IFeatureExtraction> featureExtractions;
-
     protected final IClassifier classifier;
 
     public AbstractWorkflowController(AbstractDataProvider dataProvider, IBuffer buffer,
                                       AbstractDataPreprocessor preprocessor, List<IFeatureExtraction> featureExtractions, IClassifier classifier) {
-        if(dataProvider == null || buffer == null || classifier == null)
+        if (buffer == null || classifier == null)
             throw new IllegalArgumentException("One or more arguments are null.");
 
         this.preprocessor = preprocessor;
@@ -51,7 +45,11 @@ public abstract class AbstractWorkflowController implements IWorkflowController 
         this.featureExtractions = featureExtractions;
         this.classifier = classifier;
 
-        dataProvider.addListener(dataListener);
+        if (preprocessor != null)
+        	preprocessor.setBuffer(buffer);
+        
+        if (dataProvider != null)
+        	dataProvider.addListener(dataListener);
     }
 
     public AbstractDataProvider getDataProvider() {
@@ -103,4 +101,10 @@ public abstract class AbstractWorkflowController implements IWorkflowController 
             stop(msg);
         }
     };
+    
+    public void setDataProvider(AbstractDataProvider provider) {
+    	this.dataProvider = provider;
+    	if (dataProvider != null)
+        	dataProvider.addListener(dataListener);
+    }
 }

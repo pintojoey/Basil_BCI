@@ -19,9 +19,9 @@ public abstract class AbstractDataPreprocessor implements IDataPreprocessor {
 
     protected final List<IPreprocessing> preSegmentationPreprocessings;
 
-    protected final IBuffer buffer;
-
     protected final ISegmentation segmentation;
+    
+    protected IBuffer buffer;
 
     /**
      * @param preprocessings methods for preprocessings (such as frequency filtering)
@@ -29,10 +29,9 @@ public abstract class AbstractDataPreprocessor implements IDataPreprocessor {
 	 * @param buffer reference to the buffer to remove data from
 	 * @param segmentation method for segmentation or epoch extraction
 	 */
-    public AbstractDataPreprocessor(List<IPreprocessing> preprocessings, List<IPreprocessing> preSegmentationPreprocessings, IBuffer buffer, ISegmentation segmentation) {
+    public AbstractDataPreprocessor(List<IPreprocessing> preprocessings, List<IPreprocessing> preSegmentationPreprocessings, ISegmentation segmentation) {
     	this.preprocessings = preprocessings;
 		this.preSegmentationPreprocessings = preSegmentationPreprocessings;
-		this.buffer = buffer;
 		this.segmentation = segmentation;
 	}
 
@@ -48,8 +47,12 @@ public abstract class AbstractDataPreprocessor implements IDataPreprocessor {
 
 		return preSegmentationPreprocessings;
 	}
-
-	public IBuffer getBuffer() {
-		return buffer;
+	
+	public void setBuffer(IBuffer buffer) {
+		this.buffer = buffer;
 	}
+
+	
+	
+	
 }

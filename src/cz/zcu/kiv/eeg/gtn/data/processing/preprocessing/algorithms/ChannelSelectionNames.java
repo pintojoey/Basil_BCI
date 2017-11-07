@@ -15,31 +15,35 @@ import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.IPreprocessing;
  * 
  * Created by Tomas Prokop on 01.08.2017.
  */
-public class ChannelSelection implements IPreprocessing {
+public class ChannelSelectionNames implements IPreprocessing {
 
 	private String[] selectedChannels;
+	
 
-    public ChannelSelection(String[] selectedChannels) {
+    public ChannelSelectionNames(String[] selectedChannels) {
 		this.selectedChannels = selectedChannels;
 	}
+    
 
 	@Override
     public EEGDataPackage preprocess(EEGDataPackage inputPackage) {
-		if (inputPackage.getChannelNames() == null || inputPackage.getChannelNames().length == 0)
-			return inputPackage; // no channel selection possible - names missing in the data
-
-        List<String> currentChannelNames  = new ArrayList<>(Arrays.asList(inputPackage.getChannelNames()));
-        List<String> selectedChannelNames = new ArrayList<>(Arrays.asList(selectedChannels));
-        List<Integer> selectedPointers    = new ArrayList<>();
+		List<Integer> selectedPointers    = new ArrayList<>();
+		
+		if (inputPackage.getChannelNames() == null || inputPackage.getChannelNames().length == 0) {
+			// no channel selection possible - names missing in the data
+			return inputPackage; // channel selection not possible
+		} 
+		
+		List<String> currentChannelNames  = new ArrayList<>(Arrays.asList(inputPackage.getChannelNames()));
+		List<String> selectedChannelNames = new ArrayList<>(Arrays.asList(selectedChannels));
         
-        for (String selectedChannel: selectedChannelNames) {
-        	int index = currentChannelNames.indexOf(selectedChannel);
-        	selectedPointers.add(index);
-        }
-        
-        // set intersection - remove all channel names not contained 
-        currentChannelNames.retainAll(selectedChannelNames);
-        
+		for (String selectedChannel: selectedChannelNames) {
+			int index = currentChannelNames.indexOf(selectedChannel);
+			selectedPointers.add(index);
+		}
+		// set intersection - remove all channel names not contained 
+		currentChannelNames.retainAll(selectedChannelNames);
+		
         double[][] originalEegData = inputPackage.getData();
         double[][] reducedData = new double[selectedPointers.size()][originalEegData[0].length];
         
@@ -47,6 +51,7 @@ public class ChannelSelection implements IPreprocessing {
         	System.arraycopy(originalEegData[selectedPointers.get(i)], 0, reducedData[i], 0, originalEegData[0].length);
         }
         inputPackage.setData(reducedData, this);
+        inputPackage.setChannelNames(currentChannelNames.toArray(new String[currentChannelNames.size()]));
         
         return inputPackage;
     }

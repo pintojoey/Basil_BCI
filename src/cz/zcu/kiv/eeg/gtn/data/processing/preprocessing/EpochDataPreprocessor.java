@@ -20,8 +20,8 @@ import java.util.List;
 public class EpochDataPreprocessor extends AbstractDataPreprocessor {
 	private Averaging averaging;
 
-    public EpochDataPreprocessor(List<IPreprocessing> preprocessings, List<IPreprocessing> preSegmentationPreprocessings, Averaging averaging, IBuffer buffer, ISegmentation segmentation) {
-        super(preprocessings, preSegmentationPreprocessings, buffer, segmentation);
+    public EpochDataPreprocessor(List<IPreprocessing> preprocessings, List<IPreprocessing> preSegmentationPreprocessings, Averaging averaging, ISegmentation segmentation) {
+        super(preprocessings, preSegmentationPreprocessings, segmentation);
         this.averaging = averaging;
     }
 
@@ -59,9 +59,11 @@ public class EpochDataPreprocessor extends AbstractDataPreprocessor {
     }
 
     private EEGDataPackage retrieve(EpochExtraction epochExtraction) {
+    	if (buffer == null)
+    		return null;
         List<EEGMarker> markers = buffer.getMarkers();
         if (markers.size() == 0) {
-            System.out.println("No markers");
+            System.err.println("No markers");
             return null;
         }
 

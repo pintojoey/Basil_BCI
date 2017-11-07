@@ -5,6 +5,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,8 +17,33 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import cz.zcu.kiv.eeg.gtn.data.listeners.EEGMessageListener;
+import cz.zcu.kiv.eeg.gtn.data.processing.AbstractWorkflowController;
+import cz.zcu.kiv.eeg.gtn.data.processing.IWorkflowController;
+import cz.zcu.kiv.eeg.gtn.data.processing.TestingWorkflowController;
 import cz.zcu.kiv.eeg.gtn.data.processing.classification.IClassifier;
+import cz.zcu.kiv.eeg.gtn.data.processing.classification.MLPClassifier;
+import cz.zcu.kiv.eeg.gtn.data.processing.classification.SDADeepLearning4jClassifier;
+import cz.zcu.kiv.eeg.gtn.data.processing.featureExtraction.FilterFeatureExtraction;
+import cz.zcu.kiv.eeg.gtn.data.processing.featureExtraction.IFeatureExtraction;
+import cz.zcu.kiv.eeg.gtn.data.processing.featureExtraction.WaveletTransformFeatureExtraction;
+import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.AbstractDataPreprocessor;
+import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.Averaging;
+import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.EpochDataPreprocessor;
+import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.EpochExtraction;
+import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.IPreprocessing;
+import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.ISegmentation;
+import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.algorithms.BandpassFilter;
+import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.algorithms.BaselineCorrection;
+import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.algorithms.ChannelSelectionNames;
+import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.algorithms.ChannelSelectionPointers;
+import cz.zcu.kiv.eeg.gtn.data.processing.structures.Buffer;
+import cz.zcu.kiv.eeg.gtn.data.processing.structures.IBuffer;
 import cz.zcu.kiv.eeg.gtn.data.providers.bva.OffLineDataProvider;
+import cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGDataMessage;
+import cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGMarker;
+import cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGStartMessage;
+import cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGStopMessage;
 
 /**
  * Guess the number specific evaluation class.
@@ -27,10 +55,10 @@ import cz.zcu.kiv.eeg.gtn.data.providers.bva.OffLineDataProvider;
  *
  */
 public class GTNOfflineEvaluation {
-	private final String infoFileName = "info.txt";
+	private final String INFO_FILE = "info.txt";
 	private List<String> directories;
-	private Map<String, Integer> results;
 	private Map<String, GTNStatistics> stats;
+	private Map<String, Integer> results;
 	private Double humanAccuracy = null;
 	public int sizeofStimuls;
 
@@ -40,14 +68,31 @@ public class GTNOfflineEvaluation {
 	 * @throws InterruptedException
 	 * @throws IOException
 	 */
-	public static void main(String[] args) throws InterruptedException, IOException {
-		IClassifier classifier = null;
+	public static void main(String[] args) throws InterruptedException, IOException   {
+		IFeatureExtraction fe  = new WaveletTransformFeatureExtraction();
+		IClassifier classifier = new SDADeepLearning4jClassifier(fe.getFeatureDimension());
+		classifier.load("data/classifiers/save201711071425.txt");
+		
 	    GTNOfflineEvaluation gtnOfflineEvaluation;
+	    List<String> directories = new ArrayList<String>(Arrays.asList("data/numbers/Horazdovice", 
+        "data/numbers/Blatnice","data/numbers/Strasice","data/numbers/Masarykovo", "data/numbers/Stankov", 
+        "data/numbers/17ZS", "data/numbers/DolniBela", "data/numbers/KVary", "data/numbers/SPSD", "data/numbers/Strasice2",
+        "data/numbers/Tachov", "data/numbers/Tachov2", "data/numbers/ZSBolevecka"));
+	    
+	    // Workflow
+	    ISegmentation epochExtraction = new EpochExtraction(100, 1000);
+	    List<IPreprocessing> preprocessing = new ArrayList<IPreprocessing>();
+		List<IPreprocessing> prepreprocessing = new ArrayList<IPreprocessing>();
+	    preprocessing.add(new BaselineCorrection(0, 100));
+	    prepreprocessing.add(new BandpassFilter(0.1, 8));
+	    prepreprocessing.add(new ChannelSelectionPointers(Arrays.asList(0, 1, 2)));
+	    AbstractDataPreprocessor dataPreprocessor = new EpochDataPreprocessor(preprocessing, prepreprocessing, null,  epochExtraction);
+	   
+	    
 		try {
-			gtnOfflineEvaluation = new GTNOfflineEvaluation(classifier);
+			gtnOfflineEvaluation = new GTNOfflineEvaluation(fe, classifier, dataPreprocessor, directories);
 			System.out.println("Human accuracy: Total percentage:  " + gtnOfflineEvaluation.computeHumanAccuracy() + "%");
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	   
@@ -55,39 +100,48 @@ public class GTNOfflineEvaluation {
 	
 	
 	
-	public GTNOfflineEvaluation(IClassifier classifier) throws InterruptedException, IOException, ExecutionException {
+	public GTNOfflineEvaluation(IFeatureExtraction fe, IClassifier classifier, AbstractDataPreprocessor dataPreprocessor, List<String> directories) throws InterruptedException, IOException, ExecutionException {
 		if (classifier == null)
 			throw new IllegalArgumentException("Classifier used for evaluation must not be null!");
-	    
-		stats = new HashMap<>();
+	    this.directories = directories;
+		this.stats 		 = new HashMap<>();
 	    GTNStatistics.setTotalPts(0);
 	    results = new HashMap<>();
-	
+	    
+	    IBuffer buffer = new Buffer();
+	    GTNDetection gtnNumberDetection = new GTNDetection(); // TODO: fix
+	    AbstractWorkflowController workFlowController = new TestingWorkflowController(null, buffer, dataPreprocessor, Arrays.asList(fe), classifier);
+	    workFlowController.addListener(gtnNumberDetection);
 	    File directory;
 	    File f;
-	    ExecutorService service = Executors.newFixedThreadPool(10);
+	   
+	    // iterate over classifiable files
 	    for (String dirName : directories) {
 	        directory = new File(dirName);
 	        if (directory.exists() && directory.isDirectory()) {
-	            Map<String, Integer> map = loadExpectedResults(infoFileName, dirName);
+	            Map<String, Integer> map = loadExpectedResults(INFO_FILE, dirName);
 	            Map<String, Integer> localResults = new HashMap<String, Integer>(map);
 	            results.putAll(map);
 	 
 	            for (Entry<String, Integer> entry : localResults.entrySet()) {
 	                f = new File(entry.getKey());
 	                if (f.exists() && f.isFile()) {
-	                    GTNDetection detection = new GTNDetection(); // TODO: fix
-	                    OffLineDataProvider offLineData = new OffLineDataProvider(f);
-	                    service.submit(offLineData).get(); 
+	                    OffLineDataProvider offLineData = new OffLineDataProvider(f);    
+	                    offLineData.addListener(gtnNumberDetection);
+	                    workFlowController.setDataProvider(offLineData);;
+	                	//dataPreprocessor.setBuffer(buffer);
+	                    
+	   
+	            		// run data provider thread
+	            		Thread t = new Thread(offLineData);
+	            		t.setName("DataProviderThread");
+	            		t.start();
+	            		t.join();
 	                    
 	                }
 	            }
 	        }
 	    }
-	
-	    service.shutdown();
-	    // now wait for the jobs to finish
-	    service.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
 	
 	    printStats();
 	}
@@ -98,7 +152,7 @@ public class GTNOfflineEvaluation {
 	    int totalGood = 0;
 	    int fileCount = 0;
 	    for (String dirName : this.directories) {
-	        int[] res = getHumanGuessPercentage(infoFileName, dirName);
+	        int[] res = getHumanGuessPercentage(INFO_FILE, dirName);
 	        totalGood += res[1];
 	        fileCount += res[0];
 	    }
@@ -193,58 +247,6 @@ public class GTNOfflineEvaluation {
 	    countAllAndGood[1] = goodGuess;
 	    return countAllAndGood;
 	}
-	
-	/*private Integer[] initProbabilities(double[] probabilities) {
-	    Integer[] ranks = new Integer[probabilities.length];
-	    for (int i = 0; i < ranks.length; ++i) {
-	        ranks[i] = i;
-	    }
-	    Comparator<Integer> gc = new ProbabilityComparator(probabilities);
-	    Arrays.sort(ranks, gc);
-	    return ranks;
-	
-	}
-	
-	private int getExpectedResult(String filename) {
-	    return results.get(filename);
-	}
-	
-	@Override
-	public void update(Observable o, Object message) {
-	    if (message instanceof OnlineDetection) {
-	        double[] probabilities = ((OnlineDetection) message).getWeightedResults();
-	
-	        result = initProbabilities(probabilities);
-	
-	    }
-	    if (message instanceof ObserverMessage) {
-	        ObserverMessage msg = (ObserverMessage) message;
-	        if (msg.getMsgType() == MessageType.END) {
-	            //   System.out.println(filename);
-	            int winner = (result[0] + 1);
-	            Statistics st = new Statistics();
-	            st.setExpectedResult(getExpectedResult(filename));
-	            st.setThoughtResult(winner);
-	
-	            for (int i = 0; i < result.length; i++) {
-	                if ((result[i] + 1) == getExpectedResult(filename)) {
-	                    st.setRank(i + 1);
-	                    break;
-	                }
-	            }
-	            stats.put(filename, st);
-	            end = true;
-	
-	        }
-	    }
-	}
-	
-	public Map<String, Statistics> getStats() {
-	    return stats;
-	}
-	
-	public void setSizeofStimuls(int sizeofStimuls) {
-	    this.sizeofStimuls = sizeofStimuls;
-	}*/
+
 
 }

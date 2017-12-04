@@ -62,6 +62,15 @@ public class RunTestingController {
 	    t.setName("DataProviderThread");
 	    t.start();
 	   
+	    try {
+			t.join();
+			System.out.println("Remaining buffer size: "       + buffer.size());
+			System.out.println("Remaining number of markers: " + buffer.getMarkersSize());
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	    
 	   
 	   
 	}

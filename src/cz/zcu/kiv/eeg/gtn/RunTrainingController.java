@@ -88,10 +88,14 @@ public class RunTrainingController {
 			System.out.println("Saving the classifier");
 			String timeStamp = new SimpleDateFormat("yyyyMMddHHmm'.txt'").format(new Date());
 			classification.save("data/classifiers/save" + timeStamp);
+			System.out.println("Remaining buffer size: "       + buffer.size());
+			System.out.println("Remaining number of markers: " + buffer.getMarkersSize());
+		
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
 		
 	}
 

@@ -80,7 +80,7 @@ public class GTNDetection implements EEGDataProcessingListener, EEGMessageListen
 		if (markers == null || markers.size() != 1 || markers.get(0).getName() == null)
 			return;
 		
-	    int stimulusID = Integer.parseInt(markers.get(0).getName().replaceAll("[\\D]", "")); 
+	    int stimulusID = Integer.parseInt(markers.get(0).getName().replaceAll("[\\D]", "")) - 1; 
 
 	    if (stimulusID < NUMBER_OF_STIMULI) {
 	    	classificationCounters[stimulusID]++;
@@ -105,11 +105,27 @@ public class GTNDetection implements EEGDataProcessingListener, EEGMessageListen
 		// TODO Auto-generated method stub
 		
 	}
-
+	
+	
 	@Override
 	public void stopMessageSent(EEGStopMessage msg) {
 		System.out.println("Stop message sent: classification result: " + Arrays.toString(this.weightedResults));
 		
+	}
+	
+	public int getWinner() {
+		double max = 0;
+		int maxIndex = -1;
+		
+		for (int  i = 0; i < weightedResults.length; i++) {
+			if (weightedResults[i] > max) {
+				max = weightedResults[i];
+				maxIndex = i;
+			}
+			
+		}
+		
+		return maxIndex + 1;
 	}
 
 

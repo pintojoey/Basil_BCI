@@ -15,6 +15,7 @@ import java.util.Map.Entry;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import cz.zcu.kiv.eeg.gtn.data.listeners.EEGMessageListener;
@@ -57,10 +58,11 @@ import cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGStopMessage;
 public class GTNOfflineEvaluation {
 	private final String INFO_FILE = "info.txt";
 	private List<String> directories;
-	private Map<String, GTNStatistics> stats;
-	private Map<String, Integer> results;
+	private Map<String, Integer> expectedResults;
 	private Double humanAccuracy = null;
 	public int sizeofStimuls;
+	private List<Boolean> correctClassifications;
+	
 
 	/**
 	 * Run evaluation
@@ -104,9 +106,9 @@ public class GTNOfflineEvaluation {
 		if (classifier == null)
 			throw new IllegalArgumentException("Classifier used for evaluation must not be null!");
 	    this.directories = directories;
-		this.stats 		 = new HashMap<>();
-	    GTNStatistics.setTotalPts(0);
-	    results = new HashMap<>();
+		
+	    expectedResults = new HashMap<>();
+	    correctClassifications = new ArrayList<Boolean>();
 	    
 	    IBuffer buffer = new Buffer();
 	    GTNDetection gtnNumberDetection = new GTNDetection(); // TODO: fix
@@ -121,23 +123,26 @@ public class GTNOfflineEvaluation {
 	        if (directory.exists() && directory.isDirectory()) {
 	            Map<String, Integer> map = loadExpectedResults(INFO_FILE, dirName);
 	            Map<String, Integer> localResults = new HashMap<String, Integer>(map);
-	            results.putAll(map);
+	            expectedResults.putAll(map);
 	 
 	            for (Entry<String, Integer> entry : localResults.entrySet()) {
 	                f = new File(entry.getKey());
 	                if (f.exists() && f.isFile()) {
 	                    OffLineDataProvider offLineData = new OffLineDataProvider(f);    
 	                    offLineData.addListener(gtnNumberDetection);
-	                    workFlowController.setDataProvider(offLineData);;
-	                	//dataPreprocessor.setBuffer(buffer);
+	                    workFlowController.setDataProvider(offLineData);
 	                    
-	   
 	            		// run data provider thread
-	            		Thread t = new Thread(offLineData);
+	                    Thread t = new Thread(offLineData);
 	            		t.setName("DataProviderThread");
 	            		t.start();
+	            		System.out.println("Buffer size before: " + buffer.size());
 	            		t.join();
-	                    
+	            		
+	            		correctClassifications.add(gtnNumberDetection.getWinner() == entry.getValue());
+	            		
+	            		System.out.println("GTN winner: " + gtnNumberDetection.getWinner() + ", real number: " + entry.getValue());
+	            		
 	                }
 	            }
 	        }
@@ -164,14 +169,13 @@ public class GTNOfflineEvaluation {
 	    System.out.println("GTNStatistics: ");
 	    System.out.println();
 	    int okNumber = 0;
-	    for (Map.Entry<String, GTNStatistics> entry : stats.entrySet()) {
-	        if (entry.getValue().getRank() == 1) {
-	            okNumber++;
-	        }
+	    for (Boolean okResult: correctClassifications) {
+	        if (okResult)
+	        	okNumber++;
 	    }
-	    System.out.println("Total points: " + GTNStatistics.getTotalPts() + " of " + GTNStatistics.MAX_POINT * stats.size());
+	    
 	    System.out.println("Perfect guess: " + okNumber);
-	    double percent = ((double) okNumber / stats.size()) * 100;
+	    double percent = ((double) okNumber / correctClassifications.size()) * 100;
 	    System.out.println("Accuracy: " + percent + " %");
 	    try {
 	    	if (humanAccuracy == null) {

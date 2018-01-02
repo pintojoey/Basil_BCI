@@ -55,12 +55,12 @@ public class EEGDataPackage {
         this.preprocessingSteps = new ArrayList<>();
         this.featureExtractions = new ArrayList<>();
         this.metadata = metadata;
+        this.channelNames = metadata.getAvailableChannels();
     }
 
     public EEGDataPackage(double[][] data, List<EEGMarker> markers, String[] channelNames, EEGStartMessage metadata) {
 		this(data, markers, metadata);
 		this.channelNames = channelNames;
-		
 	}
 
 	/**

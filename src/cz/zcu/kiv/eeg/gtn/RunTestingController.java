@@ -10,6 +10,7 @@ import cz.zcu.kiv.eeg.gtn.data.processing.featureExtraction.IFeatureExtraction;
 import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.*;
 import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.algorithms.BandpassFilter;
 import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.algorithms.BaselineCorrection;
+import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.algorithms.ChannelSelection;
 import cz.zcu.kiv.eeg.gtn.data.processing.structures.Buffer;
 import cz.zcu.kiv.eeg.gtn.data.processing.structures.EEGDataPackage;
 import cz.zcu.kiv.eeg.gtn.data.processing.structures.IBuffer;
@@ -47,7 +48,8 @@ public class RunTestingController {
 	    List<IPreprocessing> preprocessing = new ArrayList<IPreprocessing>();
 		List<IPreprocessing> prepreprocessing = new ArrayList<IPreprocessing>();
 	    preprocessing.add(new BaselineCorrection(0, 100));
-	    prepreprocessing.add(new BandpassFilter(0.1, 8));
+	    prepreprocessing.add(new ChannelSelection(new String[]{"Cz","Pz", "Fz"} ));
+		prepreprocessing.add(new BandpassFilter(0.1, 8));
 	    Averaging averaging = new Averaging(Arrays.asList(new EEGMarker("S  2", -1)));
 	    AbstractDataPreprocessor dataPreprocessor = new EpochDataPreprocessor(preprocessing, prepreprocessing, averaging, buffer, epochExtraction);
 	    

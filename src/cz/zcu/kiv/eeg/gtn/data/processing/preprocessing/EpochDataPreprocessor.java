@@ -34,7 +34,7 @@ public class EpochDataPreprocessor extends AbstractDataPreprocessor {
 
         for (IPreprocessing p : this.preSegmentationPreprocessings) {
             dataPackage = p.preprocess(dataPackage);
-        }
+    }
 
         List<EEGDataPackage> epochs = epochExtraction.split(dataPackage);
 

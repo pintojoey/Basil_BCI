@@ -17,36 +17,44 @@ import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.IPreprocessing;
  */
 public class ChannelSelection implements IPreprocessing {
 
-	private String[] selectedChannels;
+	private List<String> selectedChannels;
 
     public ChannelSelection(String[] selectedChannels) {
-		this.selectedChannels = selectedChannels;
+		this.selectedChannels = Arrays.asList(selectedChannels);
 	}
+
+    public ChannelSelection(List<String> selectedChannels) {
+        this.selectedChannels = selectedChannels;
+    }
 
 	@Override
     public EEGDataPackage preprocess(EEGDataPackage inputPackage) {
-		if (inputPackage.getChannelNames() == null || inputPackage.getChannelNames().length == 0)
+        String[] channels = inputPackage.getChannelNames();
+		if (channels == null || channels.length == 0)
 			return inputPackage; // no channel selection possible - names missing in the data
 
-        List<String> currentChannelNames  = new ArrayList<>(Arrays.asList(inputPackage.getChannelNames()));
-        List<String> selectedChannelNames = new ArrayList<>(Arrays.asList(selectedChannels));
+        List<String> currentChannelNames  = new ArrayList<>(Arrays.asList(channels));
+        List<String> selectedChannelNames = new ArrayList<>(selectedChannels);
         List<Integer> selectedPointers    = new ArrayList<>();
-        
-        for (String selectedChannel: selectedChannelNames) {
-        	int index = currentChannelNames.indexOf(selectedChannel);
-        	selectedPointers.add(index);
+
+        for (String selectedChannel : selectedChannels) {
+            int index = currentChannelNames.indexOf(selectedChannel);
+            if(index > -1)
+                selectedPointers.add(index);
+            else
+                selectedChannelNames.remove(selectedChannel);
         }
-        
-        // set intersection - remove all channel names not contained 
-        currentChannelNames.retainAll(selectedChannelNames);
-        
+
         double[][] originalEegData = inputPackage.getData();
         double[][] reducedData = new double[selectedPointers.size()][originalEegData[0].length];
-        
+
         for (int i = 0; i < selectedPointers.size(); i++) {
         	System.arraycopy(originalEegData[selectedPointers.get(i)], 0, reducedData[i], 0, originalEegData[0].length);
         }
+
         inputPackage.setData(reducedData, this);
+        String[] array = new String[selectedChannelNames.size()];
+        inputPackage.setChannelNames(selectedChannelNames.toArray(array));
         
         return inputPackage;
     }

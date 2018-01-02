@@ -28,7 +28,7 @@ import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.IPreprocessing;
 import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.ISegmentation;
 import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.algorithms.BandpassFilter;
 import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.algorithms.BaselineCorrection;
-import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.algorithms.ChannelSelectionNames;
+import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.algorithms.ChannelSelection;
 import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.algorithms.ChannelSelectionPointers;
 import cz.zcu.kiv.eeg.gtn.data.processing.structures.Buffer;
 import cz.zcu.kiv.eeg.gtn.data.processing.structures.IBuffer;

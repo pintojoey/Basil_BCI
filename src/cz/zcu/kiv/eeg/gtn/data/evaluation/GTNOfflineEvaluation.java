@@ -1,50 +1,23 @@
 package cz.zcu.kiv.eeg.gtn.data.evaluation;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-
-import cz.zcu.kiv.eeg.gtn.data.listeners.EEGMessageListener;
 import cz.zcu.kiv.eeg.gtn.data.processing.AbstractWorkflowController;
-import cz.zcu.kiv.eeg.gtn.data.processing.IWorkflowController;
 import cz.zcu.kiv.eeg.gtn.data.processing.TestingWorkflowController;
 import cz.zcu.kiv.eeg.gtn.data.processing.classification.IClassifier;
-import cz.zcu.kiv.eeg.gtn.data.processing.classification.MLPClassifier;
 import cz.zcu.kiv.eeg.gtn.data.processing.classification.SDADeepLearning4jClassifier;
-import cz.zcu.kiv.eeg.gtn.data.processing.featureExtraction.FilterFeatureExtraction;
 import cz.zcu.kiv.eeg.gtn.data.processing.featureExtraction.IFeatureExtraction;
 import cz.zcu.kiv.eeg.gtn.data.processing.featureExtraction.WaveletTransformFeatureExtraction;
-import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.AbstractDataPreprocessor;
-import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.Averaging;
-import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.EpochDataPreprocessor;
-import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.EpochExtraction;
-import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.IPreprocessing;
-import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.ISegmentation;
+import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.*;
 import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.algorithms.BandpassFilter;
 import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.algorithms.BaselineCorrection;
-import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.algorithms.ChannelSelectionNames;
 import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.algorithms.ChannelSelectionPointers;
 import cz.zcu.kiv.eeg.gtn.data.processing.structures.Buffer;
 import cz.zcu.kiv.eeg.gtn.data.processing.structures.IBuffer;
 import cz.zcu.kiv.eeg.gtn.data.providers.bva.OffLineDataProvider;
-import cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGDataMessage;
-import cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGMarker;
-import cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGStartMessage;
-import cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGStopMessage;
+
+import java.io.*;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Guess the number specific evaluation class.

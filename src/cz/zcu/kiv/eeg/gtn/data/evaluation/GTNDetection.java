@@ -2,12 +2,15 @@ package cz.zcu.kiv.eeg.gtn.data.evaluation;
 
 import java.util.Arrays;
 import java.util.List;
-
-
 import cz.zcu.kiv.eeg.gtn.data.listeners.EEGDataProcessingListener;
-import cz.zcu.kiv.eeg.gtn.data.processing.classification.IClassifier;
+import cz.zcu.kiv.eeg.gtn.data.listeners.EEGMessageListener;
 import cz.zcu.kiv.eeg.gtn.data.processing.structures.EEGDataPackage;
+import cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGDataMessage;
 import cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGMarker;
+import cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGStartMessage;
+import cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGStopMessage;
+
+
 
 /**
  * 
@@ -17,9 +20,10 @@ import cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGMarker;
  * @author lvareka
  *
  */
-public class GTNDetection implements EEGDataProcessingListener {
+public class GTNDetection implements EEGDataProcessingListener, EEGMessageListener {
 	private final double[] classificationResults;
 	private final int[] classificationCounters;
+	private String sourceFileName;
 	public int NUMBER_OF_STIMULI = 9;
 
 	private double[] weightedResults;
@@ -57,25 +61,26 @@ public class GTNDetection implements EEGDataProcessingListener {
 	}
 	
 	@Override
-	public void dataPreprocessed(List<EEGDataPackage> packs) {
+	public void dataPreprocessed(List<EEGDataPackage> dataPackages) {
 	// TODO Auto-generated method stub
 			
 	}
 
 	@Override
-	public void featuresExtracted(EEGDataPackage pack) {
+	public void featuresExtracted(EEGDataPackage dataPackage) {
 	// TODO Auto-generated method stub
 			
 	}
 
 	@Override
-	public void dataClassified(EEGDataPackage pack) {
-		double classificationResult = pack.getClassificationResult();
-		List<EEGMarker> markers = pack.getMarkers();
+	public void dataClassified(EEGDataPackage dataPackage) {
+		
+		double classificationResult = dataPackage.getClassificationResult();
+		List<EEGMarker> markers = dataPackage.getMarkers();
 		if (markers == null || markers.size() != 1 || markers.get(0).getName() == null)
 			return;
 		
-	    int stimulusID = Integer.parseInt(markers.get(0).getName().replaceAll("[\\D]", "")); 
+	    int stimulusID = Integer.parseInt(markers.get(0).getName().replaceAll("[\\D]", "")) - 1; 
 
 	    if (stimulusID < NUMBER_OF_STIMULI) {
 	    	classificationCounters[stimulusID]++;
@@ -84,5 +89,44 @@ public class GTNDetection implements EEGDataProcessingListener {
 	        
 	    }
 	}
+
+	@Override
+	public void startMessageSent(EEGStartMessage msg) {
+		 Arrays.fill(classificationCounters, 0);
+		 Arrays.fill(classificationResults, 0);
+		 this.sourceFileName = msg.getDataFileName();
+		 
+		 System.out.println("Start message sent");
+		
+	}
+
+	@Override
+	public void dataMessageSent(EEGDataMessage msg) {
+		// TODO Auto-generated method stub
+		
+	}
 	
+	
+	@Override
+	public void stopMessageSent(EEGStopMessage msg) {
+		System.out.println("Stop message sent: classification result: " + Arrays.toString(this.weightedResults));
+		
+	}
+	
+	public int getWinner() {
+		double max = 0;
+		int maxIndex = -1;
+		
+		for (int  i = 0; i < weightedResults.length; i++) {
+			if (weightedResults[i] > max) {
+				max = weightedResults[i];
+				maxIndex = i;
+			}
+			
+		}
+		
+		return maxIndex + 1;
+	}
+
+
 }

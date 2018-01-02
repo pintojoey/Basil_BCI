@@ -38,7 +38,7 @@ public class SignalProcessing {
      */
     public static double average(double[] inputSignal, int start, int end) {
     	double sum = 0;
-    	for (int i = start; i <= end; i++) {
+    	for (int i = start; i <= end && i < inputSignal.length; i++) {
     		sum += inputSignal[i];
     	}
     	return sum / (end - start + 1);

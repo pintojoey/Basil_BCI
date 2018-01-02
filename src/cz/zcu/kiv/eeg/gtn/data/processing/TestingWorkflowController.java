@@ -38,6 +38,7 @@ public class TestingWorkflowController extends AbstractWorkflowController {
     public TestingWorkflowController(AbstractDataProvider dataProvider, IBuffer buffer, AbstractDataPreprocessor preprocessor,
                                      List<IFeatureExtraction> featureExtractions, IClassifier classifier, int minMarkers) {
         super(dataProvider, buffer, preprocessor, featureExtractions, classifier);
+        
         this.minMarkers = minMarkers;
     }
 
@@ -89,6 +90,8 @@ public class TestingWorkflowController extends AbstractWorkflowController {
     public void stop(EEGStopMessage stop) {
         finished = true;
         processData();
+        
+        buffer.clear();
     }
 
     @Override

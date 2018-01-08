@@ -46,7 +46,7 @@ public class GTNOfflineEvaluation {
 	public static void main(String[] args) throws InterruptedException, IOException   {
 		IFeatureExtraction fe  = new WaveletTransformFeatureExtraction();
 		IClassifier classifier = new SDADeepLearning4jClassifier(fe.getFeatureDimension());
-		classifier.load("data/classifiers/save201711071425.txt");
+		classifier.load("data/classifiers/save201801081511.txt");
 		
 	    GTNOfflineEvaluation gtnOfflineEvaluation;
 	    List<String> directories = new ArrayList<String>(Arrays.asList("data/numbers/Horazdovice", 
@@ -59,7 +59,7 @@ public class GTNOfflineEvaluation {
 	    List<IPreprocessing> preprocessing = new ArrayList<IPreprocessing>();
 		List<IPreprocessing> prepreprocessing = new ArrayList<IPreprocessing>();
 	    preprocessing.add(new BaselineCorrection(0, 100));
-	    prepreprocessing.add(new BandpassFilter(0.1, 8));
+	    prepreprocessing.add(new BandpassFilter(0.1, 30));
 	    prepreprocessing.add(new ChannelSelectionPointers(Arrays.asList(0, 1, 2)));
 	    AbstractDataPreprocessor dataPreprocessor = new EpochDataPreprocessor(preprocessing, prepreprocessing, null,  epochExtraction);
 	   

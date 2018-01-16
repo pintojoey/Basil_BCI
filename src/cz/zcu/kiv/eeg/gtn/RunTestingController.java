@@ -11,6 +11,7 @@ import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.*;
 import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.algorithms.BandpassFilter;
 import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.algorithms.BaselineCorrection;
 import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.algorithms.ChannelSelection;
+import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.algorithms.IntervalSelection;
 import cz.zcu.kiv.eeg.gtn.data.processing.structures.Buffer;
 import cz.zcu.kiv.eeg.gtn.data.processing.structures.EEGDataPackage;
 import cz.zcu.kiv.eeg.gtn.data.processing.structures.IBuffer;
@@ -37,8 +38,7 @@ public class RunTestingController {
 		// data provider
 		File f = new File("data/P300/LED_28_06_2012_104.vhdr");
 	    OffLineDataProvider provider = new OffLineDataProvider(f);
-	   
-	    
+
 	    // buffer
 	    IBuffer buffer = new Buffer();
 	    

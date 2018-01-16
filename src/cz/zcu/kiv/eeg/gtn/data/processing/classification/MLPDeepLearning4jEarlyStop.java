@@ -39,12 +39,9 @@ import java.util.concurrent.TimeUnit;
 /**
  * Created by lukasvareka on 4. 7. 2016.
  */
-public class MLPDeepLearning4jEarlyStop implements IClassifier {
+public class MLPDeepLearning4jEarlyStop extends DeepLearning4jClassifier {
     private final int NEURON_COUNT_DEFAULT = 30;    //default number of neurons
-    private MultiLayerNetwork model;            //multi layer neural network with a logistic output layer and multiple hidden neuralNets
     private int neuronCount;                    // Number of neurons
-    private int iterations;                    //Iterations used to classify
-    private Model model1;                       //model from new lbraries
     private int maxTime =5; //max time in minutes
     private int maxEpochs = 1500;
     private EarlyStoppingResult result;
@@ -52,8 +49,6 @@ public class MLPDeepLearning4jEarlyStop implements IClassifier {
     private EarlyStoppingConfiguration esConf;
     private String pathname = "C:\\Temp\\MLPEStop"; //pathname+file name for saving model
     private String directory = "C:\\Temp\\";
-
-
 
     /*Default constructor*/
     public MLPDeepLearning4jEarlyStop() {
@@ -184,62 +179,5 @@ public class MLPDeepLearning4jEarlyStop implements IClassifier {
         //model.setListeners(new HistogramIterationListener(10));
                 return conf;
 
-    }
-
-    // method for testing the classifier.
-    @Override
-    public ClassificationStatistics test(List<FeatureVector> featureVectors, List<Double> targets) {
-        ClassificationStatistics resultsStats = new ClassificationStatistics(); // initialization of classifier statistics
-        for (int i = 0; i < featureVectors.size(); i++) {   //iterating epochs
-            double output = this.classify(featureVectors.get(i));   //   output means score of a classifier from method classify
-            resultsStats.add(output, targets.get(i));   // calculating statistics
-        }
-        return resultsStats;    //  returns classifier statistics
-    }
-
-    // method not implemented. For loading use load(String file)
-    @Override
-    public void load(InputStream is) {
-        throw new NotImplementedException();
-    }
-
-    // method not implemented. For saving use method createDirectory(String file)
-    @Override
-    public void save(OutputStream dest) {
-        throw new NotImplementedException();
-    }
-    /**
-     * save model in file
-     * @param file path + filename without extension
-     */
-    @Override
-    public void save(String file) {
-        File locationToSave = new File(file + ".zip");      //Where to save the network. Note: the file is in .zip format - can be opened externally
-        boolean saveUpdater = true;   //Updater: i.e., the state for Momentum, RMSProp, Adagrad etc. Save this if you want to train your network more in the future
-        try {
-            ModelSerializer.writeModel(result.getBestModel(), locationToSave, saveUpdater);
-            System.out.println("Saved network params " + result.getBestModel().params());
-            System.out.println("Saved");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-    /**
-     * load model in file
-     * @param file path + filename without extension
-     */
-    @Override
-    public void load(String file) {
-        File locationToLoad = new File(file + ".zip");
-        try {
-            result.setBestModel(ModelSerializer.restoreMultiLayerNetwork(locationToLoad));
-            System.out.println("Loaded");
-            System.out.println("Loaded network params " + result.getBestModel().params());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        System.out.println("Original network params " + result.getBestModel().params());
-        System.out.println("Loaded");
     }
 }

@@ -1,20 +1,24 @@
 package cz.zcu.kiv.eeg.gtn.data.evaluation;
 
 import cz.zcu.kiv.eeg.gtn.data.processing.AbstractWorkflowController;
+import cz.zcu.kiv.eeg.gtn.data.processing.IWorkflowController;
 import cz.zcu.kiv.eeg.gtn.data.processing.TestingWorkflowController;
+import cz.zcu.kiv.eeg.gtn.data.processing.TrainWorkflowController;
+import cz.zcu.kiv.eeg.gtn.data.processing.classification.ErpTrainCondition;
 import cz.zcu.kiv.eeg.gtn.data.processing.classification.IClassifier;
+import cz.zcu.kiv.eeg.gtn.data.processing.classification.ITrainCondition;
 import cz.zcu.kiv.eeg.gtn.data.processing.classification.SDADeepLearning4jClassifier;
 import cz.zcu.kiv.eeg.gtn.data.processing.featureExtraction.IFeatureExtraction;
 import cz.zcu.kiv.eeg.gtn.data.processing.featureExtraction.WaveletTransformFeatureExtraction;
 import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.*;
-import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.algorithms.BandpassFilter;
-import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.algorithms.BaselineCorrection;
-import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.algorithms.ChannelSelectionPointers;
+import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.algorithms.*;
 import cz.zcu.kiv.eeg.gtn.data.processing.structures.Buffer;
 import cz.zcu.kiv.eeg.gtn.data.processing.structures.IBuffer;
 import cz.zcu.kiv.eeg.gtn.data.providers.bva.OffLineDataProvider;
+import cz.zcu.kiv.eeg.gtn.utils.FileUtils;
 
 import java.io.*;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.concurrent.ExecutionException;
@@ -44,26 +48,31 @@ public class GTNOfflineEvaluation {
 	 * @throws IOException
 	 */
 	public static void main(String[] args) throws InterruptedException, IOException   {
+
 		IFeatureExtraction fe  = new WaveletTransformFeatureExtraction();
+
+		// Workflow
+		ISegmentation epochExtraction = new EpochExtraction(100, 1000);
+		List<IPreprocessing> preprocessing = new ArrayList<IPreprocessing>();
+		List<IPreprocessing> presegmentation = new ArrayList<IPreprocessing>();
+		preprocessing.add(new BaselineCorrection(0, 100));
+		preprocessing.add(new IntervalSelection(274, 512));
+		presegmentation.add(new ChannelSelection(new String[] {"Fz", "Cz", "Pz"}));
+		//presegmentation.add(new BandpassFilter(0.1, 20));
+
+		String savedModel = train(epochExtraction, preprocessing, presegmentation, Arrays.asList(fe));
+
 		IClassifier classifier = new SDADeepLearning4jClassifier(fe.getFeatureDimension());
-		classifier.load("data/classifiers/save201801081511.txt");
+		classifier.load(savedModel);
 		
 	    GTNOfflineEvaluation gtnOfflineEvaluation;
 	    List<String> directories = new ArrayList<String>(Arrays.asList("data/numbers/Horazdovice", 
         "data/numbers/Blatnice","data/numbers/Strasice","data/numbers/Masarykovo", "data/numbers/Stankov", 
         "data/numbers/17ZS", "data/numbers/DolniBela", "data/numbers/KVary", "data/numbers/SPSD", "data/numbers/Strasice2",
         "data/numbers/Tachov", "data/numbers/Tachov2", "data/numbers/ZSBolevecka"));
-	    
-	    // Workflow
-	    ISegmentation epochExtraction = new EpochExtraction(100, 1000);
-	    List<IPreprocessing> preprocessing = new ArrayList<IPreprocessing>();
-		List<IPreprocessing> prepreprocessing = new ArrayList<IPreprocessing>();
-	    preprocessing.add(new BaselineCorrection(0, 100));
-	    prepreprocessing.add(new BandpassFilter(0.1, 30));
-	    prepreprocessing.add(new ChannelSelectionPointers(Arrays.asList(0, 1, 2)));
-	    AbstractDataPreprocessor dataPreprocessor = new EpochDataPreprocessor(preprocessing, prepreprocessing, null,  epochExtraction);
-	   
-	    
+
+	    AbstractDataPreprocessor dataPreprocessor = new EpochDataPreprocessor(preprocessing, presegmentation, null,  epochExtraction);
+
 		try {
 			gtnOfflineEvaluation = new GTNOfflineEvaluation(fe, classifier, dataPreprocessor, directories);
 			System.out.println("Human accuracy: Total percentage:  " + gtnOfflineEvaluation.computeHumanAccuracy() + "%");
@@ -72,7 +81,50 @@ public class GTNOfflineEvaluation {
 		}
 	   
 	}
-	
+
+	private static String train(ISegmentation epochExtraction, List<IPreprocessing> preprocessing, List<IPreprocessing> presegmentation,
+								List<IFeatureExtraction> featureExtraction){
+		System.out.println("Training started");
+		OffLineDataProvider provider = null;
+		try {
+			provider = new OffLineDataProvider(FileUtils.loadExpectedResults("data/numbers", "infoTrain.txt"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		// buffer
+		IBuffer buffer = new Buffer();
+		AbstractDataPreprocessor dataPreprocessor = new EpochDataPreprocessor(preprocessing, presegmentation, null, epochExtraction);
+
+		// classification
+		IClassifier classification = new SDADeepLearning4jClassifier();
+		ITrainCondition trainCondition = new ErpTrainCondition();
+
+		// controller
+		IWorkflowController workFlowController = new TrainWorkflowController(provider, buffer, dataPreprocessor, featureExtraction, classification, trainCondition);
+
+		// run data provider thread
+		Thread t = new Thread(provider);
+		t.setName("DataProviderThread");
+		t.start();
+
+		String saveFileName;
+
+		try {
+			t.join();
+			System.out.println("Saving the classifier");
+			saveFileName = "data/classifiers/save" + new SimpleDateFormat("yyyyMMddHHmm'.zip'").format(new Date());
+			classification.save(saveFileName);
+			System.out.println("Remaining buffer size: "       + buffer.size());
+			System.out.println("Remaining number of markers: " + buffer.getMarkersSize());
+
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+			return null;
+		}
+		System.out.println("Training finished");
+		return saveFileName;
+	}
 	
 	
 	public GTNOfflineEvaluation(IFeatureExtraction fe, IClassifier classifier, AbstractDataPreprocessor dataPreprocessor, List<String> directories) throws InterruptedException, IOException, ExecutionException {

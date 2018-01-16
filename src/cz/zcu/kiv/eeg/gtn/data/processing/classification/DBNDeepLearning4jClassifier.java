@@ -33,8 +33,7 @@ import java.util.List;
  * 
  *
  */
-public class DBNDeepLearning4jClassifier implements IClassifier {
-
+public class DBNDeepLearning4jClassifier extends DeepLearning4jClassifier {
     
     private MultiLayerNetwork model;    //multi layer neural network with a logistic output layer and multiple hidden neuralNets
     private int iterations;             //Iterations used to classify
@@ -93,11 +92,6 @@ public class DBNDeepLearning4jClassifier implements IClassifier {
         System.out.println(eval.stats());
     }
 
-    public void train(List<double[][]> epochs, List<Double> targets, int numberOfIter, IFeatureExtraction fe) {
-
-
-    }
-
     //  initialization of neural net with params. For more info check http://deeplearning4j.org/iris-flower-dataset-tutorial where is more about params
     private void build(int numRows, int outputNum, int seed, int listenerFreq) {
         System.out.print("Build model....DBN");
@@ -137,102 +131,5 @@ public class DBNDeepLearning4jClassifier implements IClassifier {
         model.init(); // Initialize model
         model.setListeners(new ScoreIterationListener(10));// Setting listeners
         //model.setListeners(new ScoreIterationListener(listenerFreq)); // Setting listeners
-    }
-
-    // method for testing the classifier.
-    @Override
-    public ClassificationStatistics test(List<FeatureVector> featureVectors, List<Double> targets) {
-        ClassificationStatistics resultsStats = new ClassificationStatistics(); // initialization of classifier statistics
-        for (int i = 0; i < featureVectors.size(); i++) {   //iterating epochs
-            double output = this.classify(featureVectors.get(i));  //   output means score of a classifier from method classify
-            resultsStats.add(output, targets.get(i));   // calculating statistics
-        }
-        return resultsStats;    //  returns classifier statistics
-    }
-
-
-    // method not implemented. For saving use method save(String file)
-    @Override
-    public void load(InputStream is) {
-
-    }
-
-    // method not implemented. For loading use load(String file)
-    @Override
-    public void save(OutputStream dest) {
-
-    }
-
-    /**
-     * saves network to zip file
-     * @param file path and file name without .zip
-     */
-    public void save(String file){
-        File locationToSave = new File(file + ".zip");      //Where to save the network. Note: the file is in .zip format - can be opened externally
-        boolean saveUpdater = true;   //Updater: i.e., the state for Momentum, RMSProp, Adagrad etc. Save this if you want to train your network more in the future
-        try {
-            ModelSerializer.writeModel(model, locationToSave, saveUpdater);
-            System.out.println("Saved network params " + model.params());
-            System.out.println("Saved");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * loads network from zip file
-     * @param file path and file name without .zip
-     */
-    public void load(String file){
-        File locationToLoad = new File(file + ".zip");
-        try {
-            model = ModelSerializer.restoreMultiLayerNetwork(locationToLoad);
-            System.out.println("Loaded");
-            System.out.println("Loaded network params " + model.params());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void saveOld(String file) {
-        OutputStream fos;
-        // Choose the name of classifier and coefficient file to save based on the feature extraction, which is used
-        String coefficientsName = this.getClass().getName() +  ".bin";
-
-        try {
-            // Save classifier and coefficients, used methods come from Nd4j library
-            fos = Files.newOutputStream(Paths.get("data/test_classifiers_and_settings/" + coefficientsName));
-            DataOutputStream dos = new DataOutputStream(fos);
-            Nd4j.write(model.params(), dos);
-            dos.flush();
-            dos.close();
-            FileUtils.writeStringToFile(new File(file), model.getLayerWiseConfigurations().toJson());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-
-    public void loadOld(String file) {
-        MultiLayerConfiguration confFromJson = null;
-        INDArray newParams = null;
-        // Choose the name of coefficient file to load based on the feature extraction, which is used
-        String coefficientsName = this.getClass().getName() +  ".bin";
-
-        try {
-            // Load classifier and coefficients, used methods come from Nd4j library
-            confFromJson = MultiLayerConfiguration.fromJson(FileUtils.readFileToString(new File(file)));
-            DataInputStream dis = new DataInputStream(new FileInputStream("data/test_classifiers_and_settings/" + coefficientsName));
-            newParams = Nd4j.read(dis);
-            dis.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        // Initialize network with loaded params
-        model = new MultiLayerNetwork(confFromJson);
-        model.init();
-        model.setParams(newParams);
-        System.out.println("Original network params " + model.params());
-        System.out.println("Loaded");
     }
 }

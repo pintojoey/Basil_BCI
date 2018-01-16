@@ -34,20 +34,14 @@ public class OffLineDataProvider extends AbstractDataProvider {
     private Map<String, Integer> files;
     private boolean running;
 
-
     public OffLineDataProvider(File eegFile) {
         files = new HashMap<>();
         files.put(eegFile.getAbsolutePath(), -1);
         this.running = true;
     }
 
-    public OffLineDataProvider(String trainDir) throws IOException {
-        File dir = new File(trainDir);
-        if (!dir.exists() || !dir.isDirectory()) {
-            throw new FileNotFoundException(dir + " is not a directory");
-        }
-
-        this.files = loadExpectedResults(trainDir);
+    public OffLineDataProvider(Map<String, Integer> files) {
+        this.files = files;
         this.running = true;
     }
 
@@ -58,8 +52,6 @@ public class OffLineDataProvider extends AbstractDataProvider {
         this.vmrkFile = baseName + VMRK_EXTENSION;
         this.eegFile = baseName +  EEG_EXTENSION;
     }
-
-    
 
     @Override
     public void run() {
@@ -164,35 +156,5 @@ public class OffLineDataProvider extends AbstractDataProvider {
     @Override
     public void stop() {
         this.running = false;
-    }
-
-    private Map<String, Integer> loadExpectedResults(String dir) throws IOException {
-        Map<String, Integer> res = new HashMap<>();
-        File file = new File(dir + File.separator + "infoTrain.txt");
-        //File file = new File(dir + File.separator + "info.txt");
-        FileInputStream fis = new FileInputStream(file);
-
-        //Construct BufferedReader from InputStreamReader
-        BufferedReader br = new BufferedReader(new InputStreamReader(fis));
-
-        String line;
-        int num;
-        while ((line = br.readLine()) != null) {
-            if (line.charAt(0) == '#') { //comment in info txt
-                continue;
-            }
-            String[] parts = line.split(" ");
-            if (parts.length > 1) {
-                try {
-                    num = Integer.parseInt(parts[1]);
-                    res.put(dir + File.separator + parts[0], num);
-                } catch (NumberFormatException ex) {
-                    //NaN
-                }
-            }
-        }
-
-        br.close();
-        return res;
     }
 }

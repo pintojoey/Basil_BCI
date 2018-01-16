@@ -30,11 +30,9 @@ import java.util.List;
 /**
  * Created by lukasvareka on 27. 6. 2016.
  */
-public class MLPDeepLearning4j implements IClassifier {
+public class MLPDeepLearning4j extends DeepLearning4jClassifier {
     private final int NEURON_COUNT_DEFAULT = 30;    //default number of neurons
-    private MultiLayerNetwork model;            //multi layer neural network with a logistic output layer and multiple hidden neuralNets
     private int neuronCount;                    // Number of neurons
-    private int iterations;                    //Iterations used to classify
 
     /*Default constructor*/
     public MLPDeepLearning4j() {
@@ -127,110 +125,5 @@ public class MLPDeepLearning4j implements IClassifier {
         model.init(); // Initialize mode
         model.setListeners(new ScoreIterationListener(100));// Setting listeners
         // model.setListeners(new HistogramIterationListener(10));
-    }
-
-    // method for testing the classifier.
-    @Override
-    public ClassificationStatistics test(List<FeatureVector> featureVectors, List<Double> targets) {
-        ClassificationStatistics resultsStats = new ClassificationStatistics(); // initialization of classifier statistics
-        for (int i = 0; i < featureVectors.size(); i++) {   //iterating epochs
-            double output = this.classify(featureVectors.get(i));   //   output means score of a classifier from method classify
-            resultsStats.add(output, targets.get(i));   // calculating statistics
-        }
-        return resultsStats;    //  returns classifier statistics
-    }
-
-    // method not implemented. For loading use load(String file)
-    @Override
-    public void load(InputStream is) {
-        throw new NotImplementedException();
-    }
-
-    // method not implemented. For saving use method save(String file)
-    @Override
-    public void save(OutputStream dest) {
-        throw new NotImplementedException();
-    }
-
-
-    public void saveOld(String file) {
-        OutputStream fos;
-        // Choose the name of classifier and coefficient file to save based on the feature extraction, which is used
-        String coefficientsName = this.getClass().getName() +  ".bin";
-
-        try {
-            // Save classifier and coefficients, used methods come from Nd4j library
-            fos = Files.newOutputStream(Paths.get("data/test_classifiers_and_settings/" + coefficientsName));
-            DataOutputStream dos = new DataOutputStream(fos);
-            Nd4j.write(model.params(), dos);
-            dos.flush();
-            dos.close();
-            FileUtils.writeStringToFile(new File(file), model.getLayerWiseConfigurations().toJson());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Save Model to file
-     * uses save methods from library deeplearning4j
-     *
-     * @param pathname path name and file name with archive name without .zip
-     */
-    public void save(String pathname) {
-        File locationToSave = new File(pathname + ".zip");      //Where to save the network. Note: the file is in .zip format - can be opened externally
-        boolean saveUpdater = true;   //Updater: i.e., the state for Momentum, RMSProp, Adagrad etc. Save this if you want to train your network more in the future
-        try {
-            ModelSerializer.writeModel(model, locationToSave, saveUpdater);
-            System.out.println("Saved network params " + model.params());
-            System.out.println("Saved");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    /**
-     * Loads Model from file
-     * uses load methods from library deepalerning4j
-     *
-     * @param pathname pathname and file name of loaded Model without .zip
-     */
-    public void load(String pathname) {
-        File locationToLoad = new File(pathname + ".zip");
-        try {
-            model = ModelSerializer.restoreMultiLayerNetwork(locationToLoad);
-            System.out.println("Loaded");
-            System.out.println("Loaded network params " + model.params());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-
-    public void loadOld(String file) {
-        MultiLayerConfiguration confFromJson = null;
-        INDArray newParams = null;
-        // Choose the name of coefficient file to load based on the feature extraction, which is used
-        String coefficientsName = this.getClass().getName() +  ".bin";
-
-        try {
-            // Load classifier and coefficients, used methods come from Nd4j library
-            confFromJson = MultiLayerConfiguration.fromJson(FileUtils.readFileToString(new File(file)));
-            DataInputStream dis = new DataInputStream(new FileInputStream("data/test_classifiers_and_settings/" + coefficientsName));
-            newParams = Nd4j.read(dis);
-            dis.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        // Initialize network with loaded params
-        if (confFromJson != null) {
-            model = new MultiLayerNetwork(confFromJson);
-        }
-        model.init();
-        model.setParams(newParams);
-        System.out.println("Original network params " + model.params());
-        System.out.println("Loaded");
-
     }
 }

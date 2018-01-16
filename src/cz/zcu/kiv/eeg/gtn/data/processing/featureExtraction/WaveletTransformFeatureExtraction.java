@@ -18,10 +18,6 @@ import cz.zcu.kiv.eegdsp.wavelet.discrete.algorithm.wavelets.WaveletDWT;
  *
  */
 public class WaveletTransformFeatureExtraction implements IFeatureExtraction {
-	/**
-	 * Number of samples to be used - Fs = 1000 Hz expected
-	 */
-	private int epochSize = 0;
 
 	/**
 	 * Subsampling factor
@@ -40,18 +36,22 @@ public class WaveletTransformFeatureExtraction implements IFeatureExtraction {
 
 	private int numberOfChannels = 0;
 
+	private ISignalProcessor dwt;
+
 	/**
 	 * Constructor for the wavelet transform feature extraction with default
 	 * wavelet
 	 */
 	public WaveletTransformFeatureExtraction() {
 		this.NAME = 8;
+		setupDwt();
 	}
 	
 	public WaveletTransformFeatureExtraction(int name, int featureSize, int downSmplFactor) {
-		this.NAME = name;
+		setWaveletName(name);
 		this.FEATURE_SIZE = featureSize;
 		this.downSmplFactor = downSmplFactor;
+		setupDwt();
 	}
 
 	/**
@@ -63,6 +63,23 @@ public class WaveletTransformFeatureExtraction implements IFeatureExtraction {
 	 */
 	public WaveletTransformFeatureExtraction(int name) {
 		setWaveletName(name);
+		setupDwt();
+	}
+
+	private void setupDwt(){
+		dwt = SignalProcessingFactory.getInstance()
+				.getWaveletDiscrete();
+		String[] names = ((WaveletTransformationDiscrete) dwt)
+				.getWaveletGenerator().getWaveletNames();
+		WaveletDWT wavelet = null;
+		try {
+			wavelet = ((WaveletTransformationDiscrete) dwt)
+					.getWaveletGenerator().getWaveletByName(names[NAME]);
+		} catch (Exception e) {
+			System.out
+					.println("Exception loading wavelet " + names[NAME] + ".");
+		}
+		((WaveletTransformationDiscrete) dwt).setWavelet(wavelet);
 	}
 
 	/**
@@ -77,20 +94,6 @@ public class WaveletTransformFeatureExtraction implements IFeatureExtraction {
 	public double[] extractFeatures(EEGDataPackage data) {
 		double[][] epoch = data.getData();
 
-		ISignalProcessor dwt = SignalProcessingFactory.getInstance()
-				.getWaveletDiscrete();
-		String[] names = ((WaveletTransformationDiscrete) dwt)
-				.getWaveletGenerator().getWaveletNames();
-		WaveletDWT wavelet = null;
-		try {
-			wavelet = ((WaveletTransformationDiscrete) dwt)
-					.getWaveletGenerator().getWaveletByName(names[NAME]);
-		} catch (Exception e) {
-			System.out
-					.println("Exception loading wavelet " + names[NAME] + ".");
-		}
-		((WaveletTransformationDiscrete) dwt).setWavelet(wavelet);
-
 		ISignalProcessingResult res;
 		numberOfChannels = epoch.length;
 		double[] features = new double[FEATURE_SIZE * numberOfChannels];
@@ -103,6 +106,7 @@ public class WaveletTransformFeatureExtraction implements IFeatureExtraction {
 			}
 			i++;
 		}
+
 		features = SignalProcessing.normalize(features);
 
 		return features;
@@ -124,7 +128,7 @@ public class WaveletTransformFeatureExtraction implements IFeatureExtraction {
 	 * @param name
 	 *            - number that indicates the wavelet name
 	 */
-	public void setWaveletName(int name) {
+	private void setWaveletName(int name) {
 		if (name >= 0 && name <= 17) {
 			this.NAME = name;
 		} else
@@ -132,24 +136,13 @@ public class WaveletTransformFeatureExtraction implements IFeatureExtraction {
 					"Wavelet Name must be >= 0 and <= 17");
 	}
 
-	/**
-	 * Sets how many coeficients will be used after extracting the feature
-	 * 
-	 * @param featureSize
-	 *            - size of feature
-	 */
-	public void setFeatureSize(int featureSize) {
-		if (featureSize > 0 && featureSize <= 1024) {
-			this.FEATURE_SIZE = featureSize;
-		} else {
-			throw new IllegalArgumentException(
-					"Feature Size must be > 0 and <= 1024");
-		}
-	}
-	
 	@Override
 	public String toString() {
-		return "DWT: EPOCH_SIZE: " + this.epochSize +
+		/*
+	  Number of samples to be used - Fs = 1000 Hz expected
+	 */
+		int epochSize = 0;
+		return "DWT: EPOCH_SIZE: " + epochSize +
 				" FEATURE_SIZE: " + this.FEATURE_SIZE +
 				" WAVELETNAME: " + this.NAME + "\n";
 	}

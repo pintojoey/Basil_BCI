@@ -1,7 +1,6 @@
 package cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.algorithms;
 
 import cz.zcu.kiv.eeg.gtn.data.processing.structures.EEGDataPackage;
-import cz.zcu.kiv.eeg.gtn.data.providers.AbstractDataProvider;
 import cz.zcu.kiv.eeg.gtn.data.processing.math.SignalProcessing;
 import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.IPreprocessing;
 

@@ -15,6 +15,7 @@ import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.algorithms.ChannelSelect
 import cz.zcu.kiv.eeg.gtn.data.processing.structures.Buffer;
 import cz.zcu.kiv.eeg.gtn.data.processing.structures.IBuffer;
 import cz.zcu.kiv.eeg.gtn.data.providers.bva.OffLineDataProvider;
+import cz.zcu.kiv.eeg.gtn.utils.FileUtils;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -39,7 +40,7 @@ public class RunTrainingController {
 		//OffLineDataProvider provider = new OffLineDataProvider(f);
 		OffLineDataProvider provider = null;
 		try {
-			provider = new OffLineDataProvider("data/numbers");
+			provider = new OffLineDataProvider(FileUtils.loadExpectedResults("data/numbers", "infoTrain.txt"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -79,7 +80,7 @@ public class RunTrainingController {
 		try {
 			t.join();
 			System.out.println("Saving the classifier");
-			String timeStamp = new SimpleDateFormat("yyyyMMddHHmm'.txt'").format(new Date());
+			String timeStamp = new SimpleDateFormat("yyyyMMddHHmm'.zip'").format(new Date());
 			classification.save("data/classifiers/save" + timeStamp);
 			System.out.println("Remaining buffer size: "       + buffer.size());
 			System.out.println("Remaining number of markers: " + buffer.getMarkersSize());

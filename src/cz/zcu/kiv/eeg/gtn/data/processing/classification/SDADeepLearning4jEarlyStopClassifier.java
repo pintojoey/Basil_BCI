@@ -34,20 +34,15 @@ import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.lossfunctions.LossFunctions;
 import org.nd4j.linalg.lossfunctions.LossFunctions.LossFunction;
 
-import cz.zcu.kiv.eeg.gtn.data.processing.featureExtraction.IFeatureExtraction;
-
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 // creates instance of Stacked Denoising Autoencoder @author Pumprdlici group
-public class SDADeepLearning4jEarlyStopClassifier implements IClassifier {
+public class SDADeepLearning4jEarlyStopClassifier extends DeepLearning4jClassifier {
     private final int NEURON_COUNT_DEFAULT = 30;    //default number of neurons
-    //private MultiLayerNetwork model;            //multi layer neural network with a logistic output layer and multiple hidden neuralNets
-    private MultiLayerNetwork bestModel;
     private int neuronCount;                    // Number of neurons
-    private int iterations;                    //Iterations used to classify
     private String directory = "C:\\Temp\\";
     private int maxTime =5; //max time in minutes
     private int maxEpochs = 10000;
@@ -72,7 +67,7 @@ public class SDADeepLearning4jEarlyStopClassifier implements IClassifier {
     public double classify(FeatureVector fv) {
         double[] featureVector = fv.getFeatureVector(); // Extracting features to vector
         INDArray features = Nd4j.create(featureVector); // Creating INDArray with extracted features
-        return bestModel.output(features, Layer.TrainingMode.TEST).getDouble(0); // Result of classifying
+        return model.output(features, Layer.TrainingMode.TEST).getDouble(0); // Result of classifying
     }
 
     @Override
@@ -151,7 +146,7 @@ public class SDADeepLearning4jEarlyStopClassifier implements IClassifier {
         net.setListeners(listeners);
         result = trainer.fit();
 
-        bestModel = (MultiLayerNetwork) result.getBestModel();
+        model = (MultiLayerNetwork) result.getBestModel();
 
         System.out.println("Termination reason: " + result.getTerminationReason());
         System.out.println("Termination details: " + result.getTerminationDetails());
@@ -159,7 +154,7 @@ public class SDADeepLearning4jEarlyStopClassifier implements IClassifier {
         System.out.println("Score at best epoch: " + result.getBestModelScore());
 
         Evaluation eval = new Evaluation(numColumns);
-        eval.eval(dataSet.getLabels(), bestModel.output(dataSet.getFeatureMatrix(), Layer.TrainingMode.TEST));
+        eval.eval(dataSet.getLabels(), model.output(dataSet.getFeatureMatrix(), Layer.TrainingMode.TEST));
         System.out.println(eval.stats());
     }
 
@@ -204,64 +199,5 @@ public class SDADeepLearning4jEarlyStopClassifier implements IClassifier {
                 .backprop(true)
                 .build(); // Build on set configuration
         return conf;
-    }
-
-    // method for testing the classifier.
-    @Override
-    public ClassificationStatistics test(List<FeatureVector> featureVectors, List<Double> targets) {
-        ClassificationStatistics resultsStats = new ClassificationStatistics(); // initialization of classifier statistics
-        for (int i = 0; i < featureVectors.size(); i++) {   //iterating epochs
-            double output = this.classify(featureVectors.get(i));   //   output means score of a classifier from method classify
-            resultsStats.add(output, targets.get(i));   // calculating statistics
-        }
-        return resultsStats;    //  returns classifier statistics
-    }
-
-    // method not implemented. For loading use load(String file)
-    @Override
-    public void load(InputStream is) {
-
-    }
-
-    // method not implemented. For saving use method save(String file)
-    @Override
-    public void save(OutputStream dest) {
-
-    }
-
-    /**
-     * save model in file
-     * @param file path + filename without extension
-     */
-    @Override
-    public void save(String file) {
-        File locationToSave = new File(file + ".zip");      //Where to save the network. Note: the file is in .zip format - can be opened externally
-        boolean saveUpdater = true;   //Updater: i.e., the state for Momentum, RMSProp, Adagrad etc. Save this if you want to train your network more in the future
-        try {
-            ModelSerializer.writeModel(result.getBestModel(), locationToSave, saveUpdater);
-            System.out.println("Saved network params " + result.getBestModel().params());
-            System.out.println("Saved");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * load model in file
-     * @param file path + filename without extension
-     */
-    @Override
-    public void load(String file) {
-        File locationToLoad = new File(file +".zip");
-        try {
-            result.setBestModel(ModelSerializer.restoreMultiLayerNetwork(locationToLoad));
-            System.out.println("Loaded");
-            System.out.println("Loaded network params " + result.getBestModel().params());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        System.out.println("Original network params " + result.getBestModel().params());
-        System.out.println("Loaded");
     }
 }

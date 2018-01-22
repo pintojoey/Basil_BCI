@@ -32,23 +32,26 @@ public class ErpTrainCondition implements ITrainCondition {
     }
 
     private boolean canAddSample(boolean isTarget){
-       /* if (isTarget) {
+        if (isTarget) {
             if (targetCnt <= nontargetCnt)
                 return true;
         } else {
-
             if (nontargetCnt <= targetCnt)
                 return true;
         }
 
-        return false;*/
-    	return true;
+        return false;
     }
 
     @Override
     public void addSample(FeatureVector fv, String targetMarker, String marker) {
         boolean isTarget = isTarget(targetMarker, marker);
         if (canAddSample(isTarget)) {
+            if(isTarget)
+                targetCnt++;
+            else
+                nontargetCnt++;
+
             featureVectors.add(fv);
             expectedOutput.add(isTarget ? 1.0 : 0.0);
         }

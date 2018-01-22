@@ -79,6 +79,8 @@ public class RunTrainAndTest {
         } catch (InterruptedException e) {
             e.printStackTrace();
             return;
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
         //testing

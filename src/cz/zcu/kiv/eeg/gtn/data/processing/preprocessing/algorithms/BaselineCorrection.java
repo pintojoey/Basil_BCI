@@ -26,10 +26,16 @@ public class BaselineCorrection implements IPreprocessing {
         double[][] eegData = inputPackage.getData();
         double sampling = inputPackage.getMetadata().getSampling();
 
+ /*       for (int i = 0; i < eegData.length; i++){
+        	correct(eegData[i], 100);
+		}*/
+
         // for all channels
         for (int i = 0; i < eegData.length; i++) {
         	// calculate the baseline only in the requested interval
-        	double averageBaseline = SignalProcessing.average(eegData[i], (int) (0.001 * startTime * sampling), (int) (0.001 * endTime * sampling));
+			int start = (int) (0.001 * startTime * sampling);
+			int end = (int) (0.001 * endTime * sampling);
+        	double averageBaseline = SignalProcessing.average(eegData[i], start, end);
         	
         	// subtract the baseline from the rest of the signal
         	for (int j = 0; j < eegData[i].length; j++) {
@@ -40,4 +46,19 @@ public class BaselineCorrection implements IPreprocessing {
         
         return inputPackage;
     }
+
+	public static void correct(double[] epoch, int prefix) {
+
+		double baseline = 0;
+
+		for (int i = 0; i < prefix; i++) {
+			baseline += epoch[i];
+		}
+
+		baseline /= prefix;
+
+		for (int i = 0; i < epoch.length; i++) {
+			epoch[i] -= baseline;
+		}
+	}
 }

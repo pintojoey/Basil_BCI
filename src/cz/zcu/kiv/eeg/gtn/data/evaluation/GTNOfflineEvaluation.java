@@ -47,12 +47,12 @@ public class GTNOfflineEvaluation {
 	 * @throws InterruptedException
 	 * @throws IOException
 	 */
-	public static void main(String[] args) throws InterruptedException, IOException   {
+	public static void main(String[] args) throws InterruptedException, IOException, ClassNotFoundException {
 
 		IFeatureExtraction fe  = new WaveletTransformFeatureExtraction();
 
 		// Workflow
-		ISegmentation epochExtraction = new EpochExtraction(100, 1000);
+		ISegmentation epochExtraction = new EpochExtraction(100, 750);
 		List<IPreprocessing> preprocessing = new ArrayList<IPreprocessing>();
 		List<IPreprocessing> presegmentation = new ArrayList<IPreprocessing>();
 		preprocessing.add(new BaselineCorrection(0, 100));
@@ -108,7 +108,7 @@ public class GTNOfflineEvaluation {
 		t.setName("DataProviderThread");
 		t.start();
 
-		String saveFileName;
+		String saveFileName = null;
 
 		try {
 			t.join();
@@ -121,6 +121,8 @@ public class GTNOfflineEvaluation {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 			return null;
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 		System.out.println("Training finished");
 		return saveFileName;

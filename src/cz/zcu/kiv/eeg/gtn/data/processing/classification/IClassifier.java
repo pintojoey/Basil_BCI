@@ -1,5 +1,7 @@
 package cz.zcu.kiv.eeg.gtn.data.processing.classification;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
@@ -47,15 +49,15 @@ public interface IClassifier {
 	 * Load the classifier from configuration
 	 * @param is configuration of the classifier
 	 */
-    void load(InputStream is);
+    void load(InputStream is) throws ClassNotFoundException, IOException;
 	
 	/**
 	 * Save the classifier
 	 * @param dest destination stream
 	 */
-    void save(OutputStream dest);
+    void save(OutputStream dest) throws IOException;
 	
-	void save(String file);
+	void save(String file) throws IOException;
 	
-	void load(String file);
+	void load(String file) throws ClassNotFoundException, IOException;
 }

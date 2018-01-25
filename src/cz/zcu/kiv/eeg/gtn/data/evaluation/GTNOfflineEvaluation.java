@@ -4,6 +4,7 @@ import cz.zcu.kiv.eeg.gtn.data.processing.AbstractWorkflowController;
 import cz.zcu.kiv.eeg.gtn.data.processing.IWorkflowController;
 import cz.zcu.kiv.eeg.gtn.data.processing.TestingWorkflowController;
 import cz.zcu.kiv.eeg.gtn.data.processing.TrainWorkflowController;
+import cz.zcu.kiv.eeg.gtn.data.processing.classification.BLDAMatlabClassifier;
 import cz.zcu.kiv.eeg.gtn.data.processing.classification.ErpTrainCondition;
 import cz.zcu.kiv.eeg.gtn.data.processing.classification.IClassifier;
 import cz.zcu.kiv.eeg.gtn.data.processing.classification.ITrainCondition;
@@ -53,18 +54,16 @@ public class GTNOfflineEvaluation {
 		IFeatureExtraction fe  = new WaveletTransformFeatureExtraction();
 
 		// Workflow
-		ISegmentation epochExtraction = new EpochExtraction(100, 750);
+		ISegmentation epochExtraction = new EpochExtraction(100, 1000);
 		List<IPreprocessing> preprocessing = new ArrayList<IPreprocessing>();
 		List<IPreprocessing> presegmentation = new ArrayList<IPreprocessing>();
 		preprocessing.add(new BaselineCorrection(0, 100));
-		preprocessing.add(new IntervalSelection(274, 512));
+		preprocessing.add(new IntervalSelection(0, 512));
 		presegmentation.add(new ChannelSelection(new String[] {"Fz", "Cz", "Pz"}));
 		//presegmentation.add(new BandpassFilter(0.1, 20));
 
-		String savedModel = train(epochExtraction, preprocessing, presegmentation, Arrays.asList(fe));
-
-		IClassifier classifier = new SDADeepLearning4jClassifier(fe.getFeatureDimension());
-		classifier.load(savedModel);
+		
+		IClassifier classifier = train(epochExtraction, preprocessing, presegmentation, Arrays.asList(fe));
 		
 	    GTNOfflineEvaluation gtnOfflineEvaluation;
 	    List<String> directories = new ArrayList<String>(Arrays.asList("data/numbers/Horazdovice", 
@@ -83,7 +82,7 @@ public class GTNOfflineEvaluation {
 	   
 	}
 
-	private static String train(ISegmentation epochExtraction, List<IPreprocessing> preprocessing, List<IPreprocessing> presegmentation,
+	private static IClassifier train(ISegmentation epochExtraction, List<IPreprocessing> preprocessing, List<IPreprocessing> presegmentation,
 								List<IFeatureExtraction> featureExtraction){
 		System.out.println("Training started");
 		OffLineDataProvider provider = null;
@@ -98,7 +97,7 @@ public class GTNOfflineEvaluation {
 		AbstractDataPreprocessor dataPreprocessor = new EpochDataPreprocessor(preprocessing, presegmentation, null, epochExtraction);
 
 		// classification
-		IClassifier classification = new SDADeepLearning4jClassifier();
+		IClassifier classification = new BLDAMatlabClassifier();
 		ITrainCondition trainCondition = new ErpTrainCondition();
 
 		// controller
@@ -113,20 +112,16 @@ public class GTNOfflineEvaluation {
 
 		try {
 			t.join();
-			System.out.println("Saving the classifier");
-			saveFileName = "data/classifiers/save" + new SimpleDateFormat("yyyyMMddHHmm'.zip'").format(new Date());
-			classification.save(saveFileName);
+			
 			System.out.println("Remaining buffer size: "       + buffer.size());
 			System.out.println("Remaining number of markers: " + buffer.getMarkersSize());
 
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 			return null;
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		} 
 		System.out.println("Training finished");
-		return saveFileName;
+		return classification;
 	}
 	
 	

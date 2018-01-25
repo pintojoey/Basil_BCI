@@ -64,8 +64,7 @@ public class TestingWorkflowController extends AbstractWorkflowController {
                 if (fv.size() > 0 && classifier != null){
                     dataPackage.addFeatureVector(fv);
                     dataPackage.setFeatureExtractions(featureExtractions);
-                    fv.normalize();
-
+                    
                     for (EEGDataProcessingListener ls : listeners){
                         ls.featuresExtracted(dataPackage);
                     }

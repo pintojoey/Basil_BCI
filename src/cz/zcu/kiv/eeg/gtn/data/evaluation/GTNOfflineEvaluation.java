@@ -33,7 +33,8 @@ import java.util.concurrent.ExecutionException;
  *
  */
 public class GTNOfflineEvaluation {
-	private final String INFO_FILE = "info.txt";
+	private final static String TESTING_FILE = "info.txt";
+	private final static String TRAINING_FILE = "infoTrain.txt";
 	private List<String> directories;
 	private Map<String, Integer> expectedResults;
 	private Double humanAccuracy = null;
@@ -87,7 +88,7 @@ public class GTNOfflineEvaluation {
 		System.out.println("Training started");
 		OffLineDataProvider provider = null;
 		try {
-			provider = new OffLineDataProvider(FileUtils.loadExpectedResults("data/numbers", "infoTrain.txt"));
+			provider = new OffLineDataProvider(FileUtils.loadExpectedResults("data/numbers", TRAINING_FILE));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -148,7 +149,7 @@ public class GTNOfflineEvaluation {
 	    for (String dirName : directories) {
 	        directory = new File(dirName);
 	        if (directory.exists() && directory.isDirectory()) {
-	            Map<String, Integer> map = loadExpectedResults(INFO_FILE, dirName);
+	            Map<String, Integer> map = loadExpectedResults(TESTING_FILE, dirName);
 	            Map<String, Integer> localResults = new HashMap<String, Integer>(map);
 	            expectedResults.putAll(map);
 	 
@@ -184,7 +185,7 @@ public class GTNOfflineEvaluation {
 	    int totalGood = 0;
 	    int fileCount = 0;
 	    for (String dirName : this.directories) {
-	        int[] res = getHumanGuessPercentage(INFO_FILE, dirName);
+	        int[] res = getHumanGuessPercentage(TESTING_FILE, dirName);
 	        totalGood += res[1];
 	        fileCount += res[0];
 	    }

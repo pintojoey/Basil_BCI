@@ -75,7 +75,7 @@ public class BLDAMatlabClassifier implements  IClassifier {
                 proxy.eval("out_features = zeros(" + featureVectors.size() + ", " + featureVectors.get(0).size() + ");");
                 proxy.eval("out_targets = zeros(" +featureVectors.size() + ", 1);");
                 for (int i = 0; i <featureVectors.size(); i++) {
-                    double target    = targets.get(i);
+                    double target    =  featureVectors.get(i).getExpectedOutput();
                     double[] features = featureVectors.get(i).getFeatureVector();
                     proxy.setVariable("features", features);
                     proxy.eval("out_features(" + (i + 1) + ", :) = features;");

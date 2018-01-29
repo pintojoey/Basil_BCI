@@ -14,8 +14,7 @@ public class ErpTrainCondition implements ITrainCondition {
     private int nontargetCnt = 0;
 
     private ArrayList<FeatureVector> featureVectors = new ArrayList<>();
-
-    private ArrayList<Double> expectedOutput = new ArrayList<>();
+    
 
     @Override
     public boolean canAddSample(String targetMarker, String marker) {
@@ -45,15 +44,16 @@ public class ErpTrainCondition implements ITrainCondition {
 
     @Override
     public void addSample(FeatureVector fv, String targetMarker, String marker) {
-        boolean isTarget = isTarget(targetMarker, marker);
+        boolean isTarget = isTarget(targetMarker, marker); 
         if (canAddSample(isTarget)) {
-            if(isTarget)
+            if(isTarget) {
                 targetCnt++;
-            else
+            }
+            else {
                 nontargetCnt++;
-
+            }
+            fv.setExpectedOutput(isTarget ? 1.0 : 0.0);
             featureVectors.add(fv);
-            expectedOutput.add(isTarget ? 1.0 : 0.0);
         }
     }
 
@@ -67,8 +67,7 @@ public class ErpTrainCondition implements ITrainCondition {
         return featureVectors;
     }
 
-    @Override
-    public List<Double> getExpectedClasses() {
-        return expectedOutput;
-    }
+	
+
+   
 }

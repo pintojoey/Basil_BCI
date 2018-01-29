@@ -11,5 +11,5 @@ public interface ITrainCondition {
     boolean canAddSample(String targetMarker, String marker);
     void addSample(FeatureVector fv, String targetMarker, String marker);
     List<FeatureVector> getFeatureVectors();
-    List<Double> getExpectedClasses();
+    
 }

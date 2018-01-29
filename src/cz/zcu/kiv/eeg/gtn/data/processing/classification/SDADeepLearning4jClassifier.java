@@ -75,8 +75,8 @@ public class SDADeepLearning4jClassifier extends DeepLearning4jClassifier {
         for (int i = 0; i < featureVectors.size(); i++) { // Iterating through epochs
             double[] features = featureVectors.get(i).getFeatureVector(); // Feature of each epoch
             for (int j = 0; j < numColumns; j++) {   //setting labels for each column
-                labels[i][0] = targets.get(i); // Setting label on position 0 as target
-                labels[i][1] = Math.abs(1 - targets.get(i));  // Setting label on position 1 to be different from label[0]
+                labels[i][0] = featureVectors.get(i).getExpectedOutput(); // Setting label on position 0 as target
+                labels[i][1] = Math.abs(1 - labels[i][0]);  // Setting label on position 1 to be different from label[0]
             }
             features_matrix[i] = features; // Saving features to features matrix
         }

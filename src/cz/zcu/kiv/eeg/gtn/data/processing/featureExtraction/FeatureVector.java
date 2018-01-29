@@ -13,13 +13,21 @@ import cz.zcu.kiv.eeg.gtn.data.processing.math.SignalProcessing;
  */
 public class FeatureVector {
     private double[] featureVector;
+    private double expectedOutput;
     
     public FeatureVector() {
     	this.featureVector = null;
+    	this.expectedOutput = 0;
     }
     
     public FeatureVector(double[] featureVector) {
+    	this();
 		this.featureVector = featureVector;
+	}
+    
+	public FeatureVector(double[] featureVector, double expectedOutput) {
+		this.featureVector = featureVector;
+		this.expectedOutput = expectedOutput;
 	}
 
 	/**
@@ -49,5 +57,15 @@ public class FeatureVector {
     public int size(){
         return featureVector == null ? 0 : featureVector.length;
     }
+    
+    public double getExpectedOutput() {
+    	return expectedOutput;
+    }
+    
+    public void setExpectedOutput(double expectedOutput) {
+    	this.expectedOutput = expectedOutput;
+    }
+    
+    
 
 }

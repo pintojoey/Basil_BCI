@@ -68,7 +68,7 @@ public class TrainWorkflowController extends AbstractWorkflowController {
         finished = true;
         processData();
 
-        classifier.train(trainCondition.getFeatureVectors(), trainCondition.getExpectedClasses(), numOfIterations);
+        classifier.train(trainCondition.getFeatureVectors(), null, numOfIterations);
         //super.removeDataListener();
     }
 

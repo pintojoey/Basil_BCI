@@ -14,7 +14,6 @@ public class ErpTrainCondition implements ITrainCondition {
     private int nontargetCnt = 0;
 
     private ArrayList<FeatureVector> featureVectors = new ArrayList<>();
-    
 
     @Override
     public boolean canAddSample(String targetMarker, String marker) {
@@ -52,6 +51,7 @@ public class ErpTrainCondition implements ITrainCondition {
             else {
                 nontargetCnt++;
             }
+
             fv.setExpectedOutput(isTarget ? 1.0 : 0.0);
             featureVectors.add(fv);
         }

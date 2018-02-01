@@ -1,5 +1,6 @@
 package cz.zcu.kiv.eeg.gtn.data.providers.bva;
 
+import cz.zcu.kiv.eeg.gtn.data.listeners.DataProviderListener;
 import cz.zcu.kiv.eeg.gtn.data.listeners.EEGMessageListener;
 import cz.zcu.kiv.eeg.gtn.data.providers.AbstractDataProvider;
 import cz.zcu.kiv.eeg.gtn.data.providers.bva.RDA.RDA_Marker;
@@ -32,61 +33,80 @@ public class OnLineDataProvider extends AbstractDataProvider {
 
     @Override
     public void run() {
+        synchronized (super.dataProviderListeners) {
+            for (DataProviderListener ls : super.dataProviderListeners) {
+                ls.dataReadStart();
+            }
+        }
 
         boolean stopped = false;
         int count = 0;
 
-        while (isRunning) {
-            Object o = dtk.retrieveDataBlock();
-            if (o instanceof RDA_MessageData) {
-                RDA_MessageData rda = (RDA_MessageData) o;
-                double[][] data = new double[channelCnt][(int) rda.getnPoints()];
-                EEGMarker[] markers = new EEGMarker[(int) rda.getnMarkers()];
+        try {
+            while (isRunning) {
+                Object o = dtk.retrieveDataBlock();
+                if (o instanceof RDA_MessageData) {
+                    RDA_MessageData rda = (RDA_MessageData) o;
+                    double[][] data = new double[channelCnt][(int) rda.getnPoints()];
+                    EEGMarker[] markers = new EEGMarker[(int) rda.getnMarkers()];
 
-                float[] rdaDta = rda.getfData();
-                int pts = (int) rda.getnPoints();
-                for (int i = 0; i < channelCnt; i++) {
-                    System.arraycopy(rdaDta, i * pts, data[i], 0, pts);
-                }
-
-                int i = 0;
-                if (rda.getMarkers() != null) {
-                    for (RDA_Marker m : rda.getMarkers()) {
-                        markers[i] = new EEGMarker(m.getsTypeDesc(), (int) m.getnPosition());
-                        i++;
+                    float[] rdaDta = rda.getfData();
+                    int pts = (int) rda.getnPoints();
+                    for (int i = 0; i < channelCnt; i++) {
+                        System.arraycopy(rdaDta, i * pts, data[i], 0, pts);
                     }
-                }
 
-                EEGDataMessage msg = new EEGDataMessage(MessageType.DATA, count, markers, data);
-                for (EEGMessageListener ls : super.listeners) {
-                    ls.dataMessageSent(msg);
-                }
-            } else if (o instanceof RDA_MessageStart) {
-                RDA_MessageStart rda = (RDA_MessageStart) o;
-                String[] chNames = rda.getsChannelNames();
-                super.setAvailableChannels(chNames);
-                channelCnt = chNames.length;
+                    int i = 0;
+                    if (rda.getMarkers() != null) {
+                        for (RDA_Marker m : rda.getMarkers()) {
+                            markers[i] = new EEGMarker(m.getsTypeDesc(), (int) m.getnPosition());
+                            i++;
+                        }
+                    }
 
-                EEGStartMessage msg = new EEGStartMessage(MessageType.START, count, chNames, rda.getdResolutions(), (int) rda.getnChannels(), rda.getdSamplingInterval());
-                for (EEGMessageListener ls : super.listeners) {
-                    ls.startMessageSent(msg);
-                }
-            } else if (o instanceof RDA_MessageStop) {
-                EEGStopMessage msg = new EEGStopMessage(MessageType.DATA, count);
-                for (EEGMessageListener ls : super.listeners) {
-                    ls.stopMessageSent(msg);
-                }
+                    EEGDataMessage msg = new EEGDataMessage(MessageType.DATA, count, markers, data);
+                    for (EEGMessageListener ls : super.eegMessageListeners) {
+                        ls.dataMessageSent(msg);
+                    }
+                } else if (o instanceof RDA_MessageStart) {
+                    RDA_MessageStart rda = (RDA_MessageStart) o;
+                    String[] chNames = rda.getsChannelNames();
+                    super.availableChannels = chNames;
+                    channelCnt = chNames.length;
 
+                    EEGStartMessage msg = new EEGStartMessage(count, chNames, rda.getdResolutions(), rda.getdSamplingInterval());
+                    for (EEGMessageListener ls : super.eegMessageListeners) {
+                        ls.startMessageSent(msg);
+                    }
+                } else if (o instanceof RDA_MessageStop) {
+                    EEGStopMessage msg = new EEGStopMessage(MessageType.DATA, count);
+                    for (EEGMessageListener ls : super.eegMessageListeners) {
+                        ls.stopMessageSent(msg);
+                    }
+
+                    client.requestStop();
+                    dtk.requestStop();
+                    isRunning = false;
+                    stopped = true;
+                }
+            }
+
+            if (!stopped) {
                 client.requestStop();
                 dtk.requestStop();
-                isRunning = false;
-                stopped = true;
+            }
+        } catch (Exception e) {
+            synchronized (super.dataProviderListeners) {
+                for (DataProviderListener ls : super.dataProviderListeners) {
+                    ls.dataReadError(e);
+                }
             }
         }
 
-        if (!stopped) {
-            client.requestStop();
-            dtk.requestStop();
+        synchronized (super.dataProviderListeners) {
+            for (DataProviderListener ls : super.dataProviderListeners) {
+                ls.dataReadEnd();
+            }
         }
 
         logger.info("Experiment has ended.");
@@ -96,5 +116,4 @@ public class OnLineDataProvider extends AbstractDataProvider {
     public synchronized void stop() {
         isRunning = false;
     }
-
 }

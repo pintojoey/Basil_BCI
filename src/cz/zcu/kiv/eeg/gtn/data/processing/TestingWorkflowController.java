@@ -89,7 +89,7 @@ public class TestingWorkflowController extends AbstractWorkflowController {
     public void stop(EEGStopMessage stop) {
         finished = true;
         processData();
-        
+
         buffer.clear();
     }
 

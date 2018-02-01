@@ -70,8 +70,8 @@ public class SDADeepLearning4jClassifier extends DeepLearning4jClassifier {
         int seed = 123; //  seed - one of parameters. For more info check http://deeplearning4j.org/iris-flower-dataset-tutorial
 
         //Load Data - when target is 0, label[0] is 0 and label[1] is 1.
-        double[][] labels = new double[targets.size()][numColumns]; // Matrix of labels for classifier
-        double[][] features_matrix = new double[targets.size()][numRows]; // Matrix of features
+        double[][] labels = new double[featureVectors.size()][numColumns]; // Matrix of labels for classifier
+        double[][] features_matrix = new double[featureVectors.size()][numRows]; // Matrix of features
         for (int i = 0; i < featureVectors.size(); i++) { // Iterating through epochs
             double[] features = featureVectors.get(i).getFeatureVector(); // Feature of each epoch
             for (int j = 0; j < numColumns; j++) {   //setting labels for each column

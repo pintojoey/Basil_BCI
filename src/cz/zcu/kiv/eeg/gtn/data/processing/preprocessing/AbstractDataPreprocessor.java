@@ -26,7 +26,6 @@ public abstract class AbstractDataPreprocessor implements IDataPreprocessor {
     /**
      * @param preprocessings methods for preprocessings (such as frequency filtering)
      * @param preSegmentationPreprocessings
-	 * @param buffer reference to the buffer to remove data from
 	 * @param segmentation method for segmentation or epoch extraction
 	 */
     public AbstractDataPreprocessor(List<IPreprocessing> preprocessings, List<IPreprocessing> preSegmentationPreprocessings, ISegmentation segmentation) {

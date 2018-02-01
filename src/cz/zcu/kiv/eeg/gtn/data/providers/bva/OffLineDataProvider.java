@@ -1,5 +1,6 @@
 package cz.zcu.kiv.eeg.gtn.data.providers.bva;
 
+import cz.zcu.kiv.eeg.gtn.data.listeners.DataProviderListener;
 import cz.zcu.kiv.eeg.gtn.data.listeners.EEGMessageListener;
 import cz.zcu.kiv.eeg.gtn.data.providers.AbstractDataProvider;
 import cz.zcu.kiv.eeg.gtn.data.providers.messaging.EEGDataMessage;
@@ -11,7 +12,8 @@ import cz.zcu.kiv.signal.DataTransformer;
 import cz.zcu.kiv.signal.EEGDataTransformer;
 import cz.zcu.kiv.signal.EEGMarker;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.nio.ByteOrder;
 import java.util.HashMap;
 import java.util.List;
@@ -28,6 +30,7 @@ public class OffLineDataProvider extends AbstractDataProvider {
     private static final String VHDR_EXTENSION = ".vhdr";
 	private static final String VMRK_EXTENSION = ".vmrk";
 	private static final String EEG_EXTENSION  = ".eeg";
+
 	private String vhdrFile;
     private String vmrkFile;
     private String eegFile;
@@ -37,15 +40,13 @@ public class OffLineDataProvider extends AbstractDataProvider {
     public OffLineDataProvider(File eegFile) {
         files = new HashMap<>();
         files.put(eegFile.getAbsolutePath(), -1);
-        this.running = true;
     }
 
     public OffLineDataProvider(Map<String, Integer> files) {
         this.files = files;
-        this.running = true;
     }
 
-    private void setFileNames(String filename) {
+    private void setFileName(String filename) {
         int index = filename.lastIndexOf(".");
         String baseName = filename.substring(0, index);
         this.vhdrFile = baseName + VHDR_EXTENSION;
@@ -55,31 +56,46 @@ public class OffLineDataProvider extends AbstractDataProvider {
 
     @Override
     public void run() {
+        this.running = true;
         try {
+            synchronized (super.dataProviderListeners) {
+                for (DataProviderListener ls : super.dataProviderListeners) {
+                    ls.dataReadStart();
+                }
+            }
+
             int cnt = 0;
             for (Map.Entry<String, Integer> fileEntry : files.entrySet()) {
                 if (!running)
                     break;
 
                 DataTransformer dt = new EEGDataTransformer();
-                setFileNames(fileEntry.getKey());
+                setFileName(fileEntry.getKey());
                 File file = new File(fileEntry.getKey());
                 if (!file.exists()) {
                     System.out.println(file.getAbsolutePath() + " does not exist!");
                     continue;
                 }
 
-                //Send start msg
-                EEGStartMessage start = createStartMessage(dt, vhdrFile, cnt);
+                //Create start msg
+                EEGStartMessage start;
+                if(metadataProvider != null){
+                    metadataProvider.setFileName(vhdrFile);
+                    start = getMetadataProvider().loadMetadata(getMessageId());
+                    availableChannels = start.getAvailableChannels();
+                    samplingRate = (int)start.getSampling();
+                }else {
+                   start = createStartMessage(dt, vhdrFile, cnt);
+                }
                 cnt++;
-                synchronized (super.listeners) {
-                    for (EEGMessageListener ls : super.listeners) {
+                synchronized (super.eegMessageListeners) {
+                    for (EEGMessageListener ls : super.eegMessageListeners) {
                         ls.startMessageSent(start);
                     }
                 }
 
                 ByteOrder order = ByteOrder.LITTLE_ENDIAN;
-                int len = super.getAvailableChannels().length;
+                int len = start.getChannelCount();
                 double[][] data = new double[len][];
                 for (int i = 0; i < len; i++) {
                     data[i] = dt.readBinaryData(vhdrFile, eegFile, i + 1, order);;
@@ -96,27 +112,39 @@ public class OffLineDataProvider extends AbstractDataProvider {
                 }
 
                 EEGDataMessage dataMsg = new EEGDataMessage(MessageType.DATA, 1, eegMarkers, data);
-                synchronized (super.listeners) {
-                    for (EEGMessageListener ls : super.listeners) {
+                synchronized (super.eegMessageListeners) {
+                    for (EEGMessageListener ls : super.eegMessageListeners) {
                         ls.dataMessageSent(dataMsg);
+                    }
+                }
+
+                EEGStopMessage stop = new EEGStopMessage(MessageType.END, cnt);
+                synchronized (super.eegMessageListeners) {
+                    for (EEGMessageListener ls : super.eegMessageListeners) {
+                        ls.stopMessageSent(stop);
                     }
                 }
                 cnt++;
             }
 
-            EEGStopMessage stop = new EEGStopMessage(MessageType.END, cnt);
-            synchronized (super.listeners) {
-                for (EEGMessageListener ls : super.listeners) {
-                    ls.stopMessageSent(stop);
+        } catch (IOException e) {
+            synchronized (super.dataProviderListeners) {
+                for (DataProviderListener ls : super.dataProviderListeners) {
+                    ls.dataReadError(e);
                 }
             }
+        } finally {
+            running = false;
 
-        } catch (IOException e) {
-            e.printStackTrace();
+            synchronized (super.dataProviderListeners) {
+                for (DataProviderListener ls : super.dataProviderListeners) {
+                    ls.dataReadEnd();
+                }
+            }
         }
     }
 
-    
+
     private EEGStartMessage createStartMessage(DataTransformer dt, String vhdrFile, int cnt) throws IOException {
         List<ChannelInfo> channels = dt.getChannelInfo(vhdrFile);
         String[] chNames = new String[channels.size()];
@@ -134,9 +162,10 @@ public class OffLineDataProvider extends AbstractDataProvider {
         val = getProperty("DataFile", dt);
         this.samplingRate = sampling;
 
-        super.setAvailableChannels(chNames);
-        EEGStartMessage msg = new EEGStartMessage(MessageType.START, cnt, chNames, resolutions, chNames.length, sampling);
+        super.availableChannels = chNames;
+        EEGStartMessage msg = new EEGStartMessage(cnt, chNames, resolutions, sampling);
         msg.setDataFileName(val);
+
         return msg;
     }
 

@@ -42,12 +42,16 @@ public class Buffer implements IBuffer {
 			this.data = newData;
 		} else {
 			// merge two float arrays by creating a new connected one
-			double [][] mergedData = new double[this.data.length][this.data[0].length + newData[0].length];
-			for (int i = 0; i < this.data.length; i++) {
-				System.arraycopy(this.data[i], 0, mergedData[i], 0, this.data[i].length);
-				System.arraycopy(newData[i],   0, mergedData[i], this.data[i].length - 1, newData[i].length);
+			try {
+				double [][] mergedData = new double[this.data.length][this.data[0].length + newData[0].length];
+				for (int i = 0; i < this.data.length; i++) {
+                    System.arraycopy(this.data[i], 0, mergedData[i], 0, this.data[i].length);
+                    System.arraycopy(newData[i],   0, mergedData[i], this.data[i].length - 1, newData[i].length);
+                }
+				this.data = mergedData;
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
-			this.data = mergedData;
 		}
 			
 	}
@@ -112,7 +116,6 @@ public class Buffer implements IBuffer {
 		List<EEGMarker> markersToRemove = this.markers.subList(0, count);
 		this.markers.removeAll(markersToRemove);
 		return markersToRemove;
-		
 	}
 
 	@Override
@@ -143,7 +146,4 @@ public class Buffer implements IBuffer {
 		this.markers = new ArrayList<>();
 		System.gc();
 	}
-
-	
-
 }

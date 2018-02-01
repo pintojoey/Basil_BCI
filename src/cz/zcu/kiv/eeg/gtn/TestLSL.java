@@ -1,8 +1,5 @@
 package cz.zcu.kiv.eeg.gtn;
 
-import java.util.Observable;
-import java.util.Observer;
-
 
 import cz.zcu.kiv.eeg.gtn.data.listeners.EEGMessageListener;
 import cz.zcu.kiv.eeg.gtn.data.providers.lsl.LSLEEGDataMessageProvider;
@@ -15,7 +12,7 @@ public class TestLSL {
 	public static void main(String[] args) {
 		TestLSL td = new TestLSL();
 		LSLEEGDataMessageProvider dataProvider = new LSLEEGDataMessageProvider();
-		dataProvider.addListener(new EEGMessageListener() {
+		dataProvider.addEEGMessageListener(new EEGMessageListener() {
 			@Override
 			public void startMessageSent(EEGStartMessage msg) {
 				System.out.println(msg.toString());

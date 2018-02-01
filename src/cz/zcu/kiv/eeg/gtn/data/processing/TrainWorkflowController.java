@@ -26,8 +26,6 @@ public class TrainWorkflowController extends AbstractWorkflowController {
     private final ITrainCondition trainCondition;
 
     private int numOfIterations = 1000;
-    
-    private final String TARGET_MARKER = "S  2"; // TODO: place somewhere else - this is just for testing
 
     public TrainWorkflowController(AbstractDataProvider dataProvider, IBuffer buffer, AbstractDataPreprocessor preprocessor,
                                    List<IFeatureExtraction> featureExtractions, IClassifier classifier, ITrainCondition trainCondition) {
@@ -41,7 +39,6 @@ public class TrainWorkflowController extends AbstractWorkflowController {
             List<EEGDataPackage> dataPackages = preprocessor.preprocessData();
             if (dataPackages == null || dataPackages.size() == 0) return;
             for (EEGDataPackage dataPackage : dataPackages) {
-            	dataPackage.setTargetMarker(TARGET_MARKER); // TODO: place somewhere else
             	
                 String marker;
                 if(dataPackage.getMarkers() == null || dataPackage.getMarkers().get(0) == null)
@@ -53,7 +50,8 @@ public class TrainWorkflowController extends AbstractWorkflowController {
                     double[] features = fe.extractFeatures(dataPackage);
                     fv.addFeatures(features);
                 }
-                trainCondition.addSample(fv, dataPackage.getTargetMarker(), marker);
+
+                trainCondition.addSample(fv, dataPackage.getMetadata().getTargetMarker(), marker);
             }
         }
     }
@@ -65,11 +63,8 @@ public class TrainWorkflowController extends AbstractWorkflowController {
 
     @Override
     public void stop(EEGStopMessage stop) {
-        finished = true;
         processData();
-
-        classifier.train(trainCondition.getFeatureVectors(), null, numOfIterations);
-        //super.removeDataListener();
+        buffer.clear();
     }
 
     @Override
@@ -77,6 +72,12 @@ public class TrainWorkflowController extends AbstractWorkflowController {
         buffer.add(data.getData(), Arrays.asList(data.getMarkers()));
     }
 
+    @Override
+    protected void onDataReadEnd() {
+        super.onDataReadEnd();
+        finished = true;
+        classifier.train(trainCondition.getFeatureVectors(), null, numOfIterations);
+    }
 
     public int getMinMarkers() {
         return minMarkers;

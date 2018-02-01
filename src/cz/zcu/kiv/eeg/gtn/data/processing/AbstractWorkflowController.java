@@ -1,5 +1,6 @@
 package cz.zcu.kiv.eeg.gtn.data.processing;
 
+import cz.zcu.kiv.eeg.gtn.data.listeners.DataProviderListener;
 import cz.zcu.kiv.eeg.gtn.data.listeners.EEGDataProcessingListener;
 import cz.zcu.kiv.eeg.gtn.data.listeners.EEGMessageListener;
 import cz.zcu.kiv.eeg.gtn.data.processing.structures.IBuffer;
@@ -48,8 +49,10 @@ public abstract class AbstractWorkflowController implements IWorkflowController 
         if (preprocessor != null)
         	preprocessor.setBuffer(buffer);
         
-        if (dataProvider != null)
-        	dataProvider.addListener(dataListener);
+        if (dataProvider != null) {
+            dataProvider.addEEGMessageListener(messageListener);
+            dataProvider.addDataProviderListener(dataProviderListener);
+        }
     }
 
     public AbstractDataProvider getDataProvider() {
@@ -77,13 +80,14 @@ public abstract class AbstractWorkflowController implements IWorkflowController 
     }
 
     public void removeDataListener(){
-        dataProvider.removeListener(dataListener);
+        dataProvider.removeEEGMessageListener(messageListener);
     }
+
     /**
      * Receives and process the data from providers
      * 
      */
-    private EEGMessageListener dataListener = new EEGMessageListener() {
+    private EEGMessageListener messageListener = new EEGMessageListener() {
         @Override
         public void startMessageSent(EEGStartMessage msg) {
             buffer.initialize(msg);
@@ -105,6 +109,35 @@ public abstract class AbstractWorkflowController implements IWorkflowController 
     public void setDataProvider(AbstractDataProvider provider) {
     	this.dataProvider = provider;
     	if (dataProvider != null)
-        	dataProvider.addListener(dataListener);
+        	dataProvider.addEEGMessageListener(messageListener);
+    }
+
+    private DataProviderListener dataProviderListener = new DataProviderListener() {
+        @Override
+        public void dataReadStart() {
+            onDataReadStarted();
+        }
+
+        @Override
+        public void dataReadEnd() {
+            onDataReadEnd();
+        }
+
+        @Override
+        public void dataReadError(Exception ex) {
+            onDataReadError(ex);
+        }
+    };
+
+    protected void onDataReadStarted(){
+
+    }
+
+    protected void onDataReadError(Exception ex){
+
+    }
+
+    protected void onDataReadEnd(){
+
     }
 }

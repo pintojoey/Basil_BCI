@@ -4,25 +4,22 @@ import cz.zcu.kiv.eeg.gtn.data.processing.AbstractWorkflowController;
 import cz.zcu.kiv.eeg.gtn.data.processing.IWorkflowController;
 import cz.zcu.kiv.eeg.gtn.data.processing.TestingWorkflowController;
 import cz.zcu.kiv.eeg.gtn.data.processing.TrainWorkflowController;
-import cz.zcu.kiv.eeg.gtn.data.processing.classification.BLDAMatlabClassifier;
-import cz.zcu.kiv.eeg.gtn.data.processing.classification.ErpTrainCondition;
-import cz.zcu.kiv.eeg.gtn.data.processing.classification.IClassifier;
-import cz.zcu.kiv.eeg.gtn.data.processing.classification.ITrainCondition;
-import cz.zcu.kiv.eeg.gtn.data.processing.classification.SDADeepLearning4jClassifier;
+import cz.zcu.kiv.eeg.gtn.data.processing.classification.*;
 import cz.zcu.kiv.eeg.gtn.data.processing.featureExtraction.IFeatureExtraction;
 import cz.zcu.kiv.eeg.gtn.data.processing.featureExtraction.WaveletTransformFeatureExtraction;
 import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.*;
-import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.algorithms.*;
+import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.algorithms.BaselineCorrection;
+import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.algorithms.ChannelSelection;
+import cz.zcu.kiv.eeg.gtn.data.processing.preprocessing.algorithms.IntervalSelection;
 import cz.zcu.kiv.eeg.gtn.data.processing.structures.Buffer;
 import cz.zcu.kiv.eeg.gtn.data.processing.structures.IBuffer;
+import cz.zcu.kiv.eeg.gtn.data.providers.Metadata.GtnMetadataProvider;
 import cz.zcu.kiv.eeg.gtn.data.providers.bva.OffLineDataProvider;
 import cz.zcu.kiv.eeg.gtn.utils.FileUtils;
 
 import java.io.*;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.Map.Entry;
-import java.util.concurrent.ExecutionException;
 
 /**
  * Guess the number specific evaluation class.
@@ -37,36 +34,30 @@ public class GTNOfflineEvaluation {
 	private final static String TESTING_FILE = "info.txt";
 	private final static String TRAINING_FILE = "infoTrain.txt";
 	private List<String> directories;
-	private Map<String, Integer> expectedResults;
 	private Double humanAccuracy = null;
-	public int sizeofStimuls;
 	private List<Boolean> correctClassifications;
 	
 
 	/**
 	 * Run evaluation
-	 * @param args
-	 * @throws InterruptedException
-	 * @throws IOException
+	 * @param args args
 	 */
-	public static void main(String[] args) throws InterruptedException, IOException, ClassNotFoundException {
+	public static void main(String[] args) {
 
 		IFeatureExtraction fe  = new WaveletTransformFeatureExtraction();
 
 		// Workflow
 		ISegmentation epochExtraction = new EpochExtraction(100, 1000);
-		List<IPreprocessing> preprocessing = new ArrayList<IPreprocessing>();
-		List<IPreprocessing> presegmentation = new ArrayList<IPreprocessing>();
+		List<IPreprocessing> preprocessing = new ArrayList<>();
+		List<IPreprocessing> presegmentation = new ArrayList<>();
 		preprocessing.add(new BaselineCorrection(0, 100));
 		preprocessing.add(new IntervalSelection(0, 512));
 		presegmentation.add(new ChannelSelection(new String[] {"Fz", "Cz", "Pz"}));
-		//presegmentation.add(new BandpassFilter(0.1, 20));
 
-		
 		IClassifier classifier = train(epochExtraction, preprocessing, presegmentation, Arrays.asList(fe));
 		
 	    GTNOfflineEvaluation gtnOfflineEvaluation;
-	    List<String> directories = new ArrayList<String>(Arrays.asList("data/numbers/Horazdovice", 
+	    List<String> directories = new ArrayList<>(Arrays.asList("data/numbers/Horazdovice",
         "data/numbers/Blatnice","data/numbers/Strasice","data/numbers/Masarykovo", "data/numbers/Stankov", 
         "data/numbers/17ZS", "data/numbers/DolniBela", "data/numbers/KVary", "data/numbers/SPSD", "data/numbers/Strasice2",
         "data/numbers/Tachov", "data/numbers/Tachov2", "data/numbers/ZSBolevecka"));
@@ -79,7 +70,6 @@ public class GTNOfflineEvaluation {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	   
 	}
 
 	private static IClassifier train(ISegmentation epochExtraction, List<IPreprocessing> preprocessing, List<IPreprocessing> presegmentation,
@@ -87,7 +77,9 @@ public class GTNOfflineEvaluation {
 		System.out.println("Training started");
 		OffLineDataProvider provider = null;
 		try {
-			provider = new OffLineDataProvider(FileUtils.loadExpectedResults("data/numbers", TRAINING_FILE));
+			String filePath = "data/numbers" + File.separator + TRAINING_FILE;
+			provider = new OffLineDataProvider(FileUtils.loadExpectedResults(filePath));
+			provider.setMetadataProvider(new GtnMetadataProvider(filePath));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -97,7 +89,8 @@ public class GTNOfflineEvaluation {
 		AbstractDataPreprocessor dataPreprocessor = new EpochDataPreprocessor(preprocessing, presegmentation, null, epochExtraction);
 
 		// classification
-		IClassifier classification = new BLDAMatlabClassifier();
+		//IClassifier classification = new BLDAMatlabClassifier();
+		IClassifier classification = new SDADeepLearning4jClassifier();
 		ITrainCondition trainCondition = new ErpTrainCondition();
 
 		// controller
@@ -107,8 +100,6 @@ public class GTNOfflineEvaluation {
 		Thread t = new Thread(provider);
 		t.setName("DataProviderThread");
 		t.start();
-
-		String saveFileName = null;
 
 		try {
 			t.join();
@@ -125,13 +116,13 @@ public class GTNOfflineEvaluation {
 	}
 	
 	
-	public GTNOfflineEvaluation(IFeatureExtraction fe, IClassifier classifier, AbstractDataPreprocessor dataPreprocessor, List<String> directories) throws InterruptedException, IOException, ExecutionException {
+	private GTNOfflineEvaluation(IFeatureExtraction fe, IClassifier classifier, AbstractDataPreprocessor dataPreprocessor, List<String> directories) throws InterruptedException, IOException {
 		if (classifier == null)
 			throw new IllegalArgumentException("Classifier used for evaluation must not be null!");
 	    this.directories = directories;
-		
-	    expectedResults = new HashMap<>();
-	    correctClassifications = new ArrayList<Boolean>();
+
+		Map<String, Integer> expectedResults = new HashMap<>();
+	    correctClassifications = new ArrayList<>();
 	    
 	    IBuffer buffer = new Buffer();
 	    GTNDetection gtnNumberDetection = new GTNDetection(); // TODO: fix
@@ -144,15 +135,15 @@ public class GTNOfflineEvaluation {
 	    for (String dirName : directories) {
 	        directory = new File(dirName);
 	        if (directory.exists() && directory.isDirectory()) {
-	            Map<String, Integer> map = loadExpectedResults(TESTING_FILE, dirName);
-	            Map<String, Integer> localResults = new HashMap<String, Integer>(map);
+	            Map<String, Integer> map = FileUtils.loadExpectedResults(dirName, TESTING_FILE);
+	            Map<String, Integer> localResults = new HashMap<>(map);
 	            expectedResults.putAll(map);
 	 
 	            for (Entry<String, Integer> entry : localResults.entrySet()) {
 	                f = new File(entry.getKey());
 	                if (f.exists() && f.isFile()) {
 	                    OffLineDataProvider offLineData = new OffLineDataProvider(f);    
-	                    offLineData.addListener(gtnNumberDetection);
+	                    offLineData.addEEGMessageListener(gtnNumberDetection);
 	                    workFlowController.setDataProvider(offLineData);
 	                    
 	            		// run data provider thread
@@ -176,7 +167,7 @@ public class GTNOfflineEvaluation {
 	
 	 
 	
-	public double computeHumanAccuracy() throws IOException {
+	private double computeHumanAccuracy() throws IOException {
 	    int totalGood = 0;
 	    int fileCount = 0;
 	    for (String dirName : this.directories) {
@@ -211,32 +202,6 @@ public class GTNOfflineEvaluation {
 			e.printStackTrace();
 		}
 	
-	}
-	
-	private Map<String, Integer> loadExpectedResults(String filename, String dir) throws IOException {
-	    Map<String, Integer> res = new HashMap<>();
-	    File file = new File(dir + File.separator + filename);
-	    FileInputStream fis = new FileInputStream(file);
-	
-	    //Construct BufferedReader from InputStreamReader
-	    BufferedReader br = new BufferedReader(new InputStreamReader(fis));
-	
-	    String line;
-	    int num;
-	    while ((line = br.readLine()) != null) {
-	        String[] parts = line.split(" ");
-	        if (parts.length > 1) {
-	            try {
-	                num = Integer.parseInt(parts[1]);
-	                res.put(dir + File.separator + parts[0], num);
-	            } catch (NumberFormatException ex) {
-	                //NaN
-	            }
-	        }
-	    }
-	
-	    br.close();
-	    return res;
 	}
 	
 	private int[] getHumanGuessPercentage(String filename, String dir) throws IOException {

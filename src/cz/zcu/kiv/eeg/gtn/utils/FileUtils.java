@@ -9,8 +9,15 @@ import java.util.Map;
  */
 public class FileUtils {
     public static Map<String, Integer> loadExpectedResults(String dir, String infoFile) throws IOException {
+        return  loadExpectedResults(dir + File.separator + infoFile);
+    }
+
+    public static Map<String, Integer> loadExpectedResults(String infoFile) throws IOException {
+        return  loadExpectedResults(new File(infoFile));
+    }
+
+    public static Map<String, Integer> loadExpectedResults(File file) throws IOException {
         Map<String, Integer> res = new HashMap<>();
-        File file = new File(dir + File.separator + infoFile);
 
         FileInputStream fis = new FileInputStream(file);
         BufferedReader br = new BufferedReader(new InputStreamReader(fis));
@@ -25,7 +32,7 @@ public class FileUtils {
             if (parts.length > 1) {
                 try {
                     num = Integer.parseInt(parts[1]);
-                    res.put(dir + File.separator + parts[0], num);
+                    res.put(file.getParent() + File.separator + parts[0], num);
                 } catch (NumberFormatException ex) {
                     //NaN
                 }

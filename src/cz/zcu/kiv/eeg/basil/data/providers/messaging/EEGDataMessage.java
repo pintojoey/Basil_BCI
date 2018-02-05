@@ -8,25 +8,46 @@ package cz.zcu.kiv.eeg.basil.data.providers.messaging;
 import java.util.Arrays;
 
 /**
+ * EEG data message used to send data from data provider
+ *
  * @author Prokop
  */
 public class EEGDataMessage extends EEGMessage {
 
+    /**
+     * Markers
+     */
     private final EEGMarker[] markers;
 
+    /**
+     * Data
+     */
     private final double[][] data; /* NUMBER_OF_CHANNELS x BLOCK_SIZE */
 
-    public EEGDataMessage(MessageType msgType, int messageNumber, EEGMarker[] markers, double[][] data) {
-        super(msgType, messageNumber);
+    /**
+     * Creates new EEG data message
+     * @param messageId ID
+     * @param markers array of markers
+     * @param data data
+     */
+    public EEGDataMessage(int messageId, EEGMarker[] markers, double[][] data) {
+        super(messageId);
         this.markers = markers;
         this.data = data;
     }
 
+    /**
+     * Get markers
+     * @return markers
+     */
     public EEGMarker[] getMarkers() {
-
         return markers;
     }
 
+    /**
+     * Get data
+     * @return data
+     */
     public double[][] getData() {
         return data;
     }

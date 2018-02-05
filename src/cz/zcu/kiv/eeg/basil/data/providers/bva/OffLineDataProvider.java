@@ -6,7 +6,6 @@ import cz.zcu.kiv.eeg.basil.data.providers.AbstractDataProvider;
 import cz.zcu.kiv.eeg.basil.data.providers.messaging.EEGDataMessage;
 import cz.zcu.kiv.eeg.basil.data.providers.messaging.EEGStartMessage;
 import cz.zcu.kiv.eeg.basil.data.providers.messaging.EEGStopMessage;
-import cz.zcu.kiv.eeg.basil.data.providers.messaging.MessageType;
 import cz.zcu.kiv.signal.ChannelInfo;
 import cz.zcu.kiv.signal.DataTransformer;
 import cz.zcu.kiv.signal.EEGDataTransformer;
@@ -15,13 +14,13 @@ import cz.zcu.kiv.signal.EEGMarker;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteOrder;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
- * Provides off-line data recorded with the BrainVision
- * format
+ * Reads EEG data from files in BrainVision format
  * 
  * @author Tomas Prokop
  *
@@ -34,15 +33,15 @@ public class OffLineDataProvider extends AbstractDataProvider {
 	private String vhdrFile;
     private String vmrkFile;
     private String eegFile;
-    private Map<String, Integer> files;
+    private List<String> files;
     private boolean running;
 
     public OffLineDataProvider(File eegFile) {
-        files = new HashMap<>();
-        files.put(eegFile.getAbsolutePath(), -1);
+        files = new ArrayList<>(1);
+        files.add(eegFile.getAbsolutePath());
     }
 
-    public OffLineDataProvider(Map<String, Integer> files) {
+    public OffLineDataProvider(List<String> files) {
         this.files = files;
     }
 
@@ -65,13 +64,13 @@ public class OffLineDataProvider extends AbstractDataProvider {
             }
 
             int cnt = 0;
-            for (Map.Entry<String, Integer> fileEntry : files.entrySet()) {
+            for (String fileEntry : files) {
                 if (!running)
                     break;
 
                 DataTransformer dt = new EEGDataTransformer();
-                setFileName(fileEntry.getKey());
-                File file = new File(fileEntry.getKey());
+                setFileName(fileEntry);
+                File file = new File(fileEntry);
                 if (!file.exists()) {
                     System.out.println(file.getAbsolutePath() + " does not exist!");
                     continue;
@@ -82,8 +81,6 @@ public class OffLineDataProvider extends AbstractDataProvider {
                 if(metadataProvider != null){
                     metadataProvider.setFileName(vhdrFile);
                     start = getMetadataProvider().loadMetadata(getMessageId());
-                    availableChannels = start.getAvailableChannels();
-                    samplingRate = (int)start.getSampling();
                 }else {
                    start = createStartMessage(dt, vhdrFile, cnt);
                 }
@@ -104,21 +101,19 @@ public class OffLineDataProvider extends AbstractDataProvider {
                 List<EEGMarker> markers = dt.readMarkerList(vmrkFile);
                 cz.zcu.kiv.eeg.basil.data.providers.messaging.EEGMarker[] eegMarkers = new cz.zcu.kiv.eeg.basil.data.providers.messaging.EEGMarker[markers.size()];
                 int i = 0;
-                int target = fileEntry.getValue();
                 for (EEGMarker m : markers) {
                     eegMarkers[i] = new cz.zcu.kiv.eeg.basil.data.providers.messaging.EEGMarker(m.getStimulus(), m.getPosition());
-                    eegMarkers[i].setExpectedClass(target);
                     i++;
                 }
 
-                EEGDataMessage dataMsg = new EEGDataMessage(MessageType.DATA, 1, eegMarkers, data);
+                EEGDataMessage dataMsg = new EEGDataMessage(1, eegMarkers, data);
                 synchronized (super.eegMessageListeners) {
                     for (EEGMessageListener ls : super.eegMessageListeners) {
                         ls.dataMessageSent(dataMsg);
                     }
                 }
 
-                EEGStopMessage stop = new EEGStopMessage(MessageType.END, cnt);
+                EEGStopMessage stop = new EEGStopMessage(cnt);
                 synchronized (super.eegMessageListeners) {
                     for (EEGMessageListener ls : super.eegMessageListeners) {
                         ls.stopMessageSent(stop);
@@ -144,7 +139,6 @@ public class OffLineDataProvider extends AbstractDataProvider {
         }
     }
 
-
     private EEGStartMessage createStartMessage(DataTransformer dt, String vhdrFile, int cnt) throws IOException {
         List<ChannelInfo> channels = dt.getChannelInfo(vhdrFile);
         String[] chNames = new String[channels.size()];
@@ -160,9 +154,7 @@ public class OffLineDataProvider extends AbstractDataProvider {
         String val = getProperty("samplinginterval", dt);
         sampling = Integer.parseInt(val);
         val = getProperty("DataFile", dt);
-        this.samplingRate = sampling;
 
-        super.availableChannels = chNames;
         EEGStartMessage msg = new EEGStartMessage(cnt, chNames, resolutions, sampling);
         msg.setDataFileName(val);
 

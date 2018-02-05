@@ -64,14 +64,13 @@ public class OnLineDataProvider extends AbstractDataProvider {
                         }
                     }
 
-                    EEGDataMessage msg = new EEGDataMessage(MessageType.DATA, count, markers, data);
+                    EEGDataMessage msg = new EEGDataMessage(count, markers, data);
                     for (EEGMessageListener ls : super.eegMessageListeners) {
                         ls.dataMessageSent(msg);
                     }
                 } else if (o instanceof RDA_MessageStart) {
                     RDA_MessageStart rda = (RDA_MessageStart) o;
                     String[] chNames = rda.getsChannelNames();
-                    super.availableChannels = chNames;
                     channelCnt = chNames.length;
 
                     EEGStartMessage msg = new EEGStartMessage(count, chNames, rda.getdResolutions(), rda.getdSamplingInterval());
@@ -79,7 +78,7 @@ public class OnLineDataProvider extends AbstractDataProvider {
                         ls.startMessageSent(msg);
                     }
                 } else if (o instanceof RDA_MessageStop) {
-                    EEGStopMessage msg = new EEGStopMessage(MessageType.DATA, count);
+                    EEGStopMessage msg = new EEGStopMessage(count);
                     for (EEGMessageListener ls : super.eegMessageListeners) {
                         ls.stopMessageSent(msg);
                     }

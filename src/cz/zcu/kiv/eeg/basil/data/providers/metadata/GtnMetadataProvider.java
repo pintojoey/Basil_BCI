@@ -1,4 +1,4 @@
-package cz.zcu.kiv.eeg.basil.data.providers.Metadata;
+package cz.zcu.kiv.eeg.basil.data.providers.metadata;
 
 import cz.zcu.kiv.eeg.basil.data.providers.IMetadataProvider;
 import cz.zcu.kiv.eeg.basil.data.providers.messaging.EEGStartMessage;
@@ -55,21 +55,25 @@ public class GtnMetadataProvider implements IMetadataProvider {
             i++;
         }
 
-        int sampling;
+        int sampling = -1;
         String val = getProperty("samplinginterval", dt);
-        sampling = Integer.parseInt(val);
+        if (val != null) {
+            sampling = Integer.parseInt(val);
+        }
+
         val = getProperty("DataFile", dt);
 
         EEGStartMessage msg = new EEGStartMessage(msgId, chNames, resolutions, sampling);
 
         String eegFile = fileName.replaceAll(".vhdr", ".eeg");
-        if(!eegFile.contains(val)) {
+        if(val != null && !eegFile.contains(val)) {
             eegFile = val;
         }
 
         msg.setDataFileName(eegFile);
 
         if(expectedResults.containsKey(eegFile)){
+            msg.setExpectedClass(expectedResults.get(eegFile));
             msg.setTargetMarker("S  " + expectedResults.get(eegFile));
         }
 

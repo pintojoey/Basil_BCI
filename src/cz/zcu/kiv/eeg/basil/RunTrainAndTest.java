@@ -31,7 +31,7 @@ public class RunTrainAndTest {
     public static void main(String[] args) {
         OffLineDataProvider provider = null;
         try {
-            provider = new OffLineDataProvider(FileUtils.loadExpectedResults("data/numbers", "infoTrain.txt"));
+            provider = new OffLineDataProvider(new ArrayList<String>(FileUtils.loadExpectedResults("data/numbers", "infoTrain.txt").keySet()));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -86,7 +86,7 @@ public class RunTrainAndTest {
         //testing
         buffer.clear();
         try {
-            provider = new OffLineDataProvider(FileUtils.loadExpectedResults("data/numbers", "info.txt"));
+            provider = new OffLineDataProvider(new ArrayList<String>(FileUtils.loadExpectedResults("data/numbers", "info.txt").keySet()));
         } catch (IOException e) {
             e.printStackTrace();
         }

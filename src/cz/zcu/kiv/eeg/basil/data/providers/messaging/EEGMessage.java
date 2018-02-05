@@ -1,34 +1,51 @@
 package cz.zcu.kiv.eeg.basil.data.providers.messaging;
 
 /**
+ * Base EEG message object
+ *
  * Created by Tomas Prokop on 17.07.2017.
  */
 public class EEGMessage {
 
-    private final MessageType msgType;
+    /**
+     * Unique message ID
+     */
+    private final int messageId;
 
-    private final int messageNumber;
-
+    /**
+     * Message
+     */
     private String message;
 
-    public EEGMessage(MessageType msgType, int messageNumber) {
-        this.msgType = msgType;
-        this.messageNumber = messageNumber;
+    /**
+     * Default constructor
+     * @param meaageId unique message ID
+     */
+    public EEGMessage(int meaageId) {
+        this.messageId = meaageId;
     }
 
+    /**
+     * Get message
+     * @return message
+     */
     public String getMessage() {
         return message;
     }
 
+    /**
+     * Set message
+     * @param message Message
+     */
     public void setMessage(String message) {
         this.message = message;
     }
 
-    public MessageType getMsgType() {
-        return msgType;
-    }
-
-    public int getMessageNumber() {
-        return messageNumber;
+    /**
+     * Get message ID
+     * @return ID
+     */
+    public int getMessageId() {
+        return messageId;
     }
 }

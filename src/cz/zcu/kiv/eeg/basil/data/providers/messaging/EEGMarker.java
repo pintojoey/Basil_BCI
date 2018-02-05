@@ -12,29 +12,38 @@ package cz.zcu.kiv.eeg.basil.data.providers.messaging;
  */
 public class EEGMarker {
 
+    /**
+     * Marker name
+     */
     private final String name;
 
+    /**
+     * Offset of marker in data
+     */
     private int offset;
 
-    private int expectedClass;
-
+    /**
+     * Creates new EEG marker
+     * @param name marker name
+     * @param offset marker offset
+     */
     public EEGMarker(String name, int offset) {
         this.name = name;
         this.offset = offset;
     }
 
-    public int getExpectedClass() {
-        return expectedClass;
-    }
-
-    public void setExpectedClass(int expectedClass) {
-        this.expectedClass = expectedClass;
-    }
-
+    /**
+     * Get marker name
+     * @return marker name
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Get marker offset
+     * @return offset
+     */
     public int getOffset() {
         return offset;
     }
@@ -44,10 +53,18 @@ public class EEGMarker {
     	return name + ", offset: " + offset;
     }
 
+    /**
+     * Increments marker offset
+     * @param length Offset is increase by given length
+     */
 	public void incrementOffset(int length) {
 		this.offset += length;
 	}
 
+    /**
+     * Decrement marker offset
+     * @param length Offset is descreased by given length
+     */
 	public void decrementOffset(int length) {
 		this.offset = this.offset - length;
 	}

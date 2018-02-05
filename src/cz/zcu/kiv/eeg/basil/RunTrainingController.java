@@ -2,9 +2,7 @@ package cz.zcu.kiv.eeg.basil;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import cz.zcu.kiv.eeg.basil.data.processing.IWorkflowController;
 import cz.zcu.kiv.eeg.basil.data.processing.TrainWorkflowController;
@@ -40,7 +38,8 @@ public class RunTrainingController {
 		//OffLineDataProvider provider = new OffLineDataProvider(f);
 		OffLineDataProvider provider = null;
 		try {
-			provider = new OffLineDataProvider(FileUtils.loadExpectedResults("data/numbers", "infoTrain.txt"));
+			List<String> lst = new ArrayList<>(FileUtils.loadExpectedResults("data/numbers", "infoTrain.txt").keySet());
+			provider = new OffLineDataProvider(lst);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

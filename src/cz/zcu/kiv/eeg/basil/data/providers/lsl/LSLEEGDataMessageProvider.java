@@ -8,7 +8,6 @@ import cz.zcu.kiv.eeg.basil.data.listeners.EEGMessageListener;
 import cz.zcu.kiv.eeg.basil.data.providers.AbstractDataProvider;
 import cz.zcu.kiv.eeg.basil.data.providers.messaging.EEGDataMessage;
 import cz.zcu.kiv.eeg.basil.data.providers.messaging.EEGMarker;
-import cz.zcu.kiv.eeg.basil.data.providers.messaging.MessageType;
 
 /**
  * Provides EEG data with markers using
@@ -79,7 +78,7 @@ public class LSLEEGDataMessageProvider extends AbstractDataProvider  {
 		
 		/* if maximum size is reached, transfer the data */
 		if (dataPointer == BLOCK_SIZE) {
-			EEGDataMessage eegDataMessage = new EEGDataMessage(MessageType.DATA, blockCounter, markers.toArray(new EEGMarker[markers.size()]), data);
+			EEGDataMessage eegDataMessage = new EEGDataMessage(blockCounter, markers.toArray(new EEGMarker[markers.size()]), data);
 			for (EEGMessageListener ls : super.eegMessageListeners) {
 				ls.dataMessageSent(eegDataMessage);
 			}

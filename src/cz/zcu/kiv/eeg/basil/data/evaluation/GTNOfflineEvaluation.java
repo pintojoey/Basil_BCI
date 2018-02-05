@@ -17,7 +17,7 @@ import cz.zcu.kiv.eeg.basil.data.processing.preprocessing.algorithms.ChannelSele
 import cz.zcu.kiv.eeg.basil.data.processing.preprocessing.algorithms.IntervalSelection;
 import cz.zcu.kiv.eeg.basil.data.processing.structures.Buffer;
 import cz.zcu.kiv.eeg.basil.data.processing.structures.IBuffer;
-import cz.zcu.kiv.eeg.basil.data.providers.Metadata.GtnMetadataProvider;
+import cz.zcu.kiv.eeg.basil.data.providers.metadata.GtnMetadataProvider;
 import cz.zcu.kiv.eeg.basil.data.providers.bva.OffLineDataProvider;
 import cz.zcu.kiv.eeg.basil.utils.FileUtils;
 
@@ -78,7 +78,7 @@ public class GTNOfflineEvaluation {
 		OffLineDataProvider provider = null;
 		try {
 			String filePath = "data/numbers" + File.separator + TRAINING_FILE;
-			provider = new OffLineDataProvider(FileUtils.loadExpectedResults(filePath));
+			provider = new OffLineDataProvider(new ArrayList<>(FileUtils.loadExpectedResults(filePath).keySet()));
 			provider.setMetadataProvider(new GtnMetadataProvider(filePath));
 		} catch (IOException e) {
 			e.printStackTrace();

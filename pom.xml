@@ -3,7 +3,7 @@
 	xmlns="http://maven.apache.org/POM/4.0.0"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>cz.zcu.kiv.eeg.gtn</groupId>
+	<groupId>cz.zcu.kiv.eeg.basil</groupId>
 	<artifactId>guess_the_number</artifactId>
 	<packaging>jar</packaging>
 	<version>0.1.0</version>
@@ -100,7 +100,7 @@
 						<manifest>
 							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
 							<addClasspath>true</addClasspath>
-							<mainClass>cz.zcu.kiv.eeg.gtn.Main</mainClass>
+							<mainClass>cz.zcu.kiv.eeg.basil.Main</mainClass>
 						</manifest>
 						<manifestEntries>
 							<Class-Path>.</Class-Path>
@@ -114,7 +114,7 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>cz.zcu.kiv.eeg.gtn.Main</mainClass>
+							<mainClass>cz.zcu.kiv.eeg.basil.Main</mainClass>
 						</manifest>
 					</archive>
 					<descriptorRefs>

@@ -4,6 +4,8 @@ import cz.zcu.kiv.eeg.basil.data.processing.preprocessing.IPreprocessing;
 import cz.zcu.kiv.eeg.basil.data.processing.structures.EEGDataPackage;
 
 /**
+ * This method selects data in defined interval
+ *
  * Created by Tomas Prokop on 16.01.2018.
  */
 public class IntervalSelection implements IPreprocessing {

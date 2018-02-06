@@ -1,4 +1,4 @@
-package cz.zcu.kiv.eeg.basil.data.processing.math;
+package cz.zcu.kiv.eeg.basil.data.processing.Artifacts;
 
 import java.io.*;
 import java.util.*;
@@ -13,7 +13,7 @@ import java.util.*;
  * @author Michal Veverka
  * @version 1.00
  */
-public class CorrelationArtifactDet implements IArtifactDetection{
+public class CorrelationArtifactDet implements IArtifactDetection {
 	
 	public static final double DEFAULT_THRESHOLD = 0.86;
 	private static final String EYE_ARTIFACT_FILE = "data/blink.txt";

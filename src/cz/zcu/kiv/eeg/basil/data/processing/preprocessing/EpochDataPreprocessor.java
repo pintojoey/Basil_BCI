@@ -1,13 +1,11 @@
 package cz.zcu.kiv.eeg.basil.data.processing.preprocessing;
 
+import cz.zcu.kiv.eeg.basil.data.processing.structures.EEGDataPackage;
+import cz.zcu.kiv.eeg.basil.data.providers.messaging.EEGMarker;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import cz.zcu.kiv.eeg.basil.data.processing.structures.EEGDataPackage;
-import cz.zcu.kiv.eeg.basil.data.processing.structures.IBuffer;
-import cz.zcu.kiv.eeg.basil.data.providers.messaging.EEGMarker;
-import cz.zcu.kiv.eeg.basil.gui.ShowChart;
 
 /**
  * 

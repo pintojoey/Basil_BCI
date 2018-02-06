@@ -15,9 +15,25 @@ import cz.zcu.kiv.eeg.basil.data.providers.messaging.EEGStartMessage;
  *
  * */
 public class Buffer implements IBuffer {
+
+	/**
+	 * Stored data
+	 */
 	private volatile double[][] data;
+
+	/**
+	 * Stored markers
+	 */
 	private volatile List<EEGMarker> markers;
+
+	/**
+	 * Buffer capacity
+	 */
 	private final int CAPACITY = 100000;
+
+	/**
+	 * EEG start message => metadata (e.g. sampling, channels, etc.)
+	 */
 	private  EEGStartMessage metadata;
 	
 	public Buffer() {

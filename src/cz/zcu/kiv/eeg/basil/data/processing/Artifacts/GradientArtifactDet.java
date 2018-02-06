@@ -1,4 +1,4 @@
-package cz.zcu.kiv.eeg.basil.data.processing.math;
+package cz.zcu.kiv.eeg.basil.data.processing.Artifacts;
 
 /**
  * Class for removal of artifacts in EEG signal using the 
@@ -8,7 +8,7 @@ package cz.zcu.kiv.eeg.basil.data.processing.math;
  * @author Michal Veverka
  * @version 1.00
  */
-public class GradientArtifactDet implements IArtifactDetection{
+public class GradientArtifactDet implements IArtifactDetection {
 	
 	/**
 	 * The default maximal difference.

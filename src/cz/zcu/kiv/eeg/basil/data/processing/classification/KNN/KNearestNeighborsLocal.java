@@ -1,4 +1,4 @@
-package cz.zcu.kiv.eeg.basil.data.processing.math;
+package cz.zcu.kiv.eeg.basil.data.processing.classification.KNN;
 
 import java.io.Serializable;
 import java.util.ArrayList;

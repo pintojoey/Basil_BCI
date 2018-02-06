@@ -25,7 +25,7 @@ public interface IWorkflowController {
     void start(EEGStartMessage start);
     
     /**
-     * Data message received
+     * Stop message received
      * @param stop stop message
      */
     void stop(EEGStopMessage stop);

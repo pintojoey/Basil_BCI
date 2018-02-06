@@ -1,4 +1,4 @@
-package cz.zcu.kiv.eeg.basil.data.processing.math;
+package cz.zcu.kiv.eeg.basil.data.processing.Artifacts;
 
 /**
  * Class for removal of artifacts in EEG signal using the amplitude method. This

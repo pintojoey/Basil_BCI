@@ -65,7 +65,7 @@ public class SDADeepLearning4jClassifier extends DeepLearning4jClassifier {
         // Customizing params of classifier
         final int numRows = featureVectors.get(0).getFeatureVector().length;   // number of targets on a line
         final int numColumns = 2;   // number of labels needed for classifying
-        this.iterations = numberOfiter; // number of iteration in the learning phase
+        //this.iterations = numberOfiter; // number of iteration in the learning phase
         int listenerFreq = numberOfiter / 500; // frequency of output strings
         int seed = 123; //  seed - one of parameters. For more info check http://deeplearning4j.org/iris-flower-dataset-tutorial
 

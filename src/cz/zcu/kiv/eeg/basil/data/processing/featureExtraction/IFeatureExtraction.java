@@ -12,10 +12,16 @@ import cz.zcu.kiv.eeg.basil.data.processing.structures.EEGDataPackage;
 public interface IFeatureExtraction {
 	
 	/**
-	 * 
+	 * Extracts features from given data
+	 *
 	 * @param data data
 	 * @return array of features
 	 */
     double[] extractFeatures(EEGDataPackage data);
+
+	/**
+	 * Get feature vector dimension
+	 * @return feature vector dimension
+	 */
 	int getFeatureDimension();
 }

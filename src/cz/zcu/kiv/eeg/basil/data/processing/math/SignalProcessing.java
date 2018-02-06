@@ -2,6 +2,12 @@ package cz.zcu.kiv.eeg.basil.data.processing.math;
 
 public class SignalProcessing {
 
+    /**
+     * Decimates input signal
+     * @param inputSignal signal
+     * @param factor decimation factor
+     * @return decimated signal
+     */
     public static double[] decimate(double[] inputSignal, int factor) {
         int decimatedLength = inputSignal.length / factor;
         double[] output = new double[decimatedLength];
@@ -11,6 +17,11 @@ public class SignalProcessing {
         return output;
     }
 
+    /**
+     * Normalizes feature vector
+     * @param features feature vector
+     * @return normalized features
+     */
     public static double[] normalize(double[] features) {
         double size =  getSizeOfVector(features);
         for (int i = 0; i < features.length; i++) {

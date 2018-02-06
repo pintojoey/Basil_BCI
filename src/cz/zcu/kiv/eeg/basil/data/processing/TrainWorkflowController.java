@@ -15,16 +15,28 @@ import cz.zcu.kiv.eeg.basil.data.providers.messaging.EEGStartMessage;
 import cz.zcu.kiv.eeg.basil.data.providers.messaging.EEGStopMessage;
 
 /**
+ * Controller used to train classifiers
+ *
  * Created by Tomas Prokop on 15.08.2017.
  */
 public class TrainWorkflowController extends AbstractWorkflowController {
 
     private int minMarkers = 5;
 
+    /**
+     * Finished data processing => start training
+     */
     private boolean finished = false;
 
+    /**
+     * Implementation of train condition used to manage training process - e.g. selection of same number of target and
+     * nontarget feature vectors.
+     */
     private final ITrainCondition trainCondition;
 
+    /**
+     * Number of training iterations
+     */
     private int numOfIterations = 1000;
 
     public TrainWorkflowController(AbstractDataProvider dataProvider, IBuffer buffer, AbstractDataPreprocessor preprocessor,

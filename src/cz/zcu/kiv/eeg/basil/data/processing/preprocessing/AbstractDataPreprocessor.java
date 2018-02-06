@@ -15,17 +15,29 @@ import cz.zcu.kiv.eeg.basil.data.providers.messaging.EEGStartMessage;
  */
 public abstract class AbstractDataPreprocessor implements IDataPreprocessor {
 
+	/**
+	 * List of preprocessing methods performed after segmentation
+	 */
     protected final List<IPreprocessing> preprocessings;
 
-    protected final List<IPreprocessing> preSegmentationPreprocessings;
+	/**
+	 * List of preprocessing methods performed before segmentation
+	 */
+	protected final List<IPreprocessing> preSegmentationPreprocessings;
 
+	/**
+	 * Segmentation method
+	 */
     protected final ISegmentation segmentation;
-    
-    protected IBuffer buffer;
+
+	/**
+	 * Buffer
+	 */
+	protected IBuffer buffer;
 
     /**
-     * @param preprocessings methods for preprocessings (such as frequency filtering)
-     * @param preSegmentationPreprocessings
+     * @param preprocessings List of preprocessing methods performed after segmentation (such as frequency filtering)
+     * @param preSegmentationPreprocessings List of preprocessing methods performed before segmentation
 	 * @param segmentation method for segmentation or epoch extraction
 	 */
     public AbstractDataPreprocessor(List<IPreprocessing> preprocessings, List<IPreprocessing> preSegmentationPreprocessings, ISegmentation segmentation) {
@@ -50,8 +62,4 @@ public abstract class AbstractDataPreprocessor implements IDataPreprocessor {
 	public void setBuffer(IBuffer buffer) {
 		this.buffer = buffer;
 	}
-
-	
-	
-	
 }

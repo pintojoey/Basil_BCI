@@ -28,11 +28,35 @@ import cz.zcu.kiv.eeg.basil.data.providers.messaging.EEGStopMessage;
  *
  */
 public abstract class AbstractWorkflowController implements IWorkflowController {
+
+    /**
+     * Listeners bind to data processing
+     */
     protected List<EEGDataProcessingListener> listeners = new ArrayList<>();
+
+    /**
+     * Data provider implementation
+     */
     protected AbstractDataProvider dataProvider;
+
+    /**
+     * Buffer used to store data
+     */
     protected final IBuffer buffer;
+
+    /**
+     * Data preprocessor used to preprocess data
+     */
     protected final AbstractDataPreprocessor preprocessor;
+
+    /**
+     * List of feature extraction methods
+     */
     protected final List<IFeatureExtraction> featureExtractions;
+
+    /**
+     * Classifier
+     */
     protected final IClassifier classifier;
 
     public AbstractWorkflowController(AbstractDataProvider dataProvider, IBuffer buffer,
@@ -129,14 +153,24 @@ public abstract class AbstractWorkflowController implements IWorkflowController 
         }
     };
 
+    /**
+     * Method called when data provider starts data reading.
+     */
     protected void onDataReadStarted(){
 
     }
 
+    /**
+     * Method called when data provider throws exception.
+     * @param ex exception
+     */
     protected void onDataReadError(Exception ex){
 
     }
 
+    /**
+     * Method called when data provider finishes data reading.
+     */
     protected void onDataReadEnd(){
 
     }

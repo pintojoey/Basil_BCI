@@ -5,8 +5,7 @@ import java.io.OutputStream;
 import java.util.List;
 
 import cz.zcu.kiv.eeg.basil.data.processing.featureExtraction.FeatureVector;
-import cz.zcu.kiv.eeg.basil.data.processing.featureExtraction.IFeatureExtraction;
-import cz.zcu.kiv.eeg.basil.data.processing.math.LinearDiscriminantAnalysisAlgorithms;
+import cz.zcu.kiv.eeg.basil.data.processing.classification.LDA.LinearDiscriminantAnalysisAlgorithms;
 
 public class LinearDiscriminantAnalysisClassifier implements IClassifier {
 

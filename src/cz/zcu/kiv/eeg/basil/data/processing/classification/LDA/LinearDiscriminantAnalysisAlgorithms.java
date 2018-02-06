@@ -1,4 +1,4 @@
-package cz.zcu.kiv.eeg.basil.data.processing.math;
+package cz.zcu.kiv.eeg.basil.data.processing.classification.LDA;
 
 import java.io.BufferedReader;
 import java.io.File;

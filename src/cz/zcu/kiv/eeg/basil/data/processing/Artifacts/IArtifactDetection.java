@@ -1,4 +1,4 @@
-package cz.zcu.kiv.eeg.basil.data.processing.math;
+package cz.zcu.kiv.eeg.basil.data.processing.Artifacts;
 
 /**
  * Interface which makes sure every artifact detector

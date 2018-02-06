@@ -1,4 +1,4 @@
-package cz.zcu.kiv.eeg.basil.data.processing.math;
+package cz.zcu.kiv.eeg.basil.data.processing.classification.KNN;
 
 import java.io.Serializable;
 
@@ -8,7 +8,7 @@ import java.io.Serializable;
  * @author Vlada47
  *
  */
-public class Neighbor implements Serializable{
+public class Neighbor implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	

@@ -1,8 +1,5 @@
 package cz.zcu.kiv.eeg.basil.data.processing.featureExtraction;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
 import cz.zcu.kiv.eeg.basil.data.processing.math.SignalProcessing;
 
 /**

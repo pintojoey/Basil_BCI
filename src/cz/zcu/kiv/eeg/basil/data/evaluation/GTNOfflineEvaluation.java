@@ -43,7 +43,7 @@ public class GTNOfflineEvaluation {
 	 * @param args args
 	 */
 	public static void main(String[] args) {
-
+		long startTime = System.nanoTime();
 		IFeatureExtraction fe  = new WaveletTransformFeatureExtraction();
 
 		// Workflow
@@ -70,6 +70,8 @@ public class GTNOfflineEvaluation {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		long estimatedTime = System.nanoTime() - startTime;
+		System.out.println(estimatedTime /1000000000.0 + " sec");
 	}
 
 	private static IClassifier train(ISegmentation epochExtraction, List<IPreprocessing> preprocessing, List<IPreprocessing> presegmentation,
@@ -89,8 +91,8 @@ public class GTNOfflineEvaluation {
 		AbstractDataPreprocessor dataPreprocessor = new EpochDataPreprocessor(preprocessing, presegmentation, null, epochExtraction);
 
 		// classification
-		IClassifier classification = new BLDAMatlabClassifier();
-		//IClassifier classification = new SDADeepLearning4jClassifier();
+		//IClassifier classification = new BLDAMatlabClassifier();
+		IClassifier classification = new SDADeepLearning4jClassifier();
 		ITrainCondition trainCondition = new ErpTrainCondition();
 
 		// controller

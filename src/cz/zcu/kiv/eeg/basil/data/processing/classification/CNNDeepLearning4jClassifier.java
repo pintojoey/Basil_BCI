@@ -8,10 +8,7 @@ import org.deeplearning4j.nn.api.OptimizationAlgorithm;
 import org.deeplearning4j.nn.conf.MultiLayerConfiguration;
 import org.deeplearning4j.nn.conf.NeuralNetConfiguration;
 import org.deeplearning4j.nn.conf.Updater;
-import org.deeplearning4j.nn.conf.layers.AutoEncoder;
-import org.deeplearning4j.nn.conf.layers.ConvolutionLayer;
-import org.deeplearning4j.nn.conf.layers.OutputLayer;
-import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
+import org.deeplearning4j.nn.conf.layers.*;
 import org.deeplearning4j.nn.weights.WeightInit;
 import org.deeplearning4j.optimize.listeners.ScoreIterationListener;
 import org.deeplearning4j.ui.stats.StatsListener;
@@ -29,34 +26,20 @@ import java.util.List;
 /**
  * Created by Tomas Prokop on 12.03.2018.
  */
-public class CNNDeepLearning4jClassifier extends DeepLearning4jClassifier{
+public class CNNDeepLearning4jClassifier extends DeepLearning4jClassifier {
 
     @Override
-    public void train(List<FeatureVector> featureVectors, List<Double> targets, int numberOfiter) {
+    public void train(List<FeatureVector> featureVectors, int numberOfiter){
 
         // Customizing params of classifier
-        final int numRows = featureVectors.get(0).getFeatureVector().length;   // number of targets on a line
+        final int numRows = featureVectors.get(0).size();   // number of targets on a line
         final int numColumns = 2;   // number of labels needed for classifying
         //this.iterations = numberOfiter; // number of iteration in the learning phase
         int listenerFreq = numberOfiter / 500; // frequency of output strings
         int seed = 123; //  seed - one of parameters. For more info check http://deeplearning4j.org/iris-flower-dataset-tutorial
 
-        //Load Data - when target is 0, label[0] is 0 and label[1] is 1.
-        double[][] labels = new double[featureVectors.size()][numColumns]; // Matrix of labels for classifier
-        double[][] features_matrix = new double[featureVectors.size()][numRows]; // Matrix of features
-        for (int i = 0; i < featureVectors.size(); i++) { // Iterating through epochs
-            double[] features = featureVectors.get(i).getFeatureVector(); // Feature of each epoch
-            for (int j = 0; j < numColumns; j++) {   //setting labels for each column
-                labels[i][0] = featureVectors.get(i).getExpectedOutput(); // Setting label on position 0 as target
-                labels[i][1] = Math.abs(1 - labels[i][0]);  // Setting label on position 1 to be different from label[0]
-            }
-            features_matrix[i] = features; // Saving features to features matrix
-        }
+        DataSet dataSet = createDataSet(featureVectors);
 
-        // Creating INDArrays and DataSet
-        INDArray output_data = Nd4j.create(labels); // Create INDArray with labels(targets)
-        INDArray input_data = Nd4j.create(features_matrix); // Create INDArray with features(data)
-        DataSet dataSet = new DataSet(input_data, output_data); // Create dataSet with features and labels
         SplitTestAndTrain tat = dataSet.splitTestAndTrain(0.8);
         Nd4j.ENFORCE_NUMERICAL_STABILITY = true; // Setting to enforce numerical stability
 
@@ -72,8 +55,41 @@ public class CNNDeepLearning4jClassifier extends DeepLearning4jClassifier{
         System.out.println(eval.stats());
     }
 
+    private ConvolutionLayer convInit(String name, int in, int out, int[] kernel, int[] stride, int[] pad, double bias) {
+        return new ConvolutionLayer.Builder(kernel, stride, pad).name(name).nIn(in).nOut(out).biasInit(bias).build();
+    }
+
+    private ConvolutionLayer conv5x5(String name, int out, int[] stride, int[] pad, double bias) {
+        return new ConvolutionLayer.Builder(new int[]{5,5}, stride, pad).name(name).nOut(out).biasInit(bias).build();
+    }
+
+    private SubsamplingLayer maxPool(String name, int[] kernel) {
+        return new SubsamplingLayer.Builder(kernel, new int[]{2,2}).name(name).build();
+    }
+
     private void build(int numRows, int outputNum, int seed, int listenerFreq) {
         System.out.print("Build model....SDA");
+        MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder()
+                .seed(seed)
+                .iterations(iterations)
+                .regularization(false).l2(0.005)
+                .activation(Activation.RELU)
+                .learningRate(0.0001)
+                .weightInit(WeightInit.XAVIER)
+                .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
+                .updater(Updater.NESTEROVS).momentum(0.9)
+                .list()
+                .layer(0, convInit("cnn1", numRows, 50 ,  new int[]{5, 5}, new int[]{1, 1}, new int[]{0, 0}, 0))
+                .layer(1, maxPool("maxpool1", new int[]{2,2}))
+                .layer(2, conv5x5("cnn2", 100, new int[]{5, 5}, new int[]{1, 1}, 0))
+                .layer(3, maxPool("maxool2", new int[]{2,2}))
+                .layer(4, new DenseLayer.Builder().nOut(500).build())
+                .layer(5, new OutputLayer.Builder(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
+                        .nOut(2)
+                        .activation(Activation.SOFTMAX)
+                        .build())
+                .backprop(true).pretrain(false)
+                .build();
         //MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder()
 /*                //.seed(seed)
                 .iterations(1500)
@@ -102,7 +118,7 @@ public class CNNDeepLearning4jClassifier extends DeepLearning4jClassifier{
 
     @Override
     public double classify(FeatureVector fv) {
-        double[] featureVector = fv.getFeatureVector(); // Extracting features to vector
+        double[][] featureVector = fv.getFeatureMatrix(); // Extracting features to vector
         INDArray features = Nd4j.create(featureVector); // Creating INDArray with extracted features
         return model.output(features, Layer.TrainingMode.TEST).getDouble(0); // Result of classifying
     }

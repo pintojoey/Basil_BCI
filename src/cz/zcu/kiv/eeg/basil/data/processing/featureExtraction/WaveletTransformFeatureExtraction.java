@@ -91,7 +91,7 @@ public class WaveletTransformFeatureExtraction implements IFeatureExtraction {
 	 * @return - normalized feature vector with only approximation coefficients
 	 */
 	@Override
-	public double[] extractFeatures(EEGDataPackage data) {
+	public FeatureVector extractFeatures(EEGDataPackage data) {
 		double[][] epoch = data.getData();
 
 		ISignalProcessingResult res;
@@ -108,8 +108,8 @@ public class WaveletTransformFeatureExtraction implements IFeatureExtraction {
 		}
 
 		features = SignalProcessing.normalize(features);
-
-		return features;
+		FeatureVector fv = new FeatureVector(features);
+		return fv;
 	}
 
 	/**

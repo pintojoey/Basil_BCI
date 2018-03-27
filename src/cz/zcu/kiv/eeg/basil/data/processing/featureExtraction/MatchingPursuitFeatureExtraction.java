@@ -43,7 +43,7 @@ public class MatchingPursuitFeatureExtraction implements IFeatureExtraction {
 	
 	
 	@Override
-	public double[] extractFeatures(EEGDataPackage data) {
+	public FeatureVector extractFeatures(EEGDataPackage data) {
 
 		double[][] channels = data.getData();
 		numOfChannels = channels.length;
@@ -64,7 +64,8 @@ public class MatchingPursuitFeatureExtraction implements IFeatureExtraction {
 			}
 		}
 
-		return signal;
+		FeatureVector fv = new FeatureVector(signal);
+		return fv;
 		
 	}
 

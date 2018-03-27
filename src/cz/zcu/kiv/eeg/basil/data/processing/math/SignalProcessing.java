@@ -30,6 +30,22 @@ public class SignalProcessing {
         return features;
     }
 
+    /**
+     * Normalizes feature vector
+     * @param features feature vector
+     * @return normalized features
+     */
+    public static double[][] normalize(double[][] features) {
+
+        for (int i = 0; i < features.length; i++) {
+            double size =  getSizeOfVector(features[i]);
+            for (int j = 0; j < features.length; j++) {
+                features[i][j] = features[i][j] / size;
+            }
+        }
+        return features;
+    }
+
     private static double getSizeOfVector(double[] features) {
         double size = 0;
         for (int i = 0; i < features.length; i++) {

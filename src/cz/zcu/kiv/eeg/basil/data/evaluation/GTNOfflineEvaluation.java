@@ -54,7 +54,10 @@ public class GTNOfflineEvaluation {
 		preprocessing.add(new IntervalSelection(175, 512));
 		presegmentation.add(new ChannelSelection(new String[] {"Fz", "Cz", "Pz"}));
 
-		IClassifier classifier = train(epochExtraction, preprocessing, presegmentation, Arrays.asList(fe));
+		ArrayList<IFeatureExtraction> feLst = new ArrayList<>();
+		feLst.add(fe);
+
+		IClassifier classifier = train(epochExtraction, preprocessing, presegmentation, feLst);
 		
 	    GTNOfflineEvaluation gtnOfflineEvaluation;
 	    List<String> directories = new ArrayList<>(Arrays.asList("data/numbers/Horazdovice",
@@ -65,7 +68,7 @@ public class GTNOfflineEvaluation {
 	    AbstractDataPreprocessor dataPreprocessor = new EpochDataPreprocessor(preprocessing, presegmentation, null,  epochExtraction);
 
 		try {
-			gtnOfflineEvaluation = new GTNOfflineEvaluation(fe, classifier, dataPreprocessor, directories);
+			gtnOfflineEvaluation = new GTNOfflineEvaluation(feLst, classifier, dataPreprocessor, directories);
 			System.out.println("Human accuracy: Total percentage:  " + gtnOfflineEvaluation.computeHumanAccuracy() + "%");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -93,6 +96,7 @@ public class GTNOfflineEvaluation {
 		// classification
 		//IClassifier classification = new BLDAMatlabClassifier();
 		IClassifier classification = new SDADeepLearning4jClassifier();
+        //IClassifier classification = new CNNDeepLearning4jClassifier();
 		ITrainCondition trainCondition = new ErpTrainCondition();
 
 		// controller
@@ -118,7 +122,7 @@ public class GTNOfflineEvaluation {
 	}
 	
 	
-	private GTNOfflineEvaluation(IFeatureExtraction fe, IClassifier classifier, AbstractDataPreprocessor dataPreprocessor, List<String> directories) throws InterruptedException, IOException {
+	private GTNOfflineEvaluation(List<IFeatureExtraction> fe, IClassifier classifier, AbstractDataPreprocessor dataPreprocessor, List<String> directories) throws InterruptedException, IOException {
 		if (classifier == null)
 			throw new IllegalArgumentException("Classifier used for evaluation must not be null!");
 	    this.directories = directories;
@@ -128,7 +132,7 @@ public class GTNOfflineEvaluation {
 	    
 	    IBuffer buffer = new Buffer();
 	    GTNDetection gtnNumberDetection = new GTNDetection(); // TODO: fix
-	    AbstractWorkflowController workFlowController = new TestingWorkflowController(null, buffer, dataPreprocessor, Arrays.asList(fe), classifier);
+	    AbstractWorkflowController workFlowController = new TestingWorkflowController(null, buffer, dataPreprocessor, fe, classifier);
 	    workFlowController.addListener(gtnNumberDetection);
 	    File directory;
 	    File f;

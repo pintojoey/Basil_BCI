@@ -59,7 +59,7 @@ public class TrainWorkflowController extends AbstractWorkflowController {
                 
                 FeatureVector fv = new FeatureVector();
                 for (IFeatureExtraction fe : featureExtractions) {
-                    double[] features = fe.extractFeatures(dataPackage);
+                    FeatureVector features = fe.extractFeatures(dataPackage);
                     fv.addFeatures(features);
                 }
 
@@ -88,7 +88,7 @@ public class TrainWorkflowController extends AbstractWorkflowController {
     protected void onDataReadEnd() {
         super.onDataReadEnd();
         finished = true;
-        classifier.train(trainCondition.getFeatureVectors(), null, numOfIterations);
+        classifier.train(trainCondition.getFeatureVectors(), numOfIterations);
     }
 
     public int getMinMarkers() {

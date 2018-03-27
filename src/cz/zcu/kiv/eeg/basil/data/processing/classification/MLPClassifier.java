@@ -73,7 +73,7 @@ public class MLPClassifier implements LearningEventListener, IClassifier {
 
     @Override
     public double classify(FeatureVector fv) {
-    	double[] featureVector = fv.getFeatureVector();
+    	double[] featureVector = fv.getFeatureArray();
 
         // feature vector dimension must correspond to the number of input neurons
         if (featureVector.length != neuralNetwork.getInputsCount()) {
@@ -99,24 +99,24 @@ public class MLPClassifier implements LearningEventListener, IClassifier {
     }
 
     @Override
-    public void train(List<FeatureVector> featureVectors, List<Double> targets, int numberOfIter) {
+    public void train(List<FeatureVector> featureVectors, int numberOfIter) {
         int targetsSize = neuralNetwork.getOutputsCount();
         this.numberOfIters = numberOfIter;
 
-        if (featureVectors == null || featureVectors.size() == 0 || featureVectors.get(0).getFeatureVector() == null) {
+        if (featureVectors == null || featureVectors.size() == 0 || featureVectors.get(0).getFeatureMatrix() == null) {
         	System.out.println("Missing data in feature vectors!");
         	return;
         }
         
-        int len = featureVectors.get(0).getFeatureVector().length;
+        int len = featureVectors.get(0).size();
         // fill in the neuroph data structure for holding the training set
         DataSet dataset = new DataSet(len, targetsSize);
        
         for (int i = 0; i < featureVectors.size(); i++) {
-            double[] features = featureVectors.get(i).getFeatureVector();
+            FeatureVector fv = featureVectors.get(i);
             double[] target = new double[targetsSize];
-            target[0] = targets.get(i);
-            dataset.addRow(features, target);
+            target[0] = fv.getExpectedOutput();
+            dataset.addRow(fv.getFeatureArray(), target);
         }
       
         dataset.shuffle();

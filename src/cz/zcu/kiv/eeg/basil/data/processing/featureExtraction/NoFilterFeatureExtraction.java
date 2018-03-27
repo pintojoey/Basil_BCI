@@ -16,7 +16,7 @@ public class NoFilterFeatureExtraction implements IFeatureExtraction {
     }
 
     @Override
-	public double[] extractFeatures(EEGDataPackage data) {
+	public FeatureVector extractFeatures(EEGDataPackage data) {
 		double[][] epoch = data.getData();
         numOfChannels = epoch.length;
         epochSize = epoch[0].length;
@@ -34,7 +34,9 @@ public class NoFilterFeatureExtraction implements IFeatureExtraction {
         // subsample the filtered data and return the feature vectors after vector normalization
         features = SignalProcessing.decimate(features, downSmplFactor);
         features = SignalProcessing.normalize(features);
-        return features;
+
+        FeatureVector fv = new FeatureVector(features);
+        return fv;
     }
 
     @Override

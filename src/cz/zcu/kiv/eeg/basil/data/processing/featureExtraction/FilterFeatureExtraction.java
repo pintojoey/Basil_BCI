@@ -18,7 +18,7 @@ public class FilterFeatureExtraction implements IFeatureExtraction {
     }
 
     @Override
-    public double[] extractFeatures(EEGDataPackage data) {
+    public FeatureVector extractFeatures(EEGDataPackage data) {
         numberOfChannels = data.getChannelNames().length;
         double[][] channels = data.getData();
         epochSize = channels[0].length;
@@ -33,7 +33,8 @@ public class FilterFeatureExtraction implements IFeatureExtraction {
         }
 
         features = SignalProcessing.normalize(features);
-        return features;
+        FeatureVector fv = new FeatureVector(features);
+        return fv;
     }
 
     @Override

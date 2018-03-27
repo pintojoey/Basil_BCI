@@ -15,7 +15,6 @@ import org.apache.commons.math.stat.correlation.Covariance;
 
 import Jama.Matrix;
 import cz.zcu.kiv.eeg.basil.data.processing.featureExtraction.FeatureVector;
-import cz.zcu.kiv.eeg.basil.data.processing.featureExtraction.IFeatureExtraction;
 
 public class LinearDiscriminantAnalysisAlgorithms {
 
@@ -77,11 +76,9 @@ public class LinearDiscriminantAnalysisAlgorithms {
 	 * 
 	 * @param featureVectors
 	 *            - feature vectors
-	 * @param targets
-	 *            - target classes - list of expected classes (0 or 1)
 	 */
-	public void train(List<FeatureVector> featureVectors, List<Double> targets) {
-		createInputAndTargetMatrix(featureVectors, targets);
+	public void train(List<FeatureVector> featureVectors) {
+		createInputAndTargetMatrix(featureVectors);
 		sizeOfInput = determineSizeOfInput();
 		classes = determineClasses();
 		classCount = determineClassCount();
@@ -204,15 +201,14 @@ public class LinearDiscriminantAnalysisAlgorithms {
 	 * 
 	 * @param featureVectors
 	 *            - feature vectors
-	 * @param targets
-	 *            - target classes - list of expected classes (0 or 1)
 	 */
-	public void createInputAndTargetMatrix(List<FeatureVector> featureVectors, List<Double> targets) {
-		double[][] features = new double[featureVectors.size()][featureVectors.get(0).getFeatureVector().length];
-		double[][] target = new double[targets.size()][1];
+	public void createInputAndTargetMatrix(List<FeatureVector> featureVectors) {
+		double[][] features = new double[featureVectors.size()][featureVectors.get(0).size()];
+		double[][] target = new double[featureVectors.size()][1];
 		for (int i = 0; i < featureVectors.size(); i++) {
-			features[i] = featureVectors.get(i).getFeatureVector();
-			target[i][0] = targets.get(i);
+			FeatureVector fv =  featureVectors.get(i);
+			features[i] = fv.getFeatureArray();
+			target[i][0] = fv.getExpectedOutput();
 		}
 		this.input = Matrix.constructWithCopy(features);
 		this.targets = Matrix.constructWithCopy(target);

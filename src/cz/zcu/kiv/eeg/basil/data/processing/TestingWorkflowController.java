@@ -57,7 +57,7 @@ public class TestingWorkflowController extends AbstractWorkflowController {
             for (EEGDataPackage dataPackage : dataPackages) {
                 fv = new FeatureVector();
                 for (IFeatureExtraction fe : featureExtractions) {
-                    double[] features = fe.extractFeatures(dataPackage);
+                    FeatureVector features = fe.extractFeatures(dataPackage);
                     fv.addFeatures(features);
                 }
 

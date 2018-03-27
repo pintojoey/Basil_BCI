@@ -72,26 +72,27 @@ public class HHTFeatureExtraction implements IFeatureExtraction {
     private int numberOfChannels = 0;
 
     @Override
-    public double[] extractFeatures(EEGDataPackage data) {
+    public FeatureVector extractFeatures(EEGDataPackage data) {
         double[][] channels = data.getData();
         numberOfChannels = channels.length;
-        double[] featureVector = new double[channels.length * channels[0].length];
+        double[] features = new double[channels.length * channels[0].length];
         int featureIndex = 0;
         epochSize = channels[0].length;
         for (double[] channel : channels) {
             double[] processedFeatures = processFeatures(channel, (int)data.getMetadata().getSampling());
 
             for (int i = 0; i < channel.length; i++) {
-                featureVector[i + featureIndex] = processedFeatures[i];
+                features[i + featureIndex] = processedFeatures[i];
             }
 
             featureIndex += channel.length;
         }
 
-        featureVector = SignalProcessing.decimate(featureVector, downSmplFactor);
-        featureVector = SignalProcessing.normalize(featureVector);
+        features = SignalProcessing.decimate(features, downSmplFactor);
+        features = SignalProcessing.normalize(features);
 
-        return featureVector;
+        FeatureVector fv = new FeatureVector(features);
+        return fv;
     }
 
     @Override

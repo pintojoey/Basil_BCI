@@ -7,13 +7,13 @@ import testing.HhtDataRunner;
 /**
  * Created by Tomas Prokop on 20.02.2018.
  */
-public class HhtMemdFeatureExtraction implements IFeatureExtraction {
+public class MemdFeatureExtraction implements IFeatureExtraction {
 
     @Override
-    public double[] extractFeatures(EEGDataPackage data) {
+    public FeatureVector extractFeatures(EEGDataPackage data) {
 
 
-        return new double[0];
+        return null;
     }
 
     @Override

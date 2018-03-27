@@ -20,14 +20,12 @@ public class LinearDiscriminantAnalysisClassifier implements IClassifier {
 	 * 
 	 * @param featureVectors
 	 *            - feature vectors
-	 * @param targets
-	 *            - target classes - list of expected classes (0 or 1)
 	 * @param numberOfiter
 	 *            - number of training iterations
 	 */
-	public void train(List<FeatureVector> featureVectors, List<Double> targets,
+	public void train(List<FeatureVector> featureVectors,
 					  int numberOfiter) {
-		lda.train(featureVectors, targets);
+		lda.train(featureVectors);
 	}
 
 	/**
@@ -53,7 +51,7 @@ public class LinearDiscriminantAnalysisClassifier implements IClassifier {
 
 	@Override
 	public double classify(FeatureVector fv) {
-		double[] featureVector = fv.getFeatureVector();
+		double[] featureVector = fv.getFeatureArray();
 		return lda.classify(featureVector);
 	}
 

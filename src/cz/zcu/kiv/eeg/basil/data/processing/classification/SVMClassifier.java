@@ -115,9 +115,9 @@ public class SVMClassifier implements IClassifier {
 	}
 
 	@Override
-	public void train(List<FeatureVector> featureVectors, List<Double> targets, int numberOfiter) {
+	public void train(List<FeatureVector> featureVectors, int numberOfiter) {
 		/* creating of special dataset for WEKA classificator*/
-		createDataset(featureVectors, targets);
+		createDataset(featureVectors);
 		try {
 			classifier.buildClassifier(instances);
 		} catch (Exception e) {
@@ -137,15 +137,15 @@ public class SVMClassifier implements IClassifier {
 	 * 2.1,3.5,1
 	 * 
 	 * @param featureVectors list of feature vectors
-	 * @param targets list of targets
 	 */
-	private void createDataset(List<FeatureVector> featureVectors, List<Double> targets) {
+	private void createDataset(List<FeatureVector> featureVectors) {
 		FastVector attributes;
 		Instances helpDataset;
 		double[] values;
 		attributes = new FastVector();
 
-		Instance firstInstance = new Instance(targets.get(0), featureVectors.get(0).getFeatureVector());
+		FeatureVector first = featureVectors.get(0);
+		Instance firstInstance = new Instance(first.getExpectedOutput(), first.getFeatureArray());
 		int numValues = firstInstance.numValues();
 		/* creating fields of attribute of dataset */
 		for (int i = 0; i < firstInstance.numValues(); i++) {
@@ -158,10 +158,11 @@ public class SVMClassifier implements IClassifier {
 		int j = 0;
 		/* creating the rest of dataset */
 		for (FeatureVector fv : featureVectors) {
-			double[] features = fv.getFeatureVector();
+			double[] features = fv.getFeatureArray();
 			values = new double[helpDataset.numAttributes()];
 			System.arraycopy(features, 0, values, 0, numValues);
-			values[numValues] = targets.get(j++);
+			values[numValues] = fv.getExpectedOutput();
+			j++;
 			helpDataset.add(new Instance(1.0, values));
 		}
 		instances = helpDataset;
@@ -203,7 +204,7 @@ public class SVMClassifier implements IClassifier {
 
 	@Override
 	public double classify(FeatureVector fv) {
-		double[] feature = fv.getFeatureVector();
+		double[] feature = fv.getFeatureArray();
 		Instance instance = new Instance(1, feature);
 		instances.add(instance);
 		instances.setClassIndex(instances.numAttributes() - 1);

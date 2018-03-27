@@ -22,10 +22,9 @@ public interface IClassifier {
 	/**
 	 * Train the classifier using information from the supervizor
 	 * @param featureVectors list of feature vectors
-	 * @param targets target classes - list of expected classes (0 or 1)
 	 * @param numberOfiter number of training iterations
 	 */
-    void train(List<FeatureVector> featureVectors, List<Double> targets, int numberOfiter);
+    void train(List<FeatureVector> featureVectors, int numberOfiter);
 	
 	/**
 	 * Test the classifier using the data with known resulting classes

@@ -60,10 +60,11 @@ public class KNNClassifier implements IClassifier {
 	}
 
 	@Override
-	public void train(List<FeatureVector> featureVectors, List<Double> targets, int numberOfiter) {
+	public void train(List<FeatureVector> featureVectors, int numberOfiter) {
 		for(int i = 0; i < featureVectors.size(); i++) {
-			double[] vector = featureVectors.get(i).getFeatureVector();
-			classifier.addNeighbor(vector, targets.get(i));
+			FeatureVector fv = featureVectors.get(i);
+			double[] vector = fv.getFeatureArray();
+			classifier.addNeighbor(vector, fv.getExpectedOutput());
 		}
 	}
 
@@ -81,7 +82,7 @@ public class KNNClassifier implements IClassifier {
 
 	@Override
 	public double classify(FeatureVector fv) {
-		double[] feature = fv.getFeatureVector();
+		double[] feature = fv.getFeatureArray();
 		double score = classifier.getScore(feature);
 
 		return score;

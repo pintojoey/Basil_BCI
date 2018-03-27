@@ -1,6 +1,5 @@
 package cz.zcu.kiv.eeg.basil.data.processing.classification;
 
-import org.apache.commons.io.FileUtils;
 import org.deeplearning4j.eval.Evaluation;
 import org.deeplearning4j.nn.api.Layer;
 import org.deeplearning4j.nn.api.OptimizationAlgorithm;
@@ -11,8 +10,6 @@ import org.deeplearning4j.nn.conf.layers.AutoEncoder;
 import org.deeplearning4j.nn.conf.layers.OutputLayer;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.deeplearning4j.nn.weights.WeightInit;
-import org.deeplearning4j.util.ModelSerializer;
-import org.deeplearning4j.ui.api.UIServer;
 import org.deeplearning4j.api.storage.StatsStorage;
 import org.deeplearning4j.ui.stats.StatsListener;
 import org.deeplearning4j.ui.storage.InMemoryStatsStorage;
@@ -25,12 +22,7 @@ import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.lossfunctions.LossFunctions;
 
 import cz.zcu.kiv.eeg.basil.data.processing.featureExtraction.FeatureVector;
-import cz.zcu.kiv.eeg.basil.data.processing.featureExtraction.IFeatureExtraction;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,37 +46,22 @@ public class SDADeepLearning4jClassifier extends DeepLearning4jClassifier {
     /*Classifying features*/
     @Override
     public double classify(FeatureVector fv) {
-        double[] featureVector = fv.getFeatureVector(); // Extracting features to vector
+        double[][] featureVector = fv.getFeatureMatrix(); // Extracting features to vector
         INDArray features = Nd4j.create(featureVector); // Creating INDArray with extracted features
         return model.output(features, Layer.TrainingMode.TEST).getDouble(0); // Result of classifying
     }
 
     @Override
-    public void train(List<FeatureVector> featureVectors, List<Double> targets, int numberOfiter) {
+    public void train(List<FeatureVector> featureVectors, int numberOfiter) {
 
         // Customizing params of classifier
-        final int numRows = featureVectors.get(0).getFeatureVector().length;   // number of targets on a line
+        final int numRows = featureVectors.get(0).size();   // number of targets on a line
         final int numColumns = 2;   // number of labels needed for classifying
         //this.iterations = numberOfiter; // number of iteration in the learning phase
         int listenerFreq = numberOfiter / 500; // frequency of output strings
         int seed = 123; //  seed - one of parameters. For more info check http://deeplearning4j.org/iris-flower-dataset-tutorial
 
-        //Load Data - when target is 0, label[0] is 0 and label[1] is 1.
-        double[][] labels = new double[featureVectors.size()][numColumns]; // Matrix of labels for classifier
-        double[][] features_matrix = new double[featureVectors.size()][numRows]; // Matrix of features
-        for (int i = 0; i < featureVectors.size(); i++) { // Iterating through epochs
-            double[] features = featureVectors.get(i).getFeatureVector(); // Feature of each epoch
-            for (int j = 0; j < numColumns; j++) {   //setting labels for each column
-                labels[i][0] = featureVectors.get(i).getExpectedOutput(); // Setting label on position 0 as target
-                labels[i][1] = Math.abs(1 - labels[i][0]);  // Setting label on position 1 to be different from label[0]
-            }
-            features_matrix[i] = features; // Saving features to features matrix
-        }
-
-        // Creating INDArrays and DataSet
-        INDArray output_data = Nd4j.create(labels); // Create INDArray with labels(targets)
-        INDArray input_data = Nd4j.create(features_matrix); // Create INDArray with features(data)
-        DataSet dataSet = new DataSet(input_data, output_data); // Create dataSet with features and labels
+        DataSet dataSet = createDataSet(featureVectors);
         SplitTestAndTrain tat = dataSet.splitTestAndTrain(0.8);
         Nd4j.ENFORCE_NUMERICAL_STABILITY = true; // Setting to enforce numerical stability
 

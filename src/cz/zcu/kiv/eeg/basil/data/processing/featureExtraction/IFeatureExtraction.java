@@ -17,7 +17,7 @@ public interface IFeatureExtraction {
 	 * @param data data
 	 * @return array of features
 	 */
-    double[] extractFeatures(EEGDataPackage data);
+    FeatureVector extractFeatures(EEGDataPackage data);
 
 	/**
 	 * Get feature vector dimension

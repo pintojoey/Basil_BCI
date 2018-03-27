@@ -48,7 +48,7 @@ public class CorrelationClassifier implements IClassifier {
 	}
 
 	@Override
-	public void train(List<FeatureVector> featureVectors, List<Double> targets, int numberOfiter) {
+	public void train(List<FeatureVector> featureVectors, int numberOfiter) {
 		train();
 	}
 
@@ -59,7 +59,7 @@ public class CorrelationClassifier implements IClassifier {
 
 	@Override
 	public double classify(FeatureVector fv) {
-		double[] feature = fv.getFeatureVector();
+		double[] feature = fv.getFeatureArray();
 		double score = classifier.getScore(feature);
 
 		return score;

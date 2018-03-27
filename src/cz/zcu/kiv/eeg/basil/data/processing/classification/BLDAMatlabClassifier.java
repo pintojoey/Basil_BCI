@@ -68,14 +68,14 @@ public class BLDAMatlabClassifier implements  IClassifier {
   
 
 	@Override
-	public void train(List<FeatureVector> featureVectors, List<Double> targets, int numberOfiter) {
+	public void train(List<FeatureVector> featureVectors, int numberOfiter) {
 		 try {
             if (proxy != null) {
                 proxy.eval("out_features = zeros(" + featureVectors.size() + ", " + featureVectors.get(0).size() + ");");
                 proxy.eval("out_targets = zeros(" +featureVectors.size() + ", 1);");
                 for (int i = 0; i <featureVectors.size(); i++) {
                     double target    =  featureVectors.get(i).getExpectedOutput();
-                    double[] features = featureVectors.get(i).getFeatureVector();
+                    double[] features = featureVectors.get(i).getFeatureArray();
                     proxy.setVariable("features", features);
                     proxy.eval("out_features(" + (i + 1) + ", :) = features;");
 
@@ -112,7 +112,7 @@ public class BLDAMatlabClassifier implements  IClassifier {
 	public double classify(FeatureVector fv) {
 		  try {
 	           
-	             proxy.setVariable("test_features", fv.getFeatureVector());
+	             proxy.setVariable("test_features", fv.getFeatureMatrix());
 	             if (proxy != null) {
 	                 proxy.eval("resultsblda = classify(model, test_features');");
 	             }

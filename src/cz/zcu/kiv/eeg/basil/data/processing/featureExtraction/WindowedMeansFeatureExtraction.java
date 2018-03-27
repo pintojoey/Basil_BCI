@@ -18,7 +18,7 @@ public class WindowedMeansFeatureExtraction implements IFeatureExtraction {
 	}
 
 	@Override
-	public double[] extractFeatures(EEGDataPackage data) {
+	public FeatureVector extractFeatures(EEGDataPackage data) {
 		double[][] epoch = data.getData();
 		numOfChannels = epoch.length;
 		double[] features = new double[numOfChannels * windows.length];
@@ -30,7 +30,8 @@ public class WindowedMeansFeatureExtraction implements IFeatureExtraction {
 			}
 		}
 		features = SignalProcessing.normalize(features);
-		return  features;
+		FeatureVector fv = new FeatureVector(features);
+		return fv;
 	}
 
 	private double averageInterval(double[] fromToSec, double[] epoch, double sampling) {

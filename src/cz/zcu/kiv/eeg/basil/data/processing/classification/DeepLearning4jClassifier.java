@@ -4,6 +4,9 @@ import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.deeplearning4j.util.ModelSerializer;
 
 import cz.zcu.kiv.eeg.basil.data.processing.featureExtraction.FeatureVector;
+import org.nd4j.linalg.api.ndarray.INDArray;
+import org.nd4j.linalg.dataset.DataSet;
+import org.nd4j.linalg.factory.Nd4j;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.io.File;
@@ -33,6 +36,23 @@ public abstract class DeepLearning4jClassifier implements IClassifier {
             resultsStats.add(output, targets.get(i));   // calculating statistics
         }
         return resultsStats;    //  returns classifier statistics
+    }
+
+    protected DataSet createDataSet(List<FeatureVector> featureVectors) {
+        try {
+            DataSet ds = new DataSet();
+
+            for (FeatureVector fv : featureVectors) {
+                INDArray matrix = Nd4j.create(fv.getFeatureMatrix());
+                ds.addFeatureVector(matrix, (int) fv.getExpectedOutput());
+            }
+
+            return ds;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
     // method not implemented. For loading use load(String file)

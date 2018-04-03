@@ -14,15 +14,20 @@ import org.deeplearning4j.api.storage.StatsStorage;
 import org.deeplearning4j.ui.stats.StatsListener;
 import org.deeplearning4j.ui.storage.InMemoryStatsStorage;
 import org.deeplearning4j.optimize.listeners.*;
+import org.jfree.data.xml.DatasetReader;
 import org.nd4j.linalg.activations.Activation;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.dataset.DataSet;
 import org.nd4j.linalg.dataset.SplitTestAndTrain;
+import org.nd4j.linalg.dataset.api.iterator.BaseDatasetIterator;
+import org.nd4j.linalg.dataset.api.iterator.fetcher.BaseDataFetcher;
+import org.nd4j.linalg.dataset.api.iterator.fetcher.DataSetFetcher;
 import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.lossfunctions.LossFunctions;
 
 import cz.zcu.kiv.eeg.basil.data.processing.featureExtraction.FeatureVector;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -61,8 +66,40 @@ public class SDADeepLearning4jClassifier extends DeepLearning4jClassifier {
         int listenerFreq = numberOfiter / 500; // frequency of output strings
         int seed = 123; //  seed - one of parameters. For more info check http://deeplearning4j.org/iris-flower-dataset-tutorial
 
-        DataSet dataSet = createDataSet(featureVectors);
-        SplitTestAndTrain tat = dataSet.splitTestAndTrain(0.8);
+        DataSet dataSet2 = createDataSet(featureVectors);
+
+/*        final List<DataSet> lst = new ArrayList<>(featureVectors.size());
+        for (int i = 0; i < featureVectors.size(); i++) { // Iterating through epochs
+            FeatureVector fv = featureVectors.get(i); // Feature of each epoch
+            DataSet d;
+            INDArray matrix = Nd4j.create(fv.getFeatureMatrix());
+            double[] l = {fv.getExpectedOutput(),Math.abs(1 - fv.getExpectedOutput())};
+            INDArray label = Nd4j.create(l);
+            d = new DataSet(matrix, label);
+            lst.add(d);
+        }*/
+
+/*        BaseDataFetcher fetcher = new BaseDataFetcher() {
+            @Override
+            public void fetch(int numExamples) {
+                totalExamples = lst.size();
+
+                int from = this.cursor;
+                int to = this.cursor + numExamples;
+                if (to > this.totalExamples) {
+                    to = this.totalExamples;
+                }
+
+                initializeCurrFromList(lst.subList(from, to));
+                this.cursor += numExamples;
+            }
+        };
+
+
+
+        BaseDatasetIterator it = new BaseDatasetIterator(1, featureVectors.size(), fetcher);*/
+
+        SplitTestAndTrain tat = dataSet2.splitTestAndTrain(0.8);
         Nd4j.ENFORCE_NUMERICAL_STABILITY = true; // Setting to enforce numerical stability
 
         // Building a neural net
@@ -73,7 +110,8 @@ public class SDADeepLearning4jClassifier extends DeepLearning4jClassifier {
         model.finetune();
 
         Evaluation eval = new Evaluation(numColumns);
-        eval.eval(dataSet.getLabels(), model.output(dataSet.getFeatureMatrix(), Layer.TrainingMode.TEST));
+        DataSet tst = tat.getTest();
+        eval.eval(tst.getLabels(), model.output(tst.getFeatureMatrix(), Layer.TrainingMode.TEST));
         System.out.println(eval.stats());
     }
 

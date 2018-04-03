@@ -39,12 +39,48 @@ public abstract class DeepLearning4jClassifier implements IClassifier {
     }
 
     protected DataSet createDataSet(List<FeatureVector> featureVectors) {
-        try {
-            DataSet ds = new DataSet();
 
+        // Customizing params of classifier
+        final int numRows = featureVectors.get(0).size();   // number of targets on a line
+        final int numColumns = 2;   // number of labels needed for classifying
+
+        double[][] labels = new double[featureVectors.size()][numColumns]; // Matrix of labels for classifier
+        double[][] features_matrix = new double[featureVectors.size()][numRows]; // Matrix of features
+        for (int i = 0; i < featureVectors.size(); i++) { // Iterating through epochs
+            double[] features = featureVectors.get(i).getFeatureArray(); // Feature of each epoch
+            for (int j = 0; j < numColumns; j++) {   //setting labels for each column
+                labels[i][0] = featureVectors.get(i).getExpectedOutput(); // Setting label on position 0 as target
+                labels[i][1] = Math.abs(1 - labels[i][0]);  // Setting label on position 1 to be different from label[0]
+            }
+            features_matrix[i] = features; // Saving features to features matrix
+        }
+
+        // Creating INDArrays and DataSet
+        INDArray output_data = Nd4j.create(labels); // Create INDArray with labels(targets)
+        INDArray input_data = Nd4j.create(features_matrix); // Create INDArray with features(data)
+        DataSet dataSet = new DataSet(input_data, output_data); // Create dataSet with features and labels
+
+        return dataSet;
+
+/*        try {
+            DataSet ds = new DataSet(Nd4j.create(featureVectors.get(0).getFeatureMatrix()[0].length), Nd4j.create(2));
+
+            int i = 0;
             for (FeatureVector fv : featureVectors) {
+                DataSet d;
                 INDArray matrix = Nd4j.create(fv.getFeatureMatrix());
-                ds.addFeatureVector(matrix, (int) fv.getExpectedOutput());
+                double[] l = {fv.getExpectedOutput(),Math.abs(1 - fv.getExpectedOutput())};
+                INDArray label = Nd4j.create(l);
+                d = new DataSet(matrix, label);
+                //ds.addFeatureVector(matrix, (int) fv.getExpectedOutput());
+                if(ds.getFeatures() != null) {
+                    //ds.addRow(d, i++);
+                    ds.addFeatureVector(matrix, (int) fv.getExpectedOutput());
+                }
+                else {
+                 ds.setFeatures(matrix);
+                 ds.setLabels(label);
+                }
             }
 
             return ds;
@@ -52,7 +88,7 @@ public abstract class DeepLearning4jClassifier implements IClassifier {
             e.printStackTrace();
         }
 
-        return null;
+        return null;*/
     }
 
     // method not implemented. For loading use load(String file)

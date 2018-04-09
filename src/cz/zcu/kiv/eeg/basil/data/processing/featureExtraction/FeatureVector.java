@@ -107,10 +107,10 @@ public class FeatureVector {
 
         int rows = featureVector.length;
         int cols = featureVector[0].length;
-        double[] ret = new double[rows + cols];
+        double[] ret = new double[rows * cols];
 
         for (int i = 0; i < rows; i++) {
-            System.arraycopy(featureVector[i], 0, ret[i], 0, cols);
+            System.arraycopy(featureVector[i], 0, ret, i * cols, cols);
         }
 
         return ret;

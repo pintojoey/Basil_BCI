@@ -9,6 +9,7 @@ import org.deeplearning4j.nn.conf.MultiLayerConfiguration;
 import org.deeplearning4j.nn.conf.NeuralNetConfiguration;
 import org.deeplearning4j.nn.conf.Updater;
 import org.deeplearning4j.nn.conf.layers.*;
+import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.deeplearning4j.nn.weights.WeightInit;
 import org.deeplearning4j.optimize.listeners.ScoreIterationListener;
 import org.deeplearning4j.ui.stats.StatsListener;
@@ -59,8 +60,8 @@ public class CNNDeepLearning4jClassifier extends DeepLearning4jClassifier {
         return new ConvolutionLayer.Builder(kernel, stride, pad).name(name).nIn(in).nOut(out).biasInit(bias).build();
     }
 
-    private ConvolutionLayer conv5x5(String name, int out, int[] stride, int[] pad, double bias) {
-        return new ConvolutionLayer.Builder(new int[]{5,5}, stride, pad).name(name).nOut(out).biasInit(bias).build();
+    private ConvolutionLayer conv5x5(String name, int in, int out, int[] stride, int[] pad, double bias) {
+        return new ConvolutionLayer.Builder(new int[]{5,5}, stride, pad).name(name).nOut(out).biasInit(bias).nIn(in).build();
     }
 
     private SubsamplingLayer maxPool(String name, int[] kernel) {
@@ -81,11 +82,12 @@ public class CNNDeepLearning4jClassifier extends DeepLearning4jClassifier {
                 .list()
                 .layer(0, convInit("cnn1", numRows, 50 ,  new int[]{5, 5}, new int[]{1, 1}, new int[]{0, 0}, 0))
                 .layer(1, maxPool("maxpool1", new int[]{2,2}))
-                .layer(2, conv5x5("cnn2", 100, new int[]{5, 5}, new int[]{1, 1}, 0))
+                .layer(2, conv5x5("cnn2", 50, 100, new int[]{5, 5}, new int[]{1, 1}, 0))
                 .layer(3, maxPool("maxool2", new int[]{2,2}))
-                .layer(4, new DenseLayer.Builder().nOut(500).build())
+                .layer(4, new DenseLayer.Builder().nOut(500).nIn(100).build())
                 .layer(5, new OutputLayer.Builder(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
                         .nOut(2)
+                        .nIn(500)
                         .activation(Activation.SOFTMAX)
                         .build())
                 .backprop(true).pretrain(false)
@@ -103,8 +105,8 @@ public class CNNDeepLearning4jClassifier extends DeepLearning4jClassifier {
                         .nIn(numRows).nOut(20)
 
                 .pretrain(false).backprop(true).build();*/
-        //model = new MultiLayerNetwork(conf); // Passing built configuration to instance of multilayer network
-        //model.init(); // Initialize mode
+        model = new MultiLayerNetwork(conf); // Passing built configuration to instance of multilayer network
+        model.init(); // Initialize mode
 
 
         //UIServer uiServer = UIServer.getInstance();

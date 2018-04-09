@@ -9,6 +9,7 @@ import cz.zcu.kiv.eeg.basil.data.processing.IWorkflowController;
 import cz.zcu.kiv.eeg.basil.data.processing.TestingWorkflowController;
 import cz.zcu.kiv.eeg.basil.data.processing.TrainWorkflowController;
 import cz.zcu.kiv.eeg.basil.data.processing.classification.*;
+import cz.zcu.kiv.eeg.basil.data.processing.featureExtraction.RawDataFeatureExtraction;
 import cz.zcu.kiv.eeg.basil.data.processing.featureExtraction.IFeatureExtraction;
 import cz.zcu.kiv.eeg.basil.data.processing.featureExtraction.WaveletTransformFeatureExtraction;
 import cz.zcu.kiv.eeg.basil.data.processing.preprocessing.*;
@@ -36,7 +37,7 @@ public class GTNOfflineEvaluation {
 	private List<String> directories;
 	private Double humanAccuracy = null;
 	private List<Boolean> correctClassifications;
-	
+	private double percentage;
 
 	/**
 	 * Run evaluation
@@ -54,26 +55,43 @@ public class GTNOfflineEvaluation {
 		preprocessing.add(new IntervalSelection(175, 512));
 		presegmentation.add(new ChannelSelection(new String[] {"Fz", "Cz", "Pz"}));
 
+		RawDataFeatureExtraction efe = new RawDataFeatureExtraction();
 		ArrayList<IFeatureExtraction> feLst = new ArrayList<>();
-		feLst.add(fe);
+		feLst.add(efe);
+		//feLst.add(fe);
 
-		IClassifier classifier = train(epochExtraction, preprocessing, presegmentation, feLst);
-		
-	    GTNOfflineEvaluation gtnOfflineEvaluation;
-	    List<String> directories = new ArrayList<>(Arrays.asList("data/numbers/Horazdovice",
-        "data/numbers/Blatnice","data/numbers/Strasice","data/numbers/Masarykovo", "data/numbers/Stankov", 
-        "data/numbers/17ZS", "data/numbers/DolniBela", "data/numbers/KVary", "data/numbers/SPSD", "data/numbers/Strasice2",
-        "data/numbers/Tachov", "data/numbers/Tachov2", "data/numbers/ZSBolevecka"));
+		long estimatedTime = 0;
+		double max = Double.MIN_VALUE, min = Double.MAX_VALUE, avg = 0;
+		for (int i = 0; i < 20; i++) {
+			IClassifier classifier = train(epochExtraction, preprocessing, presegmentation, feLst);
 
-	    AbstractDataPreprocessor dataPreprocessor = new EpochDataPreprocessor(preprocessing, presegmentation, null,  epochExtraction);
+			GTNOfflineEvaluation gtnOfflineEvaluation;
+			List<String> directories = new ArrayList<>(Arrays.asList("data/numbers/Horazdovice",
+            "data/numbers/Blatnice","data/numbers/Strasice","data/numbers/Masarykovo", "data/numbers/Stankov",
+            "data/numbers/17ZS", "data/numbers/DolniBela", "data/numbers/KVary", "data/numbers/SPSD", "data/numbers/Strasice2",
+            "data/numbers/Tachov", "data/numbers/Tachov2", "data/numbers/ZSBolevecka"));
 
-		try {
-			gtnOfflineEvaluation = new GTNOfflineEvaluation(feLst, classifier, dataPreprocessor, directories);
-			System.out.println("Human accuracy: Total percentage:  " + gtnOfflineEvaluation.computeHumanAccuracy() + "%");
-		} catch (Exception e) {
-			e.printStackTrace();
+			AbstractDataPreprocessor dataPreprocessor = new EpochDataPreprocessor(preprocessing, presegmentation, null,  epochExtraction);
+
+			try {
+                gtnOfflineEvaluation = new GTNOfflineEvaluation(feLst, classifier, dataPreprocessor, directories);
+                System.out.println("Human accuracy: Total percentage:  " + gtnOfflineEvaluation.computeHumanAccuracy() + "%");
+                double perc = gtnOfflineEvaluation.percentage;
+                if(perc < min)
+                	min = perc;
+                if(perc > max)
+                	max = perc;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+			estimatedTime = System.nanoTime() - startTime;
 		}
-		long estimatedTime = System.nanoTime() - startTime;
+
+		System.out.println("Min => " + min);
+		System.out.println("Max => " + max);
+		System.out.println("Avg => " + avg / 20);
+
 		System.out.println(estimatedTime /1000000000.0 + " sec");
 	}
 
@@ -95,8 +113,8 @@ public class GTNOfflineEvaluation {
 
 		// classification
 		//IClassifier classification = new BLDAMatlabClassifier();
-		IClassifier classification = new SDADeepLearning4jClassifier();
-        //IClassifier classification = new CNNDeepLearning4jClassifier();
+		//IClassifier classification = new SDADeepLearning4jClassifier();
+        IClassifier classification = new CNNDeepLearning4jClassifier();
 		ITrainCondition trainCondition = new ErpTrainCondition();
 
 		// controller
@@ -171,8 +189,6 @@ public class GTNOfflineEvaluation {
 	    printStats();
 	}
 	
-	 
-	
 	private double computeHumanAccuracy() throws IOException {
 	    int totalGood = 0;
 	    int fileCount = 0;
@@ -195,8 +211,8 @@ public class GTNOfflineEvaluation {
 	    }
 	    
 	    System.out.println("Perfect guess: " + okNumber);
-	    double percent = ((double) okNumber / correctClassifications.size()) * 100;
-	    System.out.println("Accuracy: " + percent + " %");
+	    percentage = ((double) okNumber / correctClassifications.size()) * 100;
+	    System.out.println("Accuracy: " + percentage + " %");
 	    try {
 	    	if (humanAccuracy == null) {
 	    		this.humanAccuracy = this.computeHumanAccuracy();

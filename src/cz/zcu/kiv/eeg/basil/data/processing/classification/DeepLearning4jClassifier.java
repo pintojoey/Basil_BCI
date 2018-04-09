@@ -91,6 +91,40 @@ public abstract class DeepLearning4jClassifier implements IClassifier {
         return null;*/
     }
 
+    protected DataSet createDataSet2(List<FeatureVector> featureVectors) {
+
+        try {
+            double[][] m = featureVectors.get(0).getFeatureMatrix();
+            int[] shape = {featureVectors.size(), m.length, m[0].length};
+            //DataSet 3d = Nd4j.create(shape);
+            DataSet ds = new DataSet(Nd4j.create(featureVectors.get(0).getFeatureMatrix()[0].length), Nd4j.create(2));
+
+            int i = 0;
+            for (FeatureVector fv : featureVectors) {
+                DataSet d;
+                INDArray matrix = Nd4j.create(fv.getFeatureMatrix());
+                double[] l = {fv.getExpectedOutput(),Math.abs(1 - fv.getExpectedOutput())};
+                INDArray label = Nd4j.create(l);
+                d = new DataSet(matrix, label);
+                //ds.addFeatureVector(matrix, (int) fv.getExpectedOutput());
+                if(ds.getFeatures() != null) {
+                    //ds.addRow(d, i++);
+                    ds.addFeatureVector(matrix, (int) fv.getExpectedOutput());
+                }
+                else {
+                 ds.setFeatures(matrix);
+                 ds.setLabels(label);
+                }
+            }
+
+            return ds;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
     // method not implemented. For loading use load(String file)
     @Override
     public void load(InputStream is) {

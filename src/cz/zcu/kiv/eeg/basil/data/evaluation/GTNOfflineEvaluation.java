@@ -57,12 +57,13 @@ public class GTNOfflineEvaluation {
 
 		RawDataFeatureExtraction efe = new RawDataFeatureExtraction();
 		ArrayList<IFeatureExtraction> feLst = new ArrayList<>();
-		feLst.add(efe);
-		//feLst.add(fe);
+		//feLst.add(efe);
+		feLst.add(fe);
 
 		long estimatedTime = 0;
 		double max = Double.MIN_VALUE, min = Double.MAX_VALUE, avg = 0;
-		for (int i = 0; i < 20; i++) {
+		int iters = 50;
+		for (int i = 0; i < iters; i++) {
 			IClassifier classifier = train(epochExtraction, preprocessing, presegmentation, feLst);
 
 			GTNOfflineEvaluation gtnOfflineEvaluation;
@@ -81,6 +82,8 @@ public class GTNOfflineEvaluation {
                 	min = perc;
                 if(perc > max)
                 	max = perc;
+
+                avg += perc;
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -90,7 +93,7 @@ public class GTNOfflineEvaluation {
 
 		System.out.println("Min => " + min);
 		System.out.println("Max => " + max);
-		System.out.println("Avg => " + avg / 20);
+		System.out.println("Avg => " + avg / iters);
 
 		System.out.println(estimatedTime /1000000000.0 + " sec");
 	}
@@ -113,8 +116,8 @@ public class GTNOfflineEvaluation {
 
 		// classification
 		//IClassifier classification = new BLDAMatlabClassifier();
-		//IClassifier classification = new SDADeepLearning4jClassifier();
-        IClassifier classification = new CNNDeepLearning4jClassifier();
+		IClassifier classification = new SDADeepLearning4jClassifier();
+        //IClassifier classification = new CNNDeepLearning4jClassifier();
 		ITrainCondition trainCondition = new ErpTrainCondition();
 
 		// controller

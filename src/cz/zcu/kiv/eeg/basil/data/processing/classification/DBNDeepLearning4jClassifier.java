@@ -7,7 +7,6 @@ import org.deeplearning4j.nn.api.OptimizationAlgorithm;
 import org.deeplearning4j.nn.conf.MultiLayerConfiguration;
 import org.deeplearning4j.nn.conf.NeuralNetConfiguration;
 import org.deeplearning4j.nn.conf.layers.OutputLayer;
-import org.deeplearning4j.nn.conf.layers.RBM;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.deeplearning4j.optimize.listeners.ScoreIterationListener;
         import org.nd4j.linalg.activations.Activation;
@@ -16,10 +15,10 @@ import org.nd4j.linalg.dataset.DataSet;
 import org.nd4j.linalg.dataset.SplitTestAndTrain;
 import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.lossfunctions.LossFunctions.LossFunction;
-
 import cz.zcu.kiv.eeg.basil.data.processing.featureExtraction.FeatureVector;
 
         import java.util.List;
+
 
 /**
  * Creates an instance of Deep Belief Network 
@@ -73,7 +72,7 @@ public class DBNDeepLearning4jClassifier extends DeepLearning4jClassifier {
 
     //  initialization of neural net with params. For more info check http://deeplearning4j.org/iris-flower-dataset-tutorial where is more about params
     private void build(int numRows, int outputNum, int seed, int listenerFreq) {
-        System.out.print("Build model....DBN");
+/*        System.out.print("Build model....DBN");
         Nd4j.ENFORCE_NUMERICAL_STABILITY = true;
         MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder() // Starting builder pattern
                 //.seed(seed) // Locks in weight initialization for tuning
@@ -109,6 +108,6 @@ public class DBNDeepLearning4jClassifier extends DeepLearning4jClassifier {
         model = new MultiLayerNetwork(conf); // Passing built configuration to instance of multilayer network
         model.init(); // Initialize model
         model.setListeners(new ScoreIterationListener(10));// Setting listeners
-        //model.setListeners(new ScoreIterationListener(listenerFreq)); // Setting listeners
+        //model.setListeners(new ScoreIterationListener(listenerFreq)); // Setting listeners*/
     }
 }

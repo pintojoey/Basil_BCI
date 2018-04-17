@@ -3,11 +3,13 @@ package cz.zcu.kiv.eeg.basil.data.processing.classification;
 import org.deeplearning4j.eval.Evaluation;
 import org.deeplearning4j.nn.api.Layer;
 import org.deeplearning4j.nn.api.OptimizationAlgorithm;
+import org.deeplearning4j.nn.conf.GradientNormalization;
 import org.deeplearning4j.nn.conf.MultiLayerConfiguration;
 import org.deeplearning4j.nn.conf.NeuralNetConfiguration;
 import org.deeplearning4j.nn.conf.Updater;
 import org.deeplearning4j.nn.conf.layers.AutoEncoder;
 import org.deeplearning4j.nn.conf.layers.OutputLayer;
+import org.deeplearning4j.nn.gradient.Gradient;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.deeplearning4j.nn.weights.WeightInit;
 import org.deeplearning4j.api.storage.StatsStorage;
@@ -23,6 +25,9 @@ import org.nd4j.linalg.dataset.api.iterator.BaseDatasetIterator;
 import org.nd4j.linalg.dataset.api.iterator.fetcher.BaseDataFetcher;
 import org.nd4j.linalg.dataset.api.iterator.fetcher.DataSetFetcher;
 import org.nd4j.linalg.factory.Nd4j;
+import org.nd4j.linalg.learning.config.AdaGrad;
+import org.nd4j.linalg.learning.config.Adam;
+import org.nd4j.linalg.learning.config.Nesterovs;
 import org.nd4j.linalg.lossfunctions.LossFunctions;
 
 import cz.zcu.kiv.eeg.basil.data.processing.featureExtraction.FeatureVector;
@@ -106,8 +111,13 @@ public class SDADeepLearning4jClassifier extends DeepLearning4jClassifier {
         build(numRows, numColumns, seed, listenerFreq);
 
         System.out.println("Train model....");
-        model.fit(tat.getTrain()); // Learning of neural net with training data
-        model.finetune();
+        DataSet d = tat.getTrain();
+
+        for(int i = 0; i  < 2000; i++) {
+            model.fit(d); // Learning of neural net with training data
+        }
+
+        //model.finetune();
 
         Evaluation eval = new Evaluation(numColumns);
         DataSet tst = tat.getTest();
@@ -120,37 +130,39 @@ public class SDADeepLearning4jClassifier extends DeepLearning4jClassifier {
         System.out.print("Build model....SDA");
         MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder()
                 //.seed(seed)
-                .iterations(1500)
+                //.iterations(1500)
                 .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
-                .learningRate(0.005)
-                .updater(Updater.NESTEROVS).momentum(0.9)
+                .updater(new Nesterovs(0.005,0.9))
                 //.regularization(true).dropOut(0.99)
-                // .regularization(true).l2(1e-4)
+                // .regularization(true)
+                //.l2(1e-4)
+                .gradientNormalizationThreshold(1)
+                .gradientNormalization(GradientNormalization.ClipElementWiseAbsoluteValue)
                 .list()
-                .layer(0, new AutoEncoder.Builder()
+/*                .layer(0, new AutoEncoder.Builder()
                         .nIn(numRows)
                         .nOut(48)
                         .weightInit(WeightInit.XAVIER)
-                        .activation(Activation.LEAKYRELU)
-                        .corruptionLevel(0.2) // Set level of corruption
-                        .lossFunction(LossFunctions.LossFunction.XENT)
-                        .build())
-                .layer(1, new AutoEncoder.Builder().nOut(24).nIn(48)
-                        .weightInit(WeightInit.XAVIER)
-                        .activation(Activation.LEAKYRELU)
-                        //.corruptionLevel(0.1) // Set level of corruption
-                        .lossFunction(LossFunctions.LossFunction.MCXENT)
-                        .build())
-                .layer(2, new AutoEncoder.Builder().nOut(12).nIn(24)
-                        .weightInit(WeightInit.XAVIER)
                         .activation(Activation.RELU)
+                        //.corruptionLevel(0.2) // Set level of corruption
+                        .lossFunction(LossFunctions.LossFunction.MCXENT)
+                        .build())*/
+                .layer(0, new AutoEncoder.Builder().nOut(24).nIn(48)
+                        .weightInit(WeightInit.XAVIER)
+                        .activation(Activation.LEAKYRELU)
                         //.corruptionLevel(0.1) // Set level of corruption
                         .lossFunction(LossFunctions.LossFunction.MCXENT)
                         .build())
-                .layer(3, new OutputLayer.Builder(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
+                .layer(1, new AutoEncoder.Builder().nOut(12).nIn(24)
+                        .weightInit(WeightInit.XAVIER)
+                        .activation(Activation.LEAKYRELU)
+                        //.corruptionLevel(0.1) // Set level of corruption
+                        .lossFunction(LossFunctions.LossFunction.MCXENT)
+                        .build())
+                .layer(2, new OutputLayer.Builder(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
                         .weightInit(WeightInit.XAVIER)
                         .activation(Activation.SOFTMAX)
-                       .nOut(outputNum).nIn(12).build())
+                        .nOut(outputNum).nIn(12).build())
                 .pretrain(false).backprop(true).build();
 /*                .list()
                 .layer(0, new AutoEncoder.Builder().nIn(numRows).nOut(24)
@@ -171,8 +183,8 @@ public class SDADeepLearning4jClassifier extends DeepLearning4jClassifier {
                         .nIn(12).nOut(outputNum).build())
                 .pretrain(true).backprop(true).build();*/
         model = new MultiLayerNetwork(conf); // Passing built configuration to instance of multilayer network
+        //model.setIterationCount(1500);
         model.init(); // Initialize mode
-
 
         //UIServer uiServer = UIServer.getInstance();
         StatsStorage statsStorage = new InMemoryStatsStorage();         //Alternative: new FileStatsStorage(File), for saving and loading later

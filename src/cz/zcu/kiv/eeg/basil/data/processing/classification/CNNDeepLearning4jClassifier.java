@@ -19,6 +19,7 @@ import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.dataset.DataSet;
 import org.nd4j.linalg.dataset.SplitTestAndTrain;
 import org.nd4j.linalg.factory.Nd4j;
+import org.nd4j.linalg.learning.config.Nesterovs;
 import org.nd4j.linalg.lossfunctions.LossFunctions;
 
 import java.util.ArrayList;
@@ -69,16 +70,16 @@ public class CNNDeepLearning4jClassifier extends DeepLearning4jClassifier {
     }
 
     private void build(int numRows, int outputNum, int seed, int listenerFreq) {
-        System.out.print("Build model....SDA");
+        System.out.print("Build model....CNN");
         MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder()
                 .seed(seed)
-                .iterations(iterations)
-                .regularization(false).l2(0.005)
+                //.iterations(iterations)
+                ///.regularization(false).l2(0.005)
                 .activation(Activation.RELU)
-                .learningRate(0.0001)
+                //.learningRate(0.0001)
                 .weightInit(WeightInit.XAVIER)
                 .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
-                .updater(Updater.NESTEROVS).momentum(0.9)
+                .updater(new Nesterovs(0.0001, 0.9))
                 .list()
                 .layer(0, convInit("cnn1", numRows, 50 ,  new int[]{5, 5}, new int[]{1, 1}, new int[]{0, 0}, 0))
                 .layer(1, maxPool("maxpool1", new int[]{2,2}))

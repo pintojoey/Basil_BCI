@@ -75,9 +75,9 @@ public class MLPDeepLearning4j extends DeepLearning4jClassifier {
 
         MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder()
                 //.seed(seed)
-                .iterations(4500)
+                //.iterations(4500)
                 //.optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
-                .learningRate(0.0009)
+                //.learningRate(0.0009)
                 //.updater(Updater.NESTEROVS).momentum(0.9)
                 //.l1(1e-1)
                 //.regularization(true)

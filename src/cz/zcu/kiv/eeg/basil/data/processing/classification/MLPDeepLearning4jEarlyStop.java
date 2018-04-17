@@ -133,9 +133,9 @@ public class MLPDeepLearning4jEarlyStop extends DeepLearning4jClassifier {
         System.out.print("Build model....");
         MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder()
                 .seed(seed)
-                .iterations(10)
+                //.iterations(10)
                 //.optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
-                .learningRate(0.0005)
+                //.learningRate(0.0005)
                // .updater(Updater.NESTEROVS).momentum(0.9)
                 .list()
                 .layer(0, new DenseLayer.Builder().nIn(numRows).nOut(400)

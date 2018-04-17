@@ -17,11 +17,11 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<shadedClassifier>bin</shadedClassifier>
 		<java.version>1.8</java.version>
-		<nd4j.version>0.8.0</nd4j.version>
-		<dl4j.version>0.8.0</dl4j.version>
-		<datavec.version>0.8.0</datavec.version>
-		<arbiter.version>0.8.0</arbiter.version>
-		<rl4j.version>0.8.0</rl4j.version>
+		<nd4j.version>1.0.0-SNAPSHOT</nd4j.version>
+		<dl4j.version>1.0.0-SNAPSHOT</dl4j.version>
+		<datavec.version>1.0.0-SNAPSHOT</datavec.version>
+		<arbiter.version>1.0.0-SNAPSHOT</arbiter.version>
+		<rl4j.version>1.0.0-SNAPSHOT</rl4j.version>
 		<guava.version>19.0</guava.version>
 		<logback.version>1.1.7</logback.version>
 		<jfreechart.version>1.0.13</jfreechart.version>
@@ -122,7 +122,7 @@
 					</descriptorRefs>
 				</configuration>
 			</plugin>
-		</plugins>
+		</plugins>dd
 	</build>
 	<dependencies>
 
@@ -368,6 +368,17 @@
 		<repository>
 			<id>releases</id>
 			<url>http://eeg.kiv.zcu.cz:8081/nexus/content/repositories/releases/</url>
+		</repository>
+		<repository>
+			<id>sonatype-nexus-snapshots</id>
+			<name>Sonatype Nexus Snapshots</name>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
 		</repository>
 	</repositories>
 </project>

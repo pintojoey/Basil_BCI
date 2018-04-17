@@ -151,8 +151,8 @@ public class SDADeepLearning4jEarlyStopClassifier extends DeepLearning4jClassifi
                 //.weightInit(WeightInit.XAVIER)
                 //.activation(Activation.LEAKYRELU)
                 .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
-                .learningRate(0.05)
-                .iterations(1)
+                //.learningRate(0.05)
+                //.iterations(1)
                 //.momentum(0.5) // Momentum rate
                 //.momentumAfter(Collections.singletonMap(3, 0.9)) //Map of the iteration to the momentum rate to apply at that iteration
                 .list() // # NN layers (doesn't count input layer)

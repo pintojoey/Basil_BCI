@@ -50,7 +50,11 @@ public class OnLineDataProvider extends AbstractDataProvider {
                     double[][] data = new double[channelCnt][(int) rda.getnPoints()];
                     EEGMarker[] markers = new EEGMarker[(int) rda.getnMarkers()];
 
-                    float[] rdaDta = rda.getfData();
+                    float[] frdaDta = rda.getfData();
+                    double[] rdaDta = new double[frdaDta.length];
+                    for (int i = 0; i < frdaDta.length; i++) {
+                        rdaDta[i] = frdaDta[i];
+                    }
                     int pts = (int) rda.getnPoints();
                     for (int i = 0; i < channelCnt; i++) {
                         System.arraycopy(rdaDta, i * pts, data[i], 0, pts);

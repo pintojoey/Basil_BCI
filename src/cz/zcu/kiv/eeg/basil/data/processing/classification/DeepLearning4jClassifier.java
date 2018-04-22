@@ -1,5 +1,9 @@
 package cz.zcu.kiv.eeg.basil.data.processing.classification;
 
+import org.datavec.api.util.ndarray.RecordConverter;
+import org.datavec.image.recordreader.ImageRecordReader;
+import org.deeplearning4j.datasets.DataSets;
+import org.deeplearning4j.datasets.iterator.impl.MnistDataSetIterator;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.deeplearning4j.util.ModelSerializer;
 
@@ -7,12 +11,15 @@ import cz.zcu.kiv.eeg.basil.data.processing.featureExtraction.FeatureVector;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.dataset.DataSet;
 import org.nd4j.linalg.factory.Nd4j;
+import org.nd4j.linalg.util.DataSetUtils;
+import org.neuroph.core.data.DataSetRow;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -61,62 +68,40 @@ public abstract class DeepLearning4jClassifier implements IClassifier {
         DataSet dataSet = new DataSet(input_data, output_data); // Create dataSet with features and labels
 
         return dataSet;
-
-/*        try {
-            DataSet ds = new DataSet(Nd4j.create(featureVectors.get(0).getFeatureMatrix()[0].length), Nd4j.create(2));
-
-            int i = 0;
-            for (FeatureVector fv : featureVectors) {
-                DataSet d;
-                INDArray matrix = Nd4j.create(fv.getFeatureMatrix());
-                double[] l = {fv.getExpectedOutput(),Math.abs(1 - fv.getExpectedOutput())};
-                INDArray label = Nd4j.create(l);
-                d = new DataSet(matrix, label);
-                //ds.addFeatureVector(matrix, (int) fv.getExpectedOutput());
-                if(ds.getFeatures() != null) {
-                    //ds.addRow(d, i++);
-                    ds.addFeatureVector(matrix, (int) fv.getExpectedOutput());
-                }
-                else {
-                 ds.setFeatures(matrix);
-                 ds.setLabels(label);
-                }
-            }
-
-            return ds;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return null;*/
     }
 
     protected DataSet createDataSet2(List<FeatureVector> featureVectors) {
 
         try {
             double[][] m = featureVectors.get(0).getFeatureMatrix();
-            int[] shape = {featureVectors.size(), m.length, m[0].length};
+            int[] shape = {m.length, m[0].length};
             //DataSet 3d = Nd4j.create(shape);
-            DataSet ds = new DataSet(Nd4j.create(featureVectors.get(0).getFeatureMatrix()[0].length), Nd4j.create(2));
+            DataSet ds = new DataSet();
 
-            int i = 0;
+            List<DataSet> lst = new ArrayList<>(featureVectors.size());
+            int i = 1;
             for (FeatureVector fv : featureVectors) {
                 DataSet d;
                 INDArray matrix = Nd4j.create(fv.getFeatureMatrix());
                 double[] l = {fv.getExpectedOutput(),Math.abs(1 - fv.getExpectedOutput())};
                 INDArray label = Nd4j.create(l);
                 d = new DataSet(matrix, label);
+                //int dimen = d.getFeatures().size(2);
+                lst.add(d);
                 //ds.addFeatureVector(matrix, (int) fv.getExpectedOutput());
-                if(ds.getFeatures() != null) {
-                    //ds.addRow(d, i++);
+/*                if(ds.getFeatures() != null) {
+                    //ds.addRow(d, i);
+
                     ds.addFeatureVector(matrix, (int) fv.getExpectedOutput());
                 }
                 else {
                  ds.setFeatures(matrix);
                  ds.setLabels(label);
-                }
+                }*/
             }
-
+            ds = DataSet.merge(lst);
+            int r = ds.getFeatures().length();
+            lst = ds.asList();
             return ds;
         } catch (Exception e) {
             e.printStackTrace();

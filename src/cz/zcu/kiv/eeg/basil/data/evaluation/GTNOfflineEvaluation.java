@@ -116,8 +116,8 @@ public class GTNOfflineEvaluation {
 
 		// classification
 		//IClassifier classification = new BLDAMatlabClassifier();
-		IClassifier classification = new SDADeepLearning4jClassifier();
-        //IClassifier classification = new CNNDeepLearning4jClassifier();
+		//IClassifier classification = new SDADeepLearning4jClassifier();
+        IClassifier classification = new CNNDeepLearning4jClassifier();
 		ITrainCondition trainCondition = new ErpTrainCondition();
 
 		// controller

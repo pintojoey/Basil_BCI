@@ -5,6 +5,7 @@ import org.deeplearning4j.api.storage.StatsStorage;
 import org.deeplearning4j.eval.Evaluation;
 import org.deeplearning4j.nn.api.Layer;
 import org.deeplearning4j.nn.api.OptimizationAlgorithm;
+import org.deeplearning4j.nn.conf.ConvolutionMode;
 import org.deeplearning4j.nn.conf.MultiLayerConfiguration;
 import org.deeplearning4j.nn.conf.NeuralNetConfiguration;
 import org.deeplearning4j.nn.conf.Updater;
@@ -17,6 +18,7 @@ import org.deeplearning4j.ui.storage.InMemoryStatsStorage;
 import org.nd4j.linalg.activations.Activation;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.dataset.DataSet;
+import org.nd4j.linalg.dataset.MultiDataSet;
 import org.nd4j.linalg.dataset.SplitTestAndTrain;
 import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.learning.config.Nesterovs;
@@ -40,7 +42,7 @@ public class CNNDeepLearning4jClassifier extends DeepLearning4jClassifier {
         int listenerFreq = numberOfiter / 500; // frequency of output strings
         int seed = 123; //  seed - one of parameters. For more info check http://deeplearning4j.org/iris-flower-dataset-tutorial
 
-        DataSet dataSet = createDataSet(featureVectors);
+        DataSet dataSet = createDataSet2(featureVectors);
 
         SplitTestAndTrain tat = dataSet.splitTestAndTrain(0.8);
         Nd4j.ENFORCE_NUMERICAL_STABILITY = true; // Setting to enforce numerical stability
@@ -49,24 +51,34 @@ public class CNNDeepLearning4jClassifier extends DeepLearning4jClassifier {
         build(numRows, numColumns, seed, listenerFreq);
 
         System.out.println("Train model....");
-        model.fit(tat.getTrain()); // Learning of neural net with training data
-        model.finetune();
+        List<DataSet> ds = dataSet.asList();
+        for(int i = 0; i  < 2000; i++) {
+            for (DataSet d : ds) {
+                INDArray f = d.getFeatureMatrix();
+                f = f.reshape(3,16);
+                INDArray l = d.getLabels();
+                model.fit(f, l);
+            }
+            model.fit(tat.getTrain()); // Learning of neural net with training data
+        }
+        //model.fit(); // Learning of neural net with training data
+        //model.finetune();
 
         Evaluation eval = new Evaluation(numColumns);
         eval.eval(dataSet.getLabels(), model.output(dataSet.getFeatureMatrix(), Layer.TrainingMode.TEST));
         System.out.println(eval.stats());
     }
 
-    private ConvolutionLayer convInit(String name, int in, int out, int[] kernel, int[] stride, int[] pad, double bias) {
-        return new ConvolutionLayer.Builder(kernel, stride, pad).name(name).nIn(in).nOut(out).biasInit(bias).build();
+    private ConvolutionLayer convInit(String name, int in, int out, int kernel, int stride, int pad, double bias) {
+        return new Convolution1D.Builder(kernel, stride, pad).name(name).nIn(in).nOut(out).biasInit(bias).build();
     }
 
-    private ConvolutionLayer conv5x5(String name, int in, int out, int[] stride, int[] pad, double bias) {
-        return new ConvolutionLayer.Builder(new int[]{5,5}, stride, pad).name(name).nOut(out).biasInit(bias).nIn(in).build();
+    private ConvolutionLayer conv5x5(String name, int in, int out, int stride, int pad, double bias) {
+        return new Convolution1D.Builder(5, stride, pad).name(name).nOut(out).biasInit(bias).nIn(in).convolutionMode(ConvolutionMode.Same).build();
     }
 
-    private SubsamplingLayer maxPool(String name, int[] kernel) {
-        return new SubsamplingLayer.Builder(kernel, new int[]{2,2}).name(name).build();
+    private SubsamplingLayer maxPool(String name, int kernel) {
+        return new Subsampling1DLayer.Builder(kernel, 2).name(name).build();
     }
 
     private void build(int numRows, int outputNum, int seed, int listenerFreq) {
@@ -81,10 +93,10 @@ public class CNNDeepLearning4jClassifier extends DeepLearning4jClassifier {
                 .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
                 .updater(new Nesterovs(0.0001, 0.9))
                 .list()
-                .layer(0, convInit("cnn1", numRows, 50 ,  new int[]{5, 5}, new int[]{1, 1}, new int[]{0, 0}, 0))
-                .layer(1, maxPool("maxpool1", new int[]{2,2}))
-                .layer(2, conv5x5("cnn2", 50, 100, new int[]{5, 5}, new int[]{1, 1}, 0))
-                .layer(3, maxPool("maxool2", new int[]{2,2}))
+                .layer(0, convInit("cnn1", numRows, 50 ,  5, 1, 0, 0))
+                .layer(1, maxPool("maxpool1", 2))
+                .layer(2, conv5x5("cnn2", 50, 100, 5, 1, 0))
+                .layer(3, maxPool("maxool2", 2))
                 .layer(4, new DenseLayer.Builder().nOut(500).nIn(100).build())
                 .layer(5, new OutputLayer.Builder(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
                         .nOut(2)
@@ -113,10 +125,10 @@ public class CNNDeepLearning4jClassifier extends DeepLearning4jClassifier {
         //UIServer uiServer = UIServer.getInstance();
         StatsStorage statsStorage = new InMemoryStatsStorage();         //Alternative: new FileStatsStorage(File), for saving and loading later
 
-        ArrayList listenery = new ArrayList();
-        listenery.add(new ScoreIterationListener(500));
-        listenery.add(new StatsListener(statsStorage));
-        model.setListeners(listenery);
+        ArrayList listeners = new ArrayList();
+        listeners.add(new ScoreIterationListener(500));
+        listeners.add(new StatsListener(statsStorage));
+        model.setListeners(listeners);
     }
 
     @Override

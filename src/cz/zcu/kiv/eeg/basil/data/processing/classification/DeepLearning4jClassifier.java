@@ -70,11 +70,11 @@ public abstract class DeepLearning4jClassifier implements IClassifier {
         return dataSet;
     }
 
-    protected DataSet createDataSet2(List<FeatureVector> featureVectors) {
+    protected List<DataSet> createDataSet2(List<FeatureVector> featureVectors) {
 
         try {
             double[][] m = featureVectors.get(0).getFeatureMatrix();
-            int[] shape = {m.length, m[0].length};
+            int[] shape = {m[0].length, 1, m.length };
             //DataSet 3d = Nd4j.create(shape);
             DataSet ds = new DataSet();
 
@@ -82,7 +82,11 @@ public abstract class DeepLearning4jClassifier implements IClassifier {
             int i = 1;
             for (FeatureVector fv : featureVectors) {
                 DataSet d;
+                INDArray sh = Nd4j.create(shape);
+
                 INDArray matrix = Nd4j.create(fv.getFeatureMatrix());
+                matrix = matrix.reshape(shape);
+                int[] ss = matrix.shape();
                 double[] l = {fv.getExpectedOutput(),Math.abs(1 - fv.getExpectedOutput())};
                 INDArray label = Nd4j.create(l);
                 d = new DataSet(matrix, label);
@@ -99,9 +103,61 @@ public abstract class DeepLearning4jClassifier implements IClassifier {
                  ds.setLabels(label);
                 }*/
             }
+
             ds = DataSet.merge(lst);
-            int r = ds.getFeatures().length();
+            //lst = ds.asList();
+
+            DataSet first = lst.get(0);
+            int[] shape1 = first.getFeatureMatrix().shape();
+
+            return lst;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    protected DataSet createDataSet3(List<FeatureVector> featureVectors) {
+
+        try {
+            double[][] m = featureVectors.get(0).getFeatureMatrix();
+            int[] shape = {1, 1, m.length, m[0].length };
+            //DataSet 3d = Nd4j.create(shape);
+            DataSet ds = new DataSet();
+
+            List<DataSet> lst = new ArrayList<>(featureVectors.size());
+            int i = 1;
+            for (FeatureVector fv : featureVectors) {
+                DataSet d;
+                INDArray sh = Nd4j.create(shape);
+
+                INDArray matrix = Nd4j.create(fv.getFeatureMatrix());
+                matrix = matrix.reshape(shape);
+                int[] ss = matrix.shape();
+                double[] l = {fv.getExpectedOutput(),Math.abs(1 - fv.getExpectedOutput())};
+                INDArray label = Nd4j.create(l);
+                d = new DataSet(matrix, label);
+                //int dimen = d.getFeatures().size(2);
+                lst.add(d);
+                //ds.addFeatureVector(matrix, (int) fv.getExpectedOutput());
+/*                if(ds.getFeatures() != null) {
+                    //ds.addRow(d, i);
+
+                    ds.addFeatureVector(matrix, (int) fv.getExpectedOutput());
+                }
+                else {
+                 ds.setFeatures(matrix);
+                 ds.setLabels(label);
+                }*/
+            }
+
+            ds = DataSet.merge(lst);
             lst = ds.asList();
+
+            DataSet first = lst.get(0);
+            int[] shape1 = first.getFeatureMatrix().shape();
+
             return ds;
         } catch (Exception e) {
             e.printStackTrace();

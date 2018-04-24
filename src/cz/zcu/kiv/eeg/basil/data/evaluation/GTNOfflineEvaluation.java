@@ -57,8 +57,8 @@ public class GTNOfflineEvaluation {
 
 		RawDataFeatureExtraction efe = new RawDataFeatureExtraction();
 		ArrayList<IFeatureExtraction> feLst = new ArrayList<>();
-		//feLst.add(efe);
-		feLst.add(fe);
+		feLst.add(efe);
+		//feLst.add(fe);
 
 		long estimatedTime = 0;
 		double max = Double.MIN_VALUE, min = Double.MAX_VALUE, avg = 0;

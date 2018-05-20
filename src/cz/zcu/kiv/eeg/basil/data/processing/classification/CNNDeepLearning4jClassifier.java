@@ -12,6 +12,7 @@ import org.deeplearning4j.nn.graph.ComputationGraph;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.deeplearning4j.nn.weights.WeightInit;
 import org.deeplearning4j.optimize.listeners.ScoreIterationListener;
+import org.deeplearning4j.ui.api.UIServer;
 import org.deeplearning4j.ui.stats.StatsListener;
 import org.deeplearning4j.ui.storage.InMemoryStatsStorage;
 import org.nd4j.linalg.activations.Activation;
@@ -31,7 +32,7 @@ import java.util.List;
  */
 public class CNNDeepLearning4jClassifier extends DeepLearning4jClassifier {
 
-    ComputationGraph graphModel;
+    //ComputationGraph graphModel;
 
     @Override
     public void train(List<FeatureVector> featureVectors, int numberOfiter){
@@ -63,100 +64,65 @@ public class CNNDeepLearning4jClassifier extends DeepLearning4jClassifier {
             //}
 
 
-            graphModel.fit(trDs); // Learning of neural net with training data
+            model.fit(trDs); // Learning of neural net with training data
         }
         //model.fit(); // Learning of neural net with training data
         //model.finetune();
 
         Evaluation eval = new Evaluation(numColumns);
-        //eval.eval(dataSet.getLabels(), model.output(dataSet.getFeatureMatrix(), Layer.TrainingMode.TEST));
+        //eval.eval(dataSet.getLabels(), graphModel.output(false, dataSet.getFeatureMatrix()));
         System.out.println(eval.stats());
-    }
-
-    private ConvolutionLayer convInit_1d(String name, int in, int out, int kernel, int stride, int pad, double bias) {
-        return new Convolution1D.Builder(kernel, stride, pad).name(name).nIn(in).nOut(out).biasInit(bias).build();
-    }
-
-    private ConvolutionLayer conv5_1d(String name, int in, int out, int stride, int pad, double bias) {
-        return new Convolution1D.Builder(3, stride, pad).name(name).nOut(out).biasInit(bias).nIn(in).build();
-    }
-
-    private SubsamplingLayer maxPool_1d(String name, int kernel) {
-        return new Subsampling1DLayer.Builder(kernel, 2).name(name).build();
-    }
-
-    private ConvolutionLayer convInit(String name, int in, int out, int kernel, int stride, int pad, double bias) {
-        return new Convolution1D.Builder(kernel, stride, pad).name(name).nIn(in).nOut(out).biasInit(bias).build();
-    }
-
-    private ConvolutionLayer conv5x5(String name, int in, int out, int stride, int pad, double bias) {
-        return new Convolution1D.Builder(5, stride, pad).name(name).nOut(out).biasInit(bias).nIn(in).build();
-    }
-
-    private SubsamplingLayer maxPool(String name, int kernel) {
-        return new Subsampling1DLayer.Builder(kernel, 2).name(name).build();
     }
 
     private void build(int numRows, int outputNum, int seed, int listenerFreq) {
         System.out.print("Build model....CNN");
-/*        MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder()
-                .seed(seed)
-                //.iterations(iterations)
-                ///.regularization(false).l2(0.005)
-                .activation(Activation.RELU)
-                //.learningRate(0.0001)
-                .weightInit(WeightInit.XAVIER)
-                .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
-                .updater(new Nesterovs(0.0001, 0.9))
-                .list()
-                .layer(0, convInit_1d("cnn1", 1, 50 ,  3, 1, 0, 0))
-                .layer(1, maxPool_1d("maxpool1", 1))
-                .layer(2, conv5_1d("cnn2", 50, 100, 5, 1, 0))
-                .layer(3, maxPool_1d("maxool2", 1))
-                .layer(4, new DenseLayer.Builder().nOut(500).nIn(100).build())
-                .layer(5, new OutputLayer.Builder(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
-                        .nOut(2)
-                        .nIn(500)
-                        .activation(Activation.SOFTMAX)
-                        .build())
-                .backprop(true).pretrain(false)
-                .build();*/
-
-        int[] kernel = new int[]{3,3};
-        int[] stride = new int[]{3,3};
+        int[] kernel = new int[]{3,20};
+        int[] stride = new int[]{3,10};
 
         MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder()
                 .seed(123)
+                .activation(Activation.LEAKYRELU)
+                .weightInit(WeightInit.XAVIER)
                 .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
-                .updater(new Nesterovs(0.0001, 0.9))
-                //.regularization(true).dropOut(0.99)
-                // .regularization(true).l2(1e-4)
+                .updater(new Nesterovs(0.0005, 0.9))
                 .list()
-                .layer(0, new ConvolutionLayer.Builder(kernel,stride).nIn(1).nOut(10).activation(Activation.IDENTITY).build())
-                .layer(1, new DenseLayer.Builder().nIn(5).nOut(5)
-                        .activation(Activation.RELU).build())
-                .layer(2, new OutputLayer.Builder(LossFunctions.LossFunction.MSE)
-                        .activation(Activation.IDENTITY)
-                        .nIn(5).nOut(2).build())
-                .pretrain(false).backprop(true).build();
+                .layer(0, new ConvolutionLayer.Builder(kernel,stride).nIn(1).nOut(35).activation(Activation.LEAKYRELU)
+                        .weightInit(WeightInit.XAVIER).build())
+                .layer(1, new SubsamplingLayer.Builder(PoolingType.MAX)
+                        .kernelSize(1,10)
+                        .stride(1,5)
+                        .build())
+                .layer(2, new ConvolutionLayer.Builder(kernel,stride).activation(Activation.RELU).nOut(50)
+                .weightInit(WeightInit.XAVIER).kernelSize(1,5).stride(1,3).build())
+                .layer(3, new DenseLayer.Builder().nOut(25).weightInit(WeightInit.XAVIER)
+                        .activation(Activation.LEAKYRELU).build())
+                .layer(4, new OutputLayer.Builder(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
+                        .activation(Activation.SOFTMAX)
+                        .nIn(25).nOut(2).build())
+                .setInputType(InputType.convolutional(3, 512, 1))
+                .backprop(true).pretrain(false)
+                .build();
 
-        //model = new MultiLayerNetwork(conf); // Passing built configuration to instance of multilayer network
-        //model.init(); // Initialize mode
+        model = new MultiLayerNetwork(conf);
+        model.init();
+        //graphModel = createModel();
 
-        graphModel = createModel();
-
-        //UIServer uiServer = UIServer.getInstance();
+        //Initialize the user interface backend
+        UIServer uiServer = UIServer.getInstance();
         StatsStorage statsStorage = new InMemoryStatsStorage();         //Alternative: new FileStatsStorage(File), for saving and loading later
+        //Attach the StatsStorage instance to the UI: this allows the contents of the StatsStorage to be visualized
+        uiServer.attach(statsStorage);
 
         ArrayList listeners = new ArrayList();
         listeners.add(new ScoreIterationListener(500));
         listeners.add(new StatsListener(statsStorage));
-        graphModel.setListeners(listeners);
+
+        model.setListeners(listeners);
     }
 
     public static ComputationGraph createModel() {
-        int[] kernel = new int[]{3,3};
-        int[] stride = new int[]{3,3};
+        int[] kernel = new int[]{3,50};
+        int[] stride = new int[]{3,50};
         ComputationGraphConfiguration config = new NeuralNetConfiguration.Builder()
                 .seed(123)
                 .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
@@ -165,11 +131,13 @@ public class CNNDeepLearning4jClassifier extends DeepLearning4jClassifier {
                 .addInputs("trainFeatures")
                 .setOutputs("out1")
                 .setInputTypes(InputType.convolutional(3, 512, 1))
-                .addLayer("cnn1",  new ConvolutionLayer.Builder(kernel,stride).nIn(1).nOut(10).activation(Activation.IDENTITY).build(),"trainFeatures")
-                .addLayer("dense1", new DenseLayer.Builder().nOut(5)
+                .addLayer("cnn1",  new ConvolutionLayer.Builder(kernel,stride).nIn(1).nOut(35).activation(Activation.IDENTITY)
+                        .weightInit(WeightInit.XAVIER).build(),"trainFeatures")
+                //.addLayer("pool", n)
+                .addLayer("dense1", new DenseLayer.Builder().nOut(5).weightInit(WeightInit.XAVIER)
                         .activation(Activation.RELU).build(),"cnn1")
-                .addLayer("out1", new OutputLayer.Builder(LossFunctions.LossFunction.MSE)
-                        .activation(Activation.IDENTITY)
+                .addLayer("out1", new OutputLayer.Builder(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
+                        .activation(Activation.SOFTMAX)
                         .nIn(5).nOut(2).build(),"dense1")
                 .pretrain(false).backprop(true)
                 .build();
@@ -187,6 +155,7 @@ public class CNNDeepLearning4jClassifier extends DeepLearning4jClassifier {
         INDArray features = Nd4j.create(featureVector); // Creating INDArray with extracted features
         int[] shape = {1, 1, 3, 512 };
         features = features.reshape(shape);
-        return graphModel.outputSingle(features).getDouble(0); // Result of classifying
+        //return graphModel.outputSingle(features).getDouble(0); // Result of classifying
+        return model.output(features, Layer.TrainingMode.TEST).getDouble(0);
     }
 }

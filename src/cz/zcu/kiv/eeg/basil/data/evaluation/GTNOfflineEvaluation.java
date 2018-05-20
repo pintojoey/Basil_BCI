@@ -62,7 +62,7 @@ public class GTNOfflineEvaluation {
 
 		long estimatedTime = 0;
 		double max = Double.MIN_VALUE, min = Double.MAX_VALUE, avg = 0;
-		int iters = 50;
+		int iters = 1;
 		for (int i = 0; i < iters; i++) {
 			IClassifier classifier = train(epochExtraction, preprocessing, presegmentation, feLst);
 

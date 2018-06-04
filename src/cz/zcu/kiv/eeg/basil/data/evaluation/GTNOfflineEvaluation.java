@@ -96,6 +96,23 @@ public class GTNOfflineEvaluation {
 		System.out.println("Avg => " + avg / iters);
 
 		System.out.println(estimatedTime /1000000000.0 + " sec");
+		System.out.println(DisplayElapsedTime(estimatedTime));
+	}
+
+	private static String DisplayElapsedTime(long nanosec){
+		long sec = nanosec /1000000000;
+		String time = sec % 60 + "s";
+		if(sec > 60) {
+			sec /= 60;
+			time = sec % 60 + "m " + time;
+
+			if(sec > 60){
+				sec /= 60;
+				time = sec + "h " + time;
+			}
+		}
+
+		return time;
 	}
 
 	private static IClassifier train(ISegmentation epochExtraction, List<IPreprocessing> preprocessing, List<IPreprocessing> presegmentation,

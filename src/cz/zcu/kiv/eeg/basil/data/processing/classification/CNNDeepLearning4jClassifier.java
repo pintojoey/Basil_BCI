@@ -137,28 +137,31 @@ public class CNNDeepLearning4jClassifier extends DeepLearning4jClassifier {
                 .activation(Activation.RELU)
                 .weightInit(WeightInit.XAVIER)
                 .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
-                .updater(new Nesterovs(0.0005, 0.9))
-                //.updater(new Adam(0.0005))
+                //.updater(new Nesterovs(0.0005, 0.9))
+                //.gradientNormalization(GradientNormalization.ClipL2PerParamType)
+                .updater(new Adam(0.0005))
                 .list()
-                .layer(0, new ConvolutionLayer.Builder(1,4).stride(1,2).nIn(1).activation(Activation.RELU).nOut(35)
+                .layer(0, new ConvolutionLayer.Builder(1,4).stride(1,2).nIn(1).activation(Activation.RELU).nOut(100)
                         .weightInit(WeightInit.XAVIER).build())
                 .layer(1, new SubsamplingLayer.Builder(PoolingType.MAX)
                         .build())
-                .layer(2, new ConvolutionLayer.Builder(1,4).stride(1,2).activation(Activation.RELU).nOut(100).nIn(35)
+                .layer(2, new ConvolutionLayer.Builder(1,4).stride(1,2).activation(Activation.RELU).nOut(200).nIn(100)
                         .weightInit(WeightInit.XAVIER).build())
                 .layer(3, new SubsamplingLayer.Builder(PoolingType.MAX)
                         .build())
-                .layer(4, new ConvolutionLayer.Builder(1,4).stride(1,2).activation(Activation.RELU).nOut(200).nIn(100)
+                .layer(4, new ConvolutionLayer.Builder(1,4).stride(1,2).activation(Activation.RELU).nOut(400).nIn(200)
                         .weightInit(WeightInit.XAVIER).build())
                 .layer(5, new SubsamplingLayer.Builder(PoolingType.MAX)
                         .build())
-                .layer(6, new ConvolutionLayer.Builder(1,4).stride(1,2).activation(Activation.RELU).nOut(400).nIn(200)
+                .layer(6, new ConvolutionLayer.Builder(1,4).stride(1,2).activation(Activation.RELU).nOut(800).nIn(400)
                         .weightInit(WeightInit.XAVIER).build())
-                .layer(7, new DenseLayer.Builder().weightInit(WeightInit.XAVIER)
-                        .activation(Activation.RELU).nOut(800).build())
+                .layer(7, new SubsamplingLayer.Builder(PoolingType.MAX)
+                        .build())
                 .layer(8, new DenseLayer.Builder().weightInit(WeightInit.XAVIER)
+                        .activation(Activation.RELU).nOut(1600).build())
+                .layer(9, new DenseLayer.Builder().weightInit(WeightInit.XAVIER)
                         .activation(Activation.RELU).nOut(100).build())
-                .layer(9, new OutputLayer.Builder(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
+                .layer(10, new OutputLayer.Builder(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
                         .activation(Activation.SOFTMAX).nOut(2).nIn(100).build())
                 .setInputType(InputType.convolutional(1,1536, 1))
                 .backprop(true).pretrain(false)
@@ -175,7 +178,7 @@ public class CNNDeepLearning4jClassifier extends DeepLearning4jClassifier {
         uiServer.attach(statsStorage);
 
         ArrayList listeners = new ArrayList();
-        listeners.add(new ScoreIterationListener(500));
+        listeners.add(new ScoreIterationListener(100));
         listeners.add(new StatsListener(statsStorage));
 
         model.setListeners(listeners);

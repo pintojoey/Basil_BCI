@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.Test;
+
 import cz.zcu.kiv.eeg.basil.data.processing.IWorkflowController;
 import cz.zcu.kiv.eeg.basil.data.processing.TestingWorkflowController;
 import cz.zcu.kiv.eeg.basil.data.processing.classification.IClassifier;
@@ -31,11 +33,12 @@ import cz.zcu.kiv.eeg.basil.data.providers.messaging.EEGMarker;
  * @author lvareka
  *
  */
-public class RunTestingController {
+public class TestingControllerTest {
 	
-	public static void main(String[] args) {
+	@Test
+	public void testTestingController() {
 		// data provider
-		File f = new File("data/P300/LED_28_06_2012_104.vhdr");
+		File f = new File("src/main/resources/data/P300/LED_28_06_2012_104.vhdr");
 	    OffLineDataProvider provider = new OffLineDataProvider(f);
 
 	    // buffer
@@ -71,9 +74,6 @@ public class RunTestingController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	    
-	   
-	   
 	}
     
     

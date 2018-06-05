@@ -1,6 +1,10 @@
 package cz.zcu.kiv.eeg.basil;
 
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
+
+import org.junit.Test;
 
 import cz.zcu.kiv.eeg.basil.data.listeners.EEGMessageListener;
 import cz.zcu.kiv.eeg.basil.data.providers.bva.OffLineDataProvider;
@@ -11,61 +15,77 @@ import cz.zcu.kiv.eeg.basil.data.providers.messaging.EEGStopMessage;
 
 /**
  * Created by Tomas Prokop on 18.07.2017.
+ * Update to JUnit test by Lukas Vareka 5. 6. 2018
+ * 
+ * Test both on-line and off-line communication using the BrainVision format  
  */
-public class TestBVA {
-
-    public static void main(String[] args) {
-        //testOffline();
-        testOnline();
-    }
-
-    private static void testOnline(){
-        TestBVA td = new TestBVA();
+public class BVATest {
+	protected boolean startMsg;
+    protected boolean dataMsg;
+    protected boolean stopMsg;
+    protected final String IP_ADDRESS = "147.228.127.95"; 
+    protected final String TEST_FILE = "src/main/resources/data/numbers/17ZS/17ZS_14_4_2015_02.vhdr"; 
+    
+    /**
+     * Will fail if the connection is not established on the server side.
+     */
+	@Test
+    public void testOnline() {
+		startMsg = false;
+		dataMsg  = false;
+		stopMsg  = false;
         OnLineDataProvider odp = null;
         try {
-            odp = new OnLineDataProvider("147.228.127.95", 51244);
+            odp = new OnLineDataProvider(IP_ADDRESS, 51244);
             odp.addEEGMessageListener(new EEGMessageListener() {
                 @Override
                 public void startMessageSent(EEGStartMessage msg) {
-                    System.out.println(msg.toString());
+                    startMsg = true;
                 }
 
                 @Override
                 public void dataMessageSent(EEGDataMessage msg) {
-                    System.out.println(msg.toString());
+                    dataMsg = true;
                 }
 
                 @Override
                 public void stopMessageSent(EEGStopMessage msg) {
-                    System.out.println(msg.toString());
+                    stopMsg = true;
                 }
             });
         } catch (Exception e) {
             e.printStackTrace();
         }
         odp.run();
+        assertTrue(startMsg && dataMsg);
     }
 
-    private static void testOffline(){
-        TestBVA td = new TestBVA();
-        File f = new File("data/numbers/17ZS/17ZS_14_4_2015_02.vhdr");
+	@Test
+    public void testOffline() {
+		startMsg = false;
+		dataMsg  = false;
+		stopMsg  = false;
+        File f = new File(TEST_FILE);
         OffLineDataProvider odp = new OffLineDataProvider(f);
+       
         odp.addEEGMessageListener(new EEGMessageListener() {
             @Override
             public void startMessageSent(EEGStartMessage msg) {
-                System.out.println(msg.toString());
+                startMsg = true;
             }
 
             @Override
             public void dataMessageSent(EEGDataMessage msg) {
-                System.out.println(msg.toString());
+                dataMsg = true;
             }
 
             @Override
             public void stopMessageSent(EEGStopMessage msg) {
-                System.out.println(msg.toString());
+                stopMsg = true;
             }
         });
         odp.run();
+        assertTrue(startMsg && dataMsg && stopMsg);
+        
     }
 }

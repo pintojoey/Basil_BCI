@@ -32,8 +32,9 @@ import cz.zcu.kiv.eeg.basil.utils.FileUtils;
  *
  */
 public class GTNOfflineEvaluation {
-	private final static String TESTING_FILE = "info.txt";
+	private final static String TESTING_FILE  = "info.txt";
 	private final static String TRAINING_FILE = "infoTrain.txt";
+	private final static String DATA_PATH     = "src/main/resources/data/";
 	private List<String> directories;
 	private Double humanAccuracy = null;
 	private List<Boolean> correctClassifications;
@@ -67,11 +68,16 @@ public class GTNOfflineEvaluation {
 			IClassifier classifier = train(epochExtraction, preprocessing, presegmentation, feLst);
 
 			GTNOfflineEvaluation gtnOfflineEvaluation;
-			List<String> directories = new ArrayList<>(Arrays.asList("data/numbers/Horazdovice",
-            "data/numbers/Blatnice","data/numbers/Strasice","data/numbers/Masarykovo", "data/numbers/Stankov",
-            "data/numbers/17ZS", "data/numbers/DolniBela", "data/numbers/KVary", "data/numbers/SPSD", "data/numbers/Strasice2",
-            "data/numbers/Tachov", "data/numbers/Tachov2", "data/numbers/ZSBolevecka"));
+			List<String> directories = new ArrayList<>(Arrays.asList("Horazdovice",
+            "Blatnice","Strasice", "Masarykovo", "Stankov",
+            "17ZS", "DolniBela", "KVary", "SPSD", "Strasice2",
+            "Tachov", "Tachov2", "ZSBolevecka"));
 
+			// add prefixes to create directories
+			for (int j = 0; j < directories.size(); j++) {
+				directories.set(j, DATA_PATH + "numbers/" + directories.get(j));
+			}
+			// data/numbers/
 			AbstractDataPreprocessor dataPreprocessor = new EpochDataPreprocessor(preprocessing, presegmentation, null,  epochExtraction);
 
 			try {
@@ -103,7 +109,7 @@ public class GTNOfflineEvaluation {
 		System.out.println("Training started");
 		OffLineDataProvider provider = null;
 		try {
-			String filePath = "data/numbers" + File.separator + TRAINING_FILE;
+			String filePath = DATA_PATH + "numbers" + File.separator + TRAINING_FILE;
 			provider = new OffLineDataProvider(new ArrayList<>(FileUtils.loadExpectedResults(filePath).keySet()));
 			provider.setMetadataProvider(new GtnMetadataProvider(filePath));
 		} catch (IOException e) {

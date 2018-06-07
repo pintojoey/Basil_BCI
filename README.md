@@ -10,8 +10,16 @@ RDA API),
 - feature extraction (windowed means, downsampling, and others)
 - classification (preferably using methods from deep learning category based on the Deeplearning4j library, such as stacked autoencoders)
 - interpretation and evaluation of the results
-- graphical user interface to control and configure classification
 
 # Dependencies
 Required libraries are handled by Maven. Sample off-line training and testing data based on the Guess the number experiment are a part of the project.
 
+# Directory structure
+- <strong>src/main/java</strong> - contains source codes of the project structured into Java packages (note that preprocessing, feature extraction and classification methods are located in the cz.zcu.kiv.eeg.basil.processing.preprocessing, cz.zcu.kiv.eeg.basil.processing.featureextraction, cz.zcu.kiv.eeg.basil.processing.classification packages, respectively).
+
+- <strong>src/main/resources</strong> - contains   
+  1. <strong>data/classifiers</strong> folder with stored classification configurations
+  2. <strong>data/numbers</strong>     folder with a large amount of data for classification training and testing from the 'Guess the number' experiment
+  3. <strong>liblsl64.dll</strong> for LSL library communication
+  
+- <strong>src/main/test</strong>  - contains tests for basic communication and a simple workflow test

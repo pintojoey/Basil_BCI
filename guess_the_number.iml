@@ -15,6 +15,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="libs" level="project" />
     <orderEntry type="library" name="Maven: org.deeplearning4j:deeplearning4j-ui_2.10:1.0.0-alpha" level="project" />
     <orderEntry type="library" name="Maven: org.deeplearning4j:deeplearning4j-play_2.10:1.0.0-alpha" level="project" />
     <orderEntry type="library" name="Maven: com.typesafe.play:play-java_2.10:2.4.8" level="project" />
@@ -287,7 +288,6 @@
     <orderEntry type="library" name="Maven: org.apache.avalon.framework:avalon-framework-api:4.3.1" level="project" />
     <orderEntry type="library" name="Maven: cz.zcu.kiv:eegdsp:1.0" level="project" />
     <orderEntry type="library" name="Maven: cz.zcu.kiv:EEGLoader:2.2" level="project" />
-    <orderEntry type="library" name="Maven: cz.zcu.kiv:HHT:1.0" level="project" />
     <orderEntry type="library" name="Maven: net.sf.javaml:javaml:0.1.5" level="project" />
     <orderEntry type="library" name="Maven: org.neuroph:core:2.9" level="project" />
     <orderEntry type="library" name="Maven: MPERPs:cz.zcu.kiv:1.0" level="project" />

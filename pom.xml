@@ -315,11 +315,11 @@
 			<version>2.2</version>
 		</dependency>
 
-		<dependency>
+<!--		<dependency>
 			<groupId>cz.zcu.kiv</groupId>
 			<artifactId>HHT</artifactId>
 			<version>1.0</version>
-		</dependency>
+		</dependency>-->
 
 		<dependency>
 			<groupId>net.sf.javaml</groupId>

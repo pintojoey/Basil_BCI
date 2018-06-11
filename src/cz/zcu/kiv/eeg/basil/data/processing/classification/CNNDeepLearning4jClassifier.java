@@ -2,6 +2,7 @@ package cz.zcu.kiv.eeg.basil.data.processing.classification;
 
 import antlr.preprocessor.Preprocessor;
 import cz.zcu.kiv.eeg.basil.data.processing.featureExtraction.FeatureVector;
+import hht.DecompositionRunner;
 import org.deeplearning4j.api.storage.StatsStorage;
 import org.deeplearning4j.eval.Evaluation;
 import org.deeplearning4j.nn.api.Layer;
@@ -129,6 +130,10 @@ public class CNNDeepLearning4jClassifier extends DeepLearning4jClassifier {
         model.setListeners(listeners);
     }
 
+    private void buildMemd(){
+
+    }
+
     private void build1D(){
         System.out.print("Build model....CNN");
 
@@ -141,28 +146,28 @@ public class CNNDeepLearning4jClassifier extends DeepLearning4jClassifier {
                 //.gradientNormalization(GradientNormalization.ClipL2PerParamType)
                 .updater(new Adam(0.0005))
                 .list()
-                .layer(0, new ConvolutionLayer.Builder(1,4).stride(1,2).nIn(1).activation(Activation.RELU).nOut(100)
+                .layer(0, new ConvolutionLayer.Builder(1,16).stride(1,2).nIn(1).activation(Activation.RELU).nOut(150)
                         .weightInit(WeightInit.XAVIER).build())
                 .layer(1, new SubsamplingLayer.Builder(PoolingType.MAX)
                         .build())
-                .layer(2, new ConvolutionLayer.Builder(1,4).stride(1,2).activation(Activation.RELU).nOut(200).nIn(100)
+/*                .layer(2, new ConvolutionLayer.Builder(1,4).stride(1,2).activation(Activation.RELU).nOut(200).nIn(100)
                         .weightInit(WeightInit.XAVIER).build())
                 .layer(3, new SubsamplingLayer.Builder(PoolingType.MAX)
                         .build())
                 .layer(4, new ConvolutionLayer.Builder(1,4).stride(1,2).activation(Activation.RELU).nOut(400).nIn(200)
                         .weightInit(WeightInit.XAVIER).build())
                 .layer(5, new SubsamplingLayer.Builder(PoolingType.MAX)
-                        .build())
-                .layer(6, new ConvolutionLayer.Builder(1,4).stride(1,2).activation(Activation.RELU).nOut(800).nIn(400)
+                        .build())*/
+                .layer(2, new ConvolutionLayer.Builder(1,16).stride(1,2).activation(Activation.RELU).nOut(300).nIn(150)
                         .weightInit(WeightInit.XAVIER).build())
-                .layer(7, new SubsamplingLayer.Builder(PoolingType.MAX)
+                .layer(3, new SubsamplingLayer.Builder(PoolingType.MAX)
                         .build())
-                .layer(8, new DenseLayer.Builder().weightInit(WeightInit.XAVIER)
-                        .activation(Activation.RELU).nOut(1600).build())
-                .layer(9, new DenseLayer.Builder().weightInit(WeightInit.XAVIER)
-                        .activation(Activation.RELU).nOut(100).build())
-                .layer(10, new OutputLayer.Builder(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
-                        .activation(Activation.SOFTMAX).nOut(2).nIn(100).build())
+/*                .layer(8, new DenseLayer.Builder().weightInit(WeightInit.XAVIER)
+                        .activation(Activation.RELU).nOut(1600).build())*/
+                .layer(4, new DenseLayer.Builder().weightInit(WeightInit.XAVIER)
+                        .activation(Activation.RELU).nOut(50).build())
+                .layer(5, new OutputLayer.Builder(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
+                        .activation(Activation.SOFTMAX).nOut(2).nIn(50).build())
                 .setInputType(InputType.convolutional(1,1536, 1))
                 .backprop(true).pretrain(false)
                 .build();

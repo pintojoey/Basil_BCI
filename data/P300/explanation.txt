@@ -1,3 +1,0 @@
-Very clear example of P300.
-S  2 - target
-S  4 - non-target

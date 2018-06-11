@@ -9,13 +9,14 @@
     <output url="file://$MODULE_DIR$/target/classes" />
     <output-test url="file://$MODULE_DIR$/target/test-classes" />
     <content url="file://$MODULE_DIR$">
-      <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/test" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/main" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="libs" level="project" />
     <orderEntry type="library" name="Maven: org.deeplearning4j:deeplearning4j-ui_2.10:1.0.0-alpha" level="project" />
     <orderEntry type="library" name="Maven: org.deeplearning4j:deeplearning4j-play_2.10:1.0.0-alpha" level="project" />
     <orderEntry type="library" name="Maven: com.typesafe.play:play-java_2.10:2.4.8" level="project" />
@@ -295,5 +296,6 @@
     <orderEntry type="library" name="Maven: nz.ac.waikato:weka:1.0" level="project" />
     <orderEntry type="library" name="Maven: biz.source_code.dsp:dsp-collection:1.0" level="project" />
     <orderEntry type="library" name="Maven: net.java.dev.jna:jna:4.2.2" level="project" />
+    <orderEntry type="library" name="DP_HHT" level="project" />
   </component>
 </module>

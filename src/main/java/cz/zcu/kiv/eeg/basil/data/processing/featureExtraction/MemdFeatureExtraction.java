@@ -3,8 +3,13 @@ package cz.zcu.kiv.eeg.basil.data.processing.featureExtraction;
 import cz.zcu.kiv.eeg.basil.data.processing.structures.EEGDataPackage;
 import hht.DecompositionRunner;
 import hht.HhtSimpleRunner;
+import org.nd4j.linalg.api.ndarray.INDArray;
+import org.nd4j.linalg.factory.Nd4j;
+import org.nd4j.linalg.util.ArrayUtil;
 import testing.HhtDataRunner;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -30,14 +35,16 @@ public class MemdFeatureExtraction implements IFeatureExtraction {
 
         try {
             List<double[][]> features = memd.runMemdWithDefaultCfg(data.getData());
+            Double[][][] ff = features.toArray(new Double[features.size()][][]);
+            double[] flat = ArrayUtil.flattenDoubleArray(ff);
+            int[] shape = {ff.length, ff[0].length, ff[0][0].length};
+            INDArray arr = Nd4j.create(flat, shape);
+
+            return new FeatureVector(arr);
         } catch (Exception e) {
             e.printStackTrace();
             //TODO handle
         }
-
-        FeatureVector fv = new FeatureVector();
-        //fv.
-
         return null;
     }
 

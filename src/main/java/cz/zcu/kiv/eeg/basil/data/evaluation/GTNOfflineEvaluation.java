@@ -12,6 +12,7 @@ import cz.zcu.kiv.eeg.basil.data.processing.classification.*;
 import cz.zcu.kiv.eeg.basil.data.processing.featureExtraction.RawDataFeatureExtraction;
 import cz.zcu.kiv.eeg.basil.data.processing.featureExtraction.IFeatureExtraction;
 import cz.zcu.kiv.eeg.basil.data.processing.featureExtraction.WaveletTransformFeatureExtraction;
+import cz.zcu.kiv.eeg.basil.data.processing.math.SignalProcessing;
 import cz.zcu.kiv.eeg.basil.data.processing.preprocessing.*;
 import cz.zcu.kiv.eeg.basil.data.processing.preprocessing.algorithms.BaselineCorrection;
 import cz.zcu.kiv.eeg.basil.data.processing.preprocessing.algorithms.ChannelSelection;
@@ -21,6 +22,10 @@ import cz.zcu.kiv.eeg.basil.data.processing.structures.IBuffer;
 import cz.zcu.kiv.eeg.basil.data.providers.metadata.GtnMetadataProvider;
 import cz.zcu.kiv.eeg.basil.data.providers.bva.OffLineDataProvider;
 import cz.zcu.kiv.eeg.basil.utils.FileUtils;
+import org.nd4j.linalg.api.ndarray.INDArray;
+import org.nd4j.linalg.cpu.nativecpu.NDArray;
+import org.nd4j.linalg.exception.ND4JException;
+import org.nd4j.linalg.factory.Nd4j;
 
 /**
  * Guess the number specific evaluation class.

@@ -21,10 +21,18 @@ public class ErpTrainCondition implements ITrainCondition {
         return  canAddSample(isTarget);
     }
 
+    /**
+     * Get number of target samples
+     * @return number of targets
+     */
     public int getTargetCnt() {
         return targetCnt;
     }
 
+    /**
+     * Get number of nontarget samples
+     * @return Number of nontargets
+     */
     public int getNontargetCnt() {
         return nontargetCnt;
     }
@@ -66,8 +74,4 @@ public class ErpTrainCondition implements ITrainCondition {
     public List<FeatureVector> getFeatureVectors() {
         return featureVectors;
     }
-
-	
-
-   
 }

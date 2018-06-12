@@ -127,11 +127,9 @@ public abstract class DeepLearning4jClassifier implements IClassifier {
             List<DataSet> lst = new ArrayList<>(featureVectors.size());
             DataSet d;
             for (FeatureVector fv : featureVectors) {
-                INDArray matrix = Nd4j.create(fv.getFeatureMatrix());
-                matrix = matrix.reshape(shape);
                 double[] l = {fv.getExpectedOutput(),Math.abs(1 - fv.getExpectedOutput())};
                 INDArray label = Nd4j.create(l);
-                d = new DataSet(matrix, label);
+                d = new DataSet(fv.getShapedFeatureVector(shape), label);
                 lst.add(d);
             }
 

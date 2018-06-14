@@ -2,11 +2,14 @@ package cz.zcu.kiv.eeg.basil.gui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.io.File;
+import java.io.IOException;
 
 import javax.swing.AbstractAction;
 import javax.swing.JFrame;
 import javax.swing.KeyStroke;
 
+import org.jfree.chart.ChartUtilities;
 import org.jfree.ui.RefineryUtilities;
 
 
@@ -14,13 +17,13 @@ import org.jfree.ui.RefineryUtilities;
  * Displays 2D double data such as epoch averages,
  * can be associated with data labels (such as channel names)
  * 
- * @author lvareka
+ * @author Lukas Vareka
  *
  */
 public class ShowChart extends AbstractAction {
 
     private static final long serialVersionUID = 1L;
-    private final EEGCharts chart;
+    private final EEGFreeChart chart;
 
     @Override
     public void actionPerformed(ActionEvent actionevent) {
@@ -35,7 +38,7 @@ public class ShowChart extends AbstractAction {
      */
     public ShowChart(String title) {
         super();
-        this.chart = new EEGCharts(title);
+        this.chart = new EEGFreeChart(title);
         putValue("AcceleratorKey", KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.CTRL_MASK));
         putValue("Name", "Show charts");
         
@@ -52,5 +55,9 @@ public class ShowChart extends AbstractAction {
      */
     public void update(double[][] signal, String[] labels) {
         this.chart.update(signal, labels);
+    }
+    
+    public void saveToPng(File pngFile) throws IOException {
+    	ChartUtilities.saveChartAsPNG(pngFile, chart.getChart(), chart.getWidth() * 2, chart.getHeight() * 2);
     }
 }

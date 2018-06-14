@@ -61,8 +61,8 @@ public abstract class AbstractWorkflowController implements IWorkflowController 
 
     public AbstractWorkflowController(AbstractDataProvider dataProvider, IBuffer buffer,
                                       AbstractDataPreprocessor preprocessor, List<IFeatureExtraction> featureExtractions, IClassifier classifier) {
-        if (buffer == null || classifier == null)
-            throw new IllegalArgumentException("One or more arguments are null.");
+        if (buffer == null)
+            throw new IllegalArgumentException("The buffer is null!");
 
         this.preprocessor = preprocessor;
         this.dataProvider = dataProvider;

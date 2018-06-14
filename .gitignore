@@ -1,6 +1,3 @@
-*.eeg
-*.vhdr
-*.vmrk
 data/last_trained.txt
 data/best_class_2_650.txt
 /bin/

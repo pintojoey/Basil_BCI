@@ -51,27 +51,7 @@
 	</dependencyManagement>
 
 	<build>
-		<sourceDirectory>src\main\java</sourceDirectory>
-		<testSourceDirectory>src\test\java</testSourceDirectory>
 		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>copy-dependencies</id>
-						<phase>package</phase>
-						<goals>
-							<goal>copy-dependencies</goal>
-						</goals>
-						<configuration>
-							<outputDirectory>${project.build.directory}</outputDirectory>
-							<overWriteReleases>false</overWriteReleases>
-							<overWriteSnapshots>true</overWriteSnapshots>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -330,6 +310,12 @@
     		<groupId>net.java.dev.jna</groupId>
     		<artifactId>jna</artifactId>
     		<version>4.2.2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>cz.zcu.kiv</groupId>
+			<artifactId>workflow_designer</artifactId>
+			<version>1.6</version>
 		</dependency>
 
 	</dependencies>

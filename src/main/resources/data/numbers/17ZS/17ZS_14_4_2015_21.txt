@@ -1,6 +1,0 @@
-male, 15
-right-handed
-the number guessed: 5,3
-the number thought: 3
-
-

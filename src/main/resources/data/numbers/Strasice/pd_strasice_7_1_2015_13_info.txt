@@ -1,4 +1,0 @@
-holka let,
-hádame 2 je to 2
-latence pøes 400 ms
-reakèní doba 481 ms

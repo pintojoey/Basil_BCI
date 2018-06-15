@@ -1,5 +1,0 @@
-kluk 14 let,
-hádame 5, je to 5
-klasifikátor hádá 7 (5 - 0.34)
-táhlá výrazná vlna okolo 500 ms
-reakèní doba 768 ms

@@ -1,4 +1,0 @@
-male, 14
-the number guessed: 9
-the number thought: 9
-right-handed

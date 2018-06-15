@@ -1,6 +1,0 @@
-male 13 years
-left-handed
-The numbers guessed: 4
-The number thought: 4
-Additional information:
-- wears glasses

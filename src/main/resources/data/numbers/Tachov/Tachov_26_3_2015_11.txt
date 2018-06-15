@@ -1,5 +1,0 @@
-male, 15
-the number guessed: 8, 1
-the number thought: 2
-50 Hz artifacts
-right-handed

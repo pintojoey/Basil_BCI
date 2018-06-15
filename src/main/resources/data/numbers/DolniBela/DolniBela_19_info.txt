@@ -1,5 +1,0 @@
-male 13 years
-left-handed
-The numbers guessed: 6
-The number thought: 6
-Additional information:

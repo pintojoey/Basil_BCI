@@ -1,7 +1,0 @@
-male 11 years
-left-handed
-The numbers guessed: 4, 7
-The number thought: 7
-Additional information:
-
-

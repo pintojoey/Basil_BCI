@@ -1,5 +1,0 @@
-male, 14
-left-handed
-the number guessed: 7
-the number thought: 7
-classifier: 1, 7, 4, 2, 8

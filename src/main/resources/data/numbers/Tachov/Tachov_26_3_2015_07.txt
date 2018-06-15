@@ -1,6 +1,0 @@
-male, 15
-the number guessed: 6, 2
-the number thought: 5
-blinks excessively
-left-handed
-myopia, no glasses

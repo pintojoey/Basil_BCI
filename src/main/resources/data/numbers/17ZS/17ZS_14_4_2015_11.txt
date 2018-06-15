@@ -1,6 +1,0 @@
-female, 11
-right-handed
-the number guessed: 1
-the number thought: 1
-
-

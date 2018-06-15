@@ -1,5 +1,0 @@
-female, 13
-the number guessed: 7
-the number thought: 7
-easy to guess
-left-handed

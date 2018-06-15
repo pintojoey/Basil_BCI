@@ -1,6 +1,0 @@
-female 11 years
-right-handed
-The numbers guessed: 9, 4
-The number thought: 7
-Additional information:
-- 7 looks like the target after a few trials

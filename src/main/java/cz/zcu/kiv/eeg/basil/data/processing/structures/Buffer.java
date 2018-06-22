@@ -3,6 +3,9 @@ package cz.zcu.kiv.eeg.basil.data.processing.structures;
 import java.util.ArrayList;
 import java.util.List;
 
+import cz.zcu.kiv.WorkflowDesigner.Annotations.BlockExecute;
+import cz.zcu.kiv.WorkflowDesigner.Annotations.BlockOutput;
+import cz.zcu.kiv.WorkflowDesigner.Annotations.BlockType;
 import cz.zcu.kiv.eeg.basil.data.providers.messaging.EEGMarker;
 import cz.zcu.kiv.eeg.basil.data.providers.messaging.EEGStartMessage;
 
@@ -14,6 +17,7 @@ import cz.zcu.kiv.eeg.basil.data.providers.messaging.EEGStartMessage;
  * @author lvareka
  *
  * */
+@BlockType(type="Buffer",family = "Preprocessing")
 public class Buffer implements IBuffer {
 
 	/**
@@ -35,7 +39,14 @@ public class Buffer implements IBuffer {
 	 * EEG start message => metadata (e.g. sampling, channels, etc.)
 	 */
 	private  EEGStartMessage metadata;
-	
+
+	@BlockOutput(name="Buffer",type = "IBuffer")
+	private IBuffer buffer;
+
+	@BlockExecute
+    private void process(){
+	    buffer=this;
+    }
 	public Buffer() {
 		this.data = null;
 		this.markers = new ArrayList<>();

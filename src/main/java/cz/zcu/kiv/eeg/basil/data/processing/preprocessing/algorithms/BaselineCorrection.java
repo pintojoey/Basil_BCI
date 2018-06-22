@@ -1,8 +1,14 @@
 package cz.zcu.kiv.eeg.basil.data.processing.preprocessing.algorithms;
 
+import cz.zcu.kiv.WorkflowDesigner.Annotations.BlockExecute;
+import cz.zcu.kiv.WorkflowDesigner.Annotations.BlockOutput;
+import cz.zcu.kiv.WorkflowDesigner.Annotations.BlockProperty;
+import cz.zcu.kiv.WorkflowDesigner.Annotations.BlockType;
 import cz.zcu.kiv.eeg.basil.data.processing.math.SignalProcessing;
 import cz.zcu.kiv.eeg.basil.data.processing.preprocessing.IPreprocessing;
 import cz.zcu.kiv.eeg.basil.data.processing.structures.EEGDataPackage;
+
+import static cz.zcu.kiv.WorkflowDesigner.Type.NUMBER;
 
 /**
  * 
@@ -12,10 +18,26 @@ import cz.zcu.kiv.eeg.basil.data.processing.structures.EEGDataPackage;
  * Created by Tomas Prokop on 01.08.2017.
  *  
  */
+@BlockType(type="BaselineCorrection",family="Preprocessing")
 public class BaselineCorrection implements IPreprocessing {
+
+    @BlockProperty(name="StartTime",type = NUMBER, defaultValue = "")
 	private double startTime; /* in milliseconds */
+
+    @BlockProperty(name="EndTime",type = NUMBER, defaultValue = "")
 	private double endTime;   /* in milliseconds */
-	
+
+    @BlockOutput(name="BaselineCoorection",type="IPreprocessing")
+    private BaselineCorrection baselineCorrection;
+
+	public BaselineCorrection(){
+		//Required Empty Default Constructor for Workflow Designer
+	}
+
+	@BlockExecute
+	private void process(){
+	    baselineCorrection=this;
+    }
     public BaselineCorrection(double startTime, double endTime) {
 		this.startTime = startTime;
 		this.endTime = endTime;

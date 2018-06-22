@@ -1,5 +1,9 @@
 package cz.zcu.kiv.eeg.basil.data.processing.preprocessing;
 
+import cz.zcu.kiv.WorkflowDesigner.Annotations.BlockExecute;
+import cz.zcu.kiv.WorkflowDesigner.Annotations.BlockInput;
+import cz.zcu.kiv.WorkflowDesigner.Annotations.BlockOutput;
+import cz.zcu.kiv.WorkflowDesigner.Annotations.BlockType;
 import cz.zcu.kiv.eeg.basil.data.processing.structures.EEGDataPackage;
 import cz.zcu.kiv.eeg.basil.data.providers.messaging.EEGMarker;
 
@@ -15,11 +19,39 @@ import java.util.List;
  * Created by Tomas Prokop on 07.08.2017.
  * 
  */
+@BlockType(type="EpochDataPreprocessor",family = "Preprocessing")
 public class EpochDataPreprocessor extends AbstractDataPreprocessor {
+
+    @BlockInput(name="Averaging", type="Averaging")
 	private Averaging averaging;
+
+    @BlockInput(name="Preprocessing", type="IPreprocessing[]")
+	private List<IPreprocessing>preprocessings;
+
+    @BlockInput(name="PreSegmentationProcessing", type="IPreprocessing[]")
+	private List<IPreprocessing>preSegmentationPreprocessings;
+
+    @BlockInput(name="ISegmentation", type="ISegmentation")
+	private ISegmentation iSegmentation;
+
+    @BlockOutput(name="DataPreprocessor",type = "DataPreprocessor")
+    private EpochDataPreprocessor epochDataPreprocessor;
+
+    public EpochDataPreprocessor(){
+        //Required Empty Default Constructor for Workflow Designer
+    }
+
+    @BlockExecute
+    private void process(){
+        super.segmentation = iSegmentation;
+        epochDataPreprocessor=this;
+    }
 
     public EpochDataPreprocessor(List<IPreprocessing> preprocessings, List<IPreprocessing> preSegmentationPreprocessings, Averaging averaging, ISegmentation segmentation) {
         super(preprocessings, preSegmentationPreprocessings, segmentation);
+        this.preprocessings = preprocessings;
+        this.preSegmentationPreprocessings = preSegmentationPreprocessings;
+        this.segmentation = segmentation;
         this.averaging = averaging;
     }
 

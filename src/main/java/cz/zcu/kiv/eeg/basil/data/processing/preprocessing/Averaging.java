@@ -2,6 +2,10 @@ package cz.zcu.kiv.eeg.basil.data.processing.preprocessing;
 
 import java.util.List;
 
+import cz.zcu.kiv.WorkflowDesigner.Annotations.BlockExecute;
+import cz.zcu.kiv.WorkflowDesigner.Annotations.BlockInput;
+import cz.zcu.kiv.WorkflowDesigner.Annotations.BlockOutput;
+import cz.zcu.kiv.WorkflowDesigner.Annotations.BlockType;
 import cz.zcu.kiv.eeg.basil.data.processing.structures.EEGDataPackage;
 import cz.zcu.kiv.eeg.basil.data.providers.messaging.EEGMarker;
 
@@ -10,8 +14,23 @@ import cz.zcu.kiv.eeg.basil.data.providers.messaging.EEGMarker;
  * @author lvareka
  *
  */
+@BlockType(type="Averaging",family = "Preprocessing")
 public class Averaging {
+
+	@BlockInput(name = "Markers",type="EEGMarker[]")
 	private List<EEGMarker> markers;
+
+	@BlockOutput(name="Averaging",type="Averaging")
+    private Averaging averaging;
+
+	public Averaging(){
+		//Required Empty Default Constructor for Workflow Designer
+	}
+
+	@BlockExecute
+	private void process(){
+	    averaging=this;
+    }
 	
 	public Averaging(List<EEGMarker> markers) {
 		this.markers = markers;
@@ -47,7 +66,7 @@ public class Averaging {
 				average[i][j] = average[i][j] / numberOfEpochs;
 			}
 		}
-		
+
 		EEGDataPackage averagePackage = new EEGDataPackage(average, markers, epochs.get(0).getChannelNames(), epochs.get(0).getMetadata());
 		return averagePackage;
 	}

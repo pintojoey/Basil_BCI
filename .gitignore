@@ -5,8 +5,9 @@ data/best_class_2_650.txt
 .classpath
 .settings/
 log/
-.gitignore
 /target/
 .idea
 out/
 Epochs.csv.orig
+/src/test/resources/data/P300/chart.png
+test_result

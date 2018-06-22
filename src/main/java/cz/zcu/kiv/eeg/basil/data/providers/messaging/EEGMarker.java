@@ -1,5 +1,13 @@
 package cz.zcu.kiv.eeg.basil.data.providers.messaging;
 
+import cz.zcu.kiv.WorkflowDesigner.Annotations.BlockExecute;
+import cz.zcu.kiv.WorkflowDesigner.Annotations.BlockOutput;
+import cz.zcu.kiv.WorkflowDesigner.Annotations.BlockProperty;
+import cz.zcu.kiv.WorkflowDesigner.Annotations.BlockType;
+import cz.zcu.kiv.WorkflowDesigner.Type;
+
+
+
 /**
  * Created by Tomas Prokop on 17.07.2017.
  * 
@@ -10,17 +18,32 @@ package cz.zcu.kiv.eeg.basil.data.providers.messaging;
  * experiments
  * 
  */
+@BlockType(type="EEGMarker",family = "Preprocessing")
 public class EEGMarker {
 
     /**
      * Marker name
      */
-    private final String name;
+    @BlockProperty(name="Name",type = Type.STRING)
+    private String name;
 
     /**
      * Offset of marker in data
      */
+    @BlockProperty(name="Offset",type=Type.NUMBER,defaultValue = "0")
     private int offset;
+
+    @BlockOutput(name="marker",type="EEGMarker")
+    EEGMarker eegMarker;
+
+    public EEGMarker(){
+        //Required Emtpy Default Constructor for Workflow Designer
+    }
+
+    @BlockExecute
+    private void process(){
+        eegMarker=this;
+    }
 
     /**
      * Creates new EEG marker

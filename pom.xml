@@ -47,6 +47,11 @@
 				<artifactId>nd4j-cuda-8.0-platform</artifactId>
 				<version>${nd4j.version}</version>
 			</dependency>
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>25.0-jre</version>
+            </dependency>
 		</dependencies>
 	</dependencyManagement>
 
@@ -73,6 +78,15 @@
 						<descriptorRef>jar-with-dependencies</descriptorRef>
 					</descriptorRefs>
 				</configuration>
+				<executions>
+					<execution>
+						<id>make-assembly</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
@@ -236,14 +250,10 @@
 			<artifactId>jdom</artifactId>
 			<version>1.0</version>
 		</dependency>
-		<dependency>
-			<groupId>com.google.guava</groupId>
-			<artifactId>guava</artifactId>
-			<version>18.0</version>
-		</dependency>
 
 
-		<dependency>
+
+        <dependency>
 			<groupId>org.apache.avalon.framework</groupId>
 			<artifactId>avalon-framework-api</artifactId>
 			<version>4.3.1</version>
@@ -315,8 +325,9 @@
 		<dependency>
 			<groupId>cz.zcu.kiv</groupId>
 			<artifactId>workflow_designer</artifactId>
-			<version>1.6</version>
+			<version>1.9</version>
 		</dependency>
+
 
 	</dependencies>
 
@@ -330,12 +341,12 @@
 		<repository>
 			<id>sonatype-nexus-snapshots</id>
 			<name>Sonatype Nexus Snapshots</name>
-			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+			<url>https://oss.sonatype.org/content/repositories/releases/</url>
 			<releases>
-				<enabled>false</enabled>
+				<enabled>true</enabled>
 			</releases>
 			<snapshots>
-				<enabled>true</enabled>
+				<enabled>false</enabled>
 			</snapshots>
 		</repository>
 	</repositories>

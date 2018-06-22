@@ -18,17 +18,17 @@ public abstract class AbstractDataPreprocessor implements IDataPreprocessor {
 	/**
 	 * List of preprocessing methods performed after segmentation
 	 */
-    protected final List<IPreprocessing> preprocessings;
+    protected List<IPreprocessing> preprocessings;
 
 	/**
 	 * List of preprocessing methods performed before segmentation
 	 */
-	protected final List<IPreprocessing> preSegmentationPreprocessings;
+	protected List<IPreprocessing> preSegmentationPreprocessings;
 
 	/**
 	 * Segmentation method
 	 */
-    protected final ISegmentation segmentation;
+    protected ISegmentation segmentation;
 
 	/**
 	 * Buffer
@@ -44,6 +44,9 @@ public abstract class AbstractDataPreprocessor implements IDataPreprocessor {
     	this.preprocessings = preprocessings;
 		this.preSegmentationPreprocessings = preSegmentationPreprocessings;
 		this.segmentation = segmentation;
+	}
+
+	protected AbstractDataPreprocessor() {
 	}
 
 	public List<IPreprocessing> getPreprocessings() {

@@ -1,5 +1,7 @@
 package cz.zcu.kiv.eeg.basil.data.providers.bva;
 
+import cz.zcu.kiv.WorkflowDesigner.Annotations.*;
+import cz.zcu.kiv.WorkflowDesigner.Type;
 import cz.zcu.kiv.eeg.basil.data.listeners.DataProviderListener;
 import cz.zcu.kiv.eeg.basil.data.listeners.EEGMessageListener;
 import cz.zcu.kiv.eeg.basil.data.providers.AbstractDataProvider;
@@ -13,11 +15,15 @@ import cz.zcu.kiv.signal.EEGMarker;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static cz.zcu.kiv.WorkflowDesigner.WorkflowCardinality.ONE_TO_MANY;
+import static cz.zcu.kiv.WorkflowDesigner.WorkflowCardinality.ONE_TO_ONE;
 
 /**
  * Reads EEG data from files in BrainVision format
@@ -25,7 +31,8 @@ import java.util.Map;
  * @author Tomas Prokop
  *
  */
-public class OffLineDataProvider extends AbstractDataProvider {
+@BlockType(type="OfflineDataProvider", family = "DataProvider")
+public class OffLineDataProvider extends AbstractDataProvider implements Serializable {
     private static final String VHDR_EXTENSION = ".vhdr";
 	private static final String VMRK_EXTENSION = ".vmrk";
 	private static final String EEG_EXTENSION  = ".eeg";
@@ -33,8 +40,26 @@ public class OffLineDataProvider extends AbstractDataProvider {
 	private String vhdrFile;
     private String vmrkFile;
     private String eegFile;
+
+    @BlockProperty(name = "EEG File", type = Type.FILE)
+    private File eegFileInput;
+
+    @BlockOutput(name = "DataProvider", type = "DataProvider")
+    private OffLineDataProvider offLineDataProvider;
+
     private List<String> files;
     private boolean running;
+
+    public OffLineDataProvider(){
+        //Default Empty Constructor needed for Workflow Designer
+    }
+
+    @BlockExecute
+    public void process(){
+        files = new ArrayList<>(1);
+        files.add(eegFileInput.getAbsolutePath());
+        offLineDataProvider = this;
+    }
 
     public OffLineDataProvider(File eegFile) {
         files = new ArrayList<>(1);

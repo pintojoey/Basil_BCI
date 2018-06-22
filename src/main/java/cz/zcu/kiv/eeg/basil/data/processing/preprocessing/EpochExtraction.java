@@ -4,8 +4,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import cz.zcu.kiv.WorkflowDesigner.Annotations.BlockExecute;
+import cz.zcu.kiv.WorkflowDesigner.Annotations.BlockOutput;
+import cz.zcu.kiv.WorkflowDesigner.Annotations.BlockProperty;
+import cz.zcu.kiv.WorkflowDesigner.Annotations.BlockType;
 import cz.zcu.kiv.eeg.basil.data.processing.structures.EEGDataPackage;
 import cz.zcu.kiv.eeg.basil.data.providers.messaging.EEGMarker;
+
+import static cz.zcu.kiv.WorkflowDesigner.Type.NUMBER;
 
 /**
  * Extract epochs using stimuli markers. Each epoch
@@ -15,16 +21,32 @@ import cz.zcu.kiv.eeg.basil.data.providers.messaging.EEGMarker;
  * @author lvareka
  *
  */
+@BlockType(type="EpochExtraction",family = "Preprocessing")
 public class EpochExtraction implements ISegmentation {
 
-	private final int preStimulus;  /* time before the stimulus onset in ms */
-	private final int postStimulus; /* time after the stimulus onset in ms */
+    @BlockProperty(name="PreStimulus onset",type=NUMBER, defaultValue = "0")
+	private int preStimulus;  /* time before the stimulus onset in ms */
+
+    @BlockProperty(name="PostStimulus onset",type=NUMBER, defaultValue = "0")
+	private int postStimulus; /* time after the stimulus onset in ms */
+
+
+	public EpochExtraction(){
+		//Required Empty Default Constructor for Workflow Designer
+	}
 	
 	public EpochExtraction(int preStimulus, int postStimulus) {
 		super();
 		this.preStimulus = preStimulus;
 		this.postStimulus = postStimulus;
 	}
+	@BlockExecute
+	private void process(){
+		epochExtraction=this;
+	}
+
+	@BlockOutput(name="EpochExtraction",type="ISegmentation")
+    private ISegmentation epochExtraction;
 
 	@Override
 	public List<EEGDataPackage> split(EEGDataPackage eegData) {

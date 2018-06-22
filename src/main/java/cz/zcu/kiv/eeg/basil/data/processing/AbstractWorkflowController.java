@@ -42,22 +42,22 @@ public abstract class AbstractWorkflowController implements IWorkflowController 
     /**
      * Buffer used to store data
      */
-    protected final IBuffer buffer;
+    protected IBuffer buffer;
 
     /**
      * Data preprocessor used to preprocess data
      */
-    protected final AbstractDataPreprocessor preprocessor;
+    protected AbstractDataPreprocessor preprocessor;
 
     /**
      * List of feature extraction methods
      */
-    protected final List<IFeatureExtraction> featureExtractions;
+    protected List<IFeatureExtraction> featureExtractions;
 
     /**
      * Classifier
      */
-    protected final IClassifier classifier;
+    protected IClassifier classifier;
 
     public AbstractWorkflowController(AbstractDataProvider dataProvider, IBuffer buffer,
                                       AbstractDataPreprocessor preprocessor, List<IFeatureExtraction> featureExtractions, IClassifier classifier) {
@@ -77,6 +77,9 @@ public abstract class AbstractWorkflowController implements IWorkflowController 
             dataProvider.addEEGMessageListener(messageListener);
             dataProvider.addDataProviderListener(dataProviderListener);
         }
+    }
+
+    protected AbstractWorkflowController() {
     }
 
     public AbstractDataProvider getDataProvider() {
@@ -111,7 +114,7 @@ public abstract class AbstractWorkflowController implements IWorkflowController 
      * Receives and process the data from providers
      * 
      */
-    private EEGMessageListener messageListener = new EEGMessageListener() {
+    EEGMessageListener messageListener = new EEGMessageListener() {
         @Override
         public void startMessageSent(EEGStartMessage msg) {
             buffer.initialize(msg);
@@ -136,7 +139,7 @@ public abstract class AbstractWorkflowController implements IWorkflowController 
         	dataProvider.addEEGMessageListener(messageListener);
     }
 
-    private DataProviderListener dataProviderListener = new DataProviderListener() {
+    DataProviderListener dataProviderListener = new DataProviderListener() {
         @Override
         public void dataReadStart() {
             onDataReadStarted();

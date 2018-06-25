@@ -1,7 +1,5 @@
 package cz.zcu.kiv.eeg.basil.data.providers.bva;
 
-import cz.zcu.kiv.WorkflowDesigner.Annotations.*;
-import cz.zcu.kiv.WorkflowDesigner.Type;
 import cz.zcu.kiv.eeg.basil.data.listeners.DataProviderListener;
 import cz.zcu.kiv.eeg.basil.data.listeners.EEGMessageListener;
 import cz.zcu.kiv.eeg.basil.data.providers.AbstractDataProvider;
@@ -22,16 +20,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static cz.zcu.kiv.WorkflowDesigner.WorkflowCardinality.ONE_TO_MANY;
-import static cz.zcu.kiv.WorkflowDesigner.WorkflowCardinality.ONE_TO_ONE;
-
 /**
  * Reads EEG data from files in BrainVision format
  * 
  * @author Tomas Prokop
  *
  */
-@BlockType(type="OfflineDataProvider", family = "DataProvider")
+
 public class OffLineDataProvider extends AbstractDataProvider implements Serializable {
     private static final String VHDR_EXTENSION = ".vhdr";
 	private static final String VMRK_EXTENSION = ".vmrk";
@@ -40,26 +35,8 @@ public class OffLineDataProvider extends AbstractDataProvider implements Seriali
 	private String vhdrFile;
     private String vmrkFile;
     private String eegFile;
-
-    @BlockProperty(name = "EEG File", type = Type.FILE)
-    private File eegFileInput;
-
-    @BlockOutput(name = "DataProvider", type = "DataProvider")
-    private OffLineDataProvider offLineDataProvider;
-
     private List<String> files;
     private boolean running;
-
-    public OffLineDataProvider(){
-        //Default Empty Constructor needed for Workflow Designer
-    }
-
-    @BlockExecute
-    public void process(){
-        files = new ArrayList<>(1);
-        files.add(eegFileInput.getAbsolutePath());
-        offLineDataProvider = this;
-    }
 
     public OffLineDataProvider(File eegFile) {
         files = new ArrayList<>(1);

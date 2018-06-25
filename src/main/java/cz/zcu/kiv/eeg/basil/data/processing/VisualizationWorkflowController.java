@@ -30,6 +30,7 @@ public class VisualizationWorkflowController extends AbstractWorkflowController 
 	private final int MIN_MARKERS = 5;
 	private boolean finished = false;
 	private File pngFile; /* output PNG file that will contain the EEG chart output */
+	private List<EEGDataPackage>dataPackages;
 	
 	/**
 	 * 
@@ -46,21 +47,23 @@ public class VisualizationWorkflowController extends AbstractWorkflowController 
 	@Override
 	public void processData() {
 		if (finished || buffer.isFull() || buffer.getMarkersSize() > MIN_MARKERS) {
-            final List<EEGDataPackage> dataPackages = preprocessor.preprocessData();
+			dataPackages = preprocessor.preprocessData();
 
             if (dataPackages == null || dataPackages.size() == 0) return;
             
             for (EEGDataProcessingListener ls : listeners) {
                 ls.dataPreprocessed(dataPackages);
             }
-          	ShowChart showChart = new ShowChart("EEG signal visualization");
-            for (EEGDataPackage dataPackage : dataPackages) {
-            	showChart.update(dataPackage.getData(), dataPackage.getChannelNames());
-            }
-            try {
-				showChart.saveToPng(pngFile);
-			} catch (IOException e) {
-				e.printStackTrace();
+            if(pngFile!=null){
+				ShowChart showChart = new ShowChart("EEG signal visualization");
+				for (EEGDataPackage dataPackage : dataPackages) {
+					showChart.update(dataPackage.getData(), dataPackage.getChannelNames());
+				}
+				try {
+					showChart.saveToPng(pngFile);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 	}
@@ -82,4 +85,11 @@ public class VisualizationWorkflowController extends AbstractWorkflowController 
 		buffer.add(data.getData(), Arrays.asList(data.getMarkers()));
 	}
 
+	public List<EEGDataPackage> getDataPackages() {
+		return dataPackages;
+	}
+
+	public void setDataPackages(List<EEGDataPackage> dataPackages) {
+		this.dataPackages = dataPackages;
+	}
 }

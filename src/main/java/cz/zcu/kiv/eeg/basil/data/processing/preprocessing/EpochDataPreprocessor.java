@@ -19,22 +19,16 @@ import java.util.List;
  * Created by Tomas Prokop on 07.08.2017.
  * 
  */
-@BlockType(type="EpochDataPreprocessor",family = "Preprocessing")
 public class EpochDataPreprocessor extends AbstractDataPreprocessor {
 
-    @BlockInput(name="Averaging", type="Averaging")
 	private Averaging averaging;
 
-    @BlockInput(name="Preprocessing", type="IPreprocessing[]")
 	private List<IPreprocessing>preprocessings;
 
-    @BlockInput(name="PreSegmentationProcessing", type="IPreprocessing[]")
 	private List<IPreprocessing>preSegmentationPreprocessings;
 
-    @BlockInput(name="ISegmentation", type="ISegmentation")
 	private ISegmentation iSegmentation;
 
-    @BlockOutput(name="DataPreprocessor",type = "DataPreprocessor")
     private EpochDataPreprocessor epochDataPreprocessor;
 
     public EpochDataPreprocessor(){

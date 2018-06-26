@@ -18,16 +18,12 @@ import static cz.zcu.kiv.WorkflowDesigner.Type.NUMBER;
  * Created by Tomas Prokop on 01.08.2017.
  *  
  */
-@BlockType(type="BaselineCorrection",family="Preprocessing")
 public class BaselineCorrection implements IPreprocessing {
 
-    @BlockProperty(name="StartTime",type = NUMBER, defaultValue = "")
 	private double startTime; /* in milliseconds */
 
-    @BlockProperty(name="EndTime",type = NUMBER, defaultValue = "")
 	private double endTime;   /* in milliseconds */
 
-    @BlockOutput(name="BaselineCoorection",type="IPreprocessing")
     private BaselineCorrection baselineCorrection;
 
 	public BaselineCorrection(){

@@ -10,6 +10,7 @@ import cz.zcu.kiv.eeg.basil.data.processing.featureExtraction.IFeatureExtraction
 import cz.zcu.kiv.eeg.basil.data.processing.preprocessing.IPreprocessing;
 import cz.zcu.kiv.eeg.basil.data.providers.messaging.EEGMarker;
 import cz.zcu.kiv.eeg.basil.data.providers.messaging.EEGStartMessage;
+import cz.zcu.kiv.eeg.basil.workflow.Configuration;
 
 /**
  * Class represents EEG data. It remembers data processing steps performed on the data it carries.
@@ -18,7 +19,9 @@ import cz.zcu.kiv.eeg.basil.data.providers.messaging.EEGStartMessage;
  */
 public class EEGDataPackage {
 
-    private final EEGStartMessage metadata;
+    private EEGStartMessage metadata;
+
+    private Configuration configuration;
 
     private ArrayList<IPreprocessing> preprocessingSteps;
 
@@ -61,7 +64,13 @@ public class EEGDataPackage {
 		this.channelNames = channelNames;
 	}
 
-	/**
+    public EEGDataPackage(double[][] data, List<EEGMarker> markers, String[] channelNames) {
+        this.data=data;
+        this.markers=markers;
+        this.channelNames=channelNames;
+    }
+
+    /**
      * Returns data
      * @return data
      */
@@ -179,5 +188,13 @@ public class EEGDataPackage {
     		returnString.append(channelsOK ? channelNames[i] : "?" + ": " + Arrays.toString(data[i]) + "\n");
     	}
     	return returnString.toString();
+    }
+
+    public Configuration getConfiguration() {
+        return configuration;
+    }
+
+    public void setConfiguration(Configuration configuration) {
+        this.configuration = configuration;
     }
 }

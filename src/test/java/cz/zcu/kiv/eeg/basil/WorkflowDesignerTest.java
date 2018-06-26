@@ -43,17 +43,10 @@ public class WorkflowDesignerTest {
     @Test
     public void testBlock() throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
         JSONArray blocksArray=new Workflow(ClassLoader.getSystemClassLoader(),":cz.zcu.kiv.eeg.basil",null,"").initializeBlocks();
-        assert blocksArray.length()==9;
+        assert blocksArray.length()==7;
     }
 
 
-    @Test
-    public void testWorkflow() throws IOException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException, FieldMismatchException {
-        String json=FileUtils.readFileToString(new File("src/test/resources/averaging_workflow.json"));
-        JSONObject jsonObject = new JSONObject(json);
 
-        JSONArray jsonArray = new Workflow(ClassLoader.getSystemClassLoader(), ":cz.zcu.kiv.eeg.basil",null,"src/test/resources/data").execute(jsonObject,"test_result");
-        assert jsonArray !=null;
-    }
 }
 

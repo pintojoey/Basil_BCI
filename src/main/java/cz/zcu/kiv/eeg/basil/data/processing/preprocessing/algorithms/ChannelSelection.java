@@ -17,13 +17,10 @@ import static cz.zcu.kiv.WorkflowDesigner.Type.STRING_ARRAY;
  * 
  * Created by Tomas Prokop on 01.08.2017.
  */
-@BlockType(type="ChannelSelection",family = "Preprocessing")
 public class ChannelSelection implements IPreprocessing {
 
-    @BlockProperty(name="channels",type = STRING_ARRAY)
 	private List<String> selectedChannels;
 
-    @BlockOutput(name="ChannelSelection",type="IPreprocessing")
     private ChannelSelection channelSelection;
 
     public ChannelSelection(){
@@ -38,7 +35,6 @@ public class ChannelSelection implements IPreprocessing {
         this.selectedChannels = selectedChannels;
     }
 
-    @BlockExecute
     private void process(){
         channelSelection=this;
     }

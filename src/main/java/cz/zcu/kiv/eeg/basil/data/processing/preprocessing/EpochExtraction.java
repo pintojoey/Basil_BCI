@@ -21,13 +21,10 @@ import static cz.zcu.kiv.WorkflowDesigner.Type.NUMBER;
  * @author lvareka
  *
  */
-@BlockType(type="EpochExtraction",family = "Preprocessing")
 public class EpochExtraction implements ISegmentation {
 
-    @BlockProperty(name="PreStimulus onset",type=NUMBER, defaultValue = "0")
 	private int preStimulus;  /* time before the stimulus onset in ms */
 
-    @BlockProperty(name="PostStimulus onset",type=NUMBER, defaultValue = "0")
 	private int postStimulus; /* time after the stimulus onset in ms */
 
 
@@ -40,12 +37,10 @@ public class EpochExtraction implements ISegmentation {
 		this.preStimulus = preStimulus;
 		this.postStimulus = postStimulus;
 	}
-	@BlockExecute
 	private void process(){
 		epochExtraction=this;
 	}
 
-	@BlockOutput(name="EpochExtraction",type="ISegmentation")
     private ISegmentation epochExtraction;
 
 	@Override

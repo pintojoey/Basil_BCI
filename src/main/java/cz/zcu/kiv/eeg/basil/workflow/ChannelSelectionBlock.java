@@ -2,6 +2,9 @@ package cz.zcu.kiv.eeg.basil.workflow;
 
 import cz.zcu.kiv.WorkflowDesigner.Annotations.*;
 import cz.zcu.kiv.eeg.basil.data.processing.structures.EEGDataPackage;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import static cz.zcu.kiv.WorkflowDesigner.Type.STRING_ARRAY;
 
@@ -11,15 +14,57 @@ public class ChannelSelectionBlock {
     @BlockProperty(name="channels",type = STRING_ARRAY)
     private List<String> selectedChannels;
 
-    @BlockInput(name = "EEGData", type = "DataProvider")
-    private List<EEGDataPackage> eegDataPackagesInput;
+    @BlockInput(name = "EEGData", type = "EEGData[]")
+    @BlockOutput(name = "EEGData", type = "EEGData[]")
+    private List<EEGDataPackage> eegDataList;
 
-    @BlockOutput(name = "EEGData", type = "DataProvider")
-    private List<EEGDataPackage> eegDataPackagesOutput;
 
     @BlockExecute
-    private void process(){
+    public void process() throws Exception {
+        for(EEGDataPackage eegData:eegDataList){
+            String[] channels = eegData.getChannelNames();
+            if (channels == null || channels.length == 0)
+                throw new Exception("No channels Selected"); // no channel selection possible - names missing in the data
+
+            List<String> currentChannelNames  = new ArrayList<>(Arrays.asList(channels));
+            List<String> selectedChannelNames = new ArrayList<>(selectedChannels);
+            List<Integer> selectedPointers    = new ArrayList<>();
+
+            for (String selectedChannel : selectedChannels) {
+                int index = currentChannelNames.indexOf(selectedChannel);
+                if(index > -1)
+                    selectedPointers.add(index);
+                else
+                    selectedChannelNames.remove(selectedChannel);
+            }
+
+            double[][] originalEegData = eegData.getData();
+            double[][] reducedData = new double[selectedPointers.size()][originalEegData[0].length];
+
+            for (int i = 0; i < selectedPointers.size(); i++) {
+                System.arraycopy(originalEegData[selectedPointers.get(i)], 0, reducedData[i], 0, originalEegData[0].length);
+            }
+
+            eegData.setData(reducedData);
+            String[] array = new String[selectedChannelNames.size()];
+            eegData.setChannelNames(selectedChannelNames.toArray(array));
+        }
 
     }
 
+    public List<String> getSelectedChannels() {
+        return selectedChannels;
+    }
+
+    public void setSelectedChannels(List<String> selectedChannels) {
+        this.selectedChannels = selectedChannels;
+    }
+
+    public List<EEGDataPackage> getEegDataList() {
+        return eegDataList;
+    }
+
+    public void setEegDataList(List<EEGDataPackage> eegDataList) {
+        this.eegDataList = eegDataList;
+    }
 }

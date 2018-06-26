@@ -1,6 +1,4 @@
-package cz.zcu.kiv.eeg.basil.data.processing.preprocessing;
-
-import java.util.List;
+package cz.zcu.kiv.eeg.basil.workflow;
 
 import cz.zcu.kiv.WorkflowDesigner.Annotations.BlockExecute;
 import cz.zcu.kiv.WorkflowDesigner.Annotations.BlockInput;
@@ -8,30 +6,35 @@ import cz.zcu.kiv.WorkflowDesigner.Annotations.BlockOutput;
 import cz.zcu.kiv.WorkflowDesigner.Annotations.BlockType;
 import cz.zcu.kiv.eeg.basil.data.processing.structures.EEGDataPackage;
 import cz.zcu.kiv.eeg.basil.data.providers.messaging.EEGMarker;
+import cz.zcu.kiv.eeg.basil.gui.ShowChart;
+
+import java.util.List;
 
 /**
  * Average a list of epochs using one stimuli marker
  * @author lvareka
  *
  */
-public class Averaging {
+@BlockType(type="AveragingBlock",family = "Preprocessing")
+public class AveragingBlock {
 
+	@BlockInput(name = "Markers",type="EEGMarker[]")
 	private List<EEGMarker> markers;
 
-    private Averaging averaging;
+	@BlockInput(name = "EEGData", type = "EEGData[]")
+	private List<EEGDataPackage> epochs;
 
-	public Averaging(){
+	@BlockOutput(name = "EEGData", type = "EEGData")
+	private EEGDataPackage eegData;
+
+	public AveragingBlock(){
 		//Required Empty Default Constructor for Workflow Designer
 	}
 
-	private void process(){
-	    averaging=this;
+	@BlockExecute
+    public void process(){
+	    eegData=average(epochs);
     }
-	
-	public Averaging(List<EEGMarker> markers) {
-		this.markers = markers;
-		
-	}
 
 	public EEGDataPackage average(List<EEGDataPackage> epochs) {
 		if (epochs == null || epochs.size() == 0 || this.markers == null)
@@ -63,7 +66,36 @@ public class Averaging {
 			}
 		}
 
-		EEGDataPackage averagePackage = new EEGDataPackage(average, markers, epochs.get(0).getChannelNames(), epochs.get(0).getMetadata());
-		return averagePackage;
+        ShowChart showChart = new ShowChart("EEG signal visualization");
+            showChart.update(average, epochs.get(0).getChannelNames());
+            int i=-1;
+            while(i<0){
+                i++;i--;
+            }
+        return new EEGDataPackage(average, markers, epochs.get(0).getChannelNames());
 	}
+
+    public List<EEGMarker> getMarkers() {
+        return markers;
+    }
+
+    public void setMarkers(List<EEGMarker> markers) {
+        this.markers = markers;
+    }
+
+    public List<EEGDataPackage> getEpochs() {
+        return epochs;
+    }
+
+    public void setEpochs(List<EEGDataPackage> epochs) {
+        this.epochs = epochs;
+    }
+
+    public EEGDataPackage getEegData() {
+        return eegData;
+    }
+
+    public void setEegData(EEGDataPackage eegData) {
+        this.eegData = eegData;
+    }
 }

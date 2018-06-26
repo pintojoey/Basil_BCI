@@ -17,7 +17,6 @@ import cz.zcu.kiv.eeg.basil.data.providers.messaging.EEGStartMessage;
  * @author lvareka
  *
  * */
-@BlockType(type="Buffer",family = "Preprocessing")
 public class Buffer implements IBuffer {
 
 	/**
@@ -40,10 +39,8 @@ public class Buffer implements IBuffer {
 	 */
 	private  EEGStartMessage metadata;
 
-	@BlockOutput(name="Buffer",type = "IBuffer")
 	private IBuffer buffer;
 
-	@BlockExecute
     private void process(){
 	    buffer=this;
     }

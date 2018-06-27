@@ -64,10 +64,11 @@ public class EEGDataPackage {
 		this.channelNames = channelNames;
 	}
 
-    public EEGDataPackage(double[][] data, List<EEGMarker> markers, String[] channelNames) {
+    public EEGDataPackage(double[][] data, List<EEGMarker> markers, String[] channelNames,Configuration configuration) {
         this.data=data;
         this.markers=markers;
         this.channelNames=channelNames;
+        this.configuration=configuration;
     }
 
     /**

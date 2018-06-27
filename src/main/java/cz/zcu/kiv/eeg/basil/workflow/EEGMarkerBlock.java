@@ -5,6 +5,7 @@ import cz.zcu.kiv.WorkflowDesigner.Annotations.BlockOutput;
 import cz.zcu.kiv.WorkflowDesigner.Annotations.BlockProperty;
 import cz.zcu.kiv.WorkflowDesigner.Annotations.BlockType;
 import cz.zcu.kiv.WorkflowDesigner.Type;
+import cz.zcu.kiv.eeg.basil.data.providers.messaging.EEGMarker;
 
 
 /**
@@ -17,8 +18,8 @@ import cz.zcu.kiv.WorkflowDesigner.Type;
  * experiments
  * 
  */
-@BlockType(type="EEGMarker",family = "Preprocessing")
-public class EEGMarker {
+@BlockType(type="EEGMarkerBlock",family = "Preprocessing")
+public class EEGMarkerBlock {
 
     /**
      * Marker name
@@ -35,13 +36,13 @@ public class EEGMarker {
     @BlockOutput(name="marker",type="EEGMarker")
     EEGMarker eegMarker;
 
-    public EEGMarker(){
+    public EEGMarkerBlock(){
         //Required Emtpy Default Constructor for Workflow Designer
     }
 
     @BlockExecute
     private void process(){
-        eegMarker=this;
+        eegMarker=new EEGMarker(name,offset);
     }
 
     /**
@@ -49,7 +50,7 @@ public class EEGMarker {
      * @param name marker name
      * @param offset marker offset
      */
-    public EEGMarker(String name, int offset) {
+    public EEGMarkerBlock(String name, int offset) {
         this.name = name;
         this.offset = offset;
     }

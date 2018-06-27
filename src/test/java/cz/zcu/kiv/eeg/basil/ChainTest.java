@@ -46,64 +46,66 @@ import java.util.Arrays;
  **********************************************************************************************************************/
 public class ChainTest {
 
-//    @Test
-//    public void testBlock() {
-//        OffLineDataProviderBlock dataProviderBlock=new OffLineDataProviderBlock();
-//        dataProviderBlock.setEegFileInputs(Arrays.asList(new File[]{new File("src/test/resources/data/P300/LED_28_06_2012_104.eeg")}));
-//        try {
-//            dataProviderBlock.process();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        assert dataProviderBlock.getEegDataList().get(0).getData()!=null;
-//        assert dataProviderBlock.getEegDataList().get(0).getChannelNames()!=null;
-//
-//        int oldChannels = dataProviderBlock.getEegDataList().get(0).getChannelNames().length;
-//
-//        ChannelSelectionBlock channelSelectionBlock=new ChannelSelectionBlock();
-//        channelSelectionBlock.setEegDataList(dataProviderBlock.getEegDataList());
-//        channelSelectionBlock.setSelectedChannels(Arrays.asList(new String[]{"Cz","Fz","Pz"}));
-//
-//        try {
-//            channelSelectionBlock.process();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            assert false;
-//        }
-//
-//        assert  channelSelectionBlock.getEegDataList().get(0).getData()!=null;
-//
-//        int newChannels = channelSelectionBlock.getEegDataList().get(0).getChannelNames().length;
-//
-//        assert oldChannels>newChannels;
-//
-//        BaselineCorrectionBlock baselineCorrectionBlock=new BaselineCorrectionBlock();
-//        baselineCorrectionBlock.setEegDataList(channelSelectionBlock.getEegDataList());
-//        baselineCorrectionBlock.setStartTime(0);
-//        baselineCorrectionBlock.setEndTime(100);
-//
-//        baselineCorrectionBlock.process();
-//
-//        assert baselineCorrectionBlock.getEegDataList().size()!=0;
-//
-//        EpochExtractionBlock epochExtractionBlock = new EpochExtractionBlock();
-//        epochExtractionBlock.setPreStimulus(100);
-//        epochExtractionBlock.setPostStimulus(1000);
-//        epochExtractionBlock.setEegDataList(baselineCorrectionBlock.getEegDataList());
-//
-//        epochExtractionBlock.process();
-//
-//        assert epochExtractionBlock.getEpochs()!=null&&epochExtractionBlock.getEpochs().size()>0;
-//
-//        AveragingBlock averagingBlock = new AveragingBlock();
-//        averagingBlock.setEpochs(epochExtractionBlock.getEpochs());
-//        averagingBlock.setMarkers(Arrays.asList(new EEGMarker("S  2", -1)));
-//        averagingBlock.process();
-//
-//        assert averagingBlock.getEegData()!=null;
-//
-//
-//    }
+    @Test
+    public void testBlock() {
+        OffLineDataProviderBlock dataProviderBlock=new OffLineDataProviderBlock();
+        dataProviderBlock.setEegFileInputs(Arrays.asList(new File[]{new File("src/test/resources/data/P300/LED_28_06_2012_104.eeg")}));
+        try {
+            dataProviderBlock.process();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        assert dataProviderBlock.getEegDataPackageList().getEegDataPackage().get(0).getData()!=null;
+        assert dataProviderBlock.getEegDataPackageList().getEegDataPackage().get(0).getChannelNames()!=null;
+
+        int oldChannels = dataProviderBlock.getEegDataPackageList().getEegDataPackage().get(0).getChannelNames().length;
+
+        ChannelSelectionBlock channelSelectionBlock=new ChannelSelectionBlock();
+        channelSelectionBlock.setEegDataPackageList(dataProviderBlock.getEegDataPackageList());
+        channelSelectionBlock.setSelectedChannels(Arrays.asList(new String[]{"Cz","Fz","Pz"}));
+
+        try {
+            channelSelectionBlock.process();
+        } catch (Exception e) {
+            e.printStackTrace();
+            assert false;
+        }
+
+        assert  channelSelectionBlock.getEegDataPackageList().getEegDataPackage().get(0).getData()!=null;
+
+        int newChannels = channelSelectionBlock.getEegDataPackageList().getEegDataPackage().get(0).getChannelNames().length;
+
+        assert oldChannels>newChannels;
+
+
+
+        EpochExtractionBlock epochExtractionBlock = new EpochExtractionBlock();
+        epochExtractionBlock.setPreStimulus(100);
+        epochExtractionBlock.setPostStimulus(1000);
+        epochExtractionBlock.setEegDataPackageList(channelSelectionBlock.getEegDataPackageList());
+
+        epochExtractionBlock.process();
+
+        BaselineCorrectionBlock baselineCorrectionBlock=new BaselineCorrectionBlock();
+        baselineCorrectionBlock.setEegDataPackageList(epochExtractionBlock.getEegDataPackageList());
+        baselineCorrectionBlock.setStartTime(0);
+        baselineCorrectionBlock.setEndTime(100);
+
+        baselineCorrectionBlock.process();
+
+        assert baselineCorrectionBlock.getEegDataPackageList().getEegDataPackage().size()!=0;
+
+        assert epochExtractionBlock.getEpochs()!=null&&epochExtractionBlock.getEpochs().getEegDataPackage().size()>0;
+
+        AveragingBlock averagingBlock = new AveragingBlock();
+        averagingBlock.setEpochs(epochExtractionBlock.getEpochs());
+        averagingBlock.setMarkers(Arrays.asList(new EEGMarker("S  2", -1)));
+        averagingBlock.process();
+
+        assert averagingBlock.getEegData()!=null;
+
+
+    }
 
     @Test
     public void testWorkflow() throws IOException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException, FieldMismatchException {

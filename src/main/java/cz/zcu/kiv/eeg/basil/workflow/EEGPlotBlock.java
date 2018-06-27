@@ -13,38 +13,50 @@ import java.util.List;
 @BlockType(type="EEGPlot",family="Visualization")
 public class EEGPlotBlock {
 
-    @BlockInput(name = "EEGData", type = "EEGData")
-    private EEGDataPackage eegData;
+    @BlockInput(name = "EEGData", type = "EEGDataList")
+    private EEGDataPackageList eegDataList;
 
     @BlockExecute
     public Graph process(){
         Graph graph=new Graph();
         Layout layout=new Layout();
         layout.setTitle("EEG signal visualization");
+        Axis xAxis=new Axis();
+        xAxis.setMin(0);
+        xAxis.setMax(100);
+
+        Axis yAxis=new Axis();
+        yAxis.setMin(0);
+        yAxis.setMax(100);
+        layout.setXaxis(xAxis);
+        layout.setYaxis(yAxis);
         graph.setLayout(layout);
         List<Trace> traces=new ArrayList<>();
-        int channel=0;
-        for(String name:eegData.getChannelNames()){
-            Trace trace = new Trace();
-            trace.setName(name);
-            List<Point>points=new ArrayList<>();
-            double data[]=eegData.getData()[channel];
-            for(int i=0;i<data.length;i++){
-                Point point=new Point(new Coordinate((double)i,data[i]),"");
-                points.add(point);
+        for(EEGDataPackage eegData:eegDataList.getEegDataPackage()){
+            int channel=0;
+            for(String name:eegData.getChannelNames()){
+                Trace trace = new Trace();
+                trace.setName(name);
+                List<Point>points=new ArrayList<>();
+                double data[]=eegData.getData()[channel];
+                for(int i=0;i<data.length;i++){
+                    Point point=new Point(new Coordinate((double)i,data[i]),"");
+                    points.add(point);
+                }
+                trace.setPoints(points);
+                traces.add(trace);
+                channel++;
             }
-            trace.setPoints(points);
-            channel++;
         }
         graph.setTraces(traces);
         return graph;
     }
 
-    public EEGDataPackage getEegData() {
-        return eegData;
+    public EEGDataPackageList getEegDataList() {
+        return eegDataList;
     }
 
-    public void setEegData(EEGDataPackage eegData) {
-        this.eegData = eegData;
+    public void setEegDataList(EEGDataPackageList eegDataList) {
+        this.eegDataList = eegDataList;
     }
 }

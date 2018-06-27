@@ -26,9 +26,9 @@ public class BaselineCorrectionBlock {
     @BlockProperty(name="EndTime",type = NUMBER, defaultValue = "")
 	private double endTime;   /* in milliseconds */
 
-	@BlockInput(name = "EEGData", type = "EEGData[]")
-	@BlockOutput(name = "EEGData", type = "EEGData[]")
-	private List<EEGDataPackage> eegDataList=null;
+	@BlockInput(name = "EEGData", type = "EEGDataList")
+	@BlockOutput(name = "EEGData", type = "EEGDataList")
+	private EEGDataPackageList eegDataPackageList=null;
 
 	public BaselineCorrectionBlock(){
 		//Required Empty Default Constructor for Workflow Designer
@@ -36,7 +36,7 @@ public class BaselineCorrectionBlock {
 
 	@BlockExecute
 	public void process(){
-	    for(EEGDataPackage eegData:eegDataList){
+	    for(EEGDataPackage eegData:eegDataPackageList.getEegDataPackage()){
             double[][] data = eegData.getData();
 
             // for all channels
@@ -72,11 +72,11 @@ public class BaselineCorrectionBlock {
 		this.endTime = endTime;
 	}
 
-    public List<EEGDataPackage> getEegDataList() {
-        return eegDataList;
+    public EEGDataPackageList getEegDataPackageList() {
+        return eegDataPackageList;
     }
 
-    public void setEegDataList(List<EEGDataPackage> eegDataList) {
-        this.eegDataList = eegDataList;
+    public void setEegDataPackageList(EEGDataPackageList eegDataPackageList) {
+        this.eegDataPackageList = eegDataPackageList;
     }
 }

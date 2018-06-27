@@ -20,15 +20,15 @@ public class OffLineDataProviderBlock implements Serializable {
     private static final String VHDR_EXTENSION = ".vhdr";
     private static final String VMRK_EXTENSION = ".vmrk";
 
-    @BlockProperty(name = "EEG File", type = Type.FILE_ARAY)
+    @BlockProperty(name = "EEG File", type = Type.FILE_ARRAY)
     private List<File> eegFileInputs;
 
-    @BlockOutput(name = "EEGData", type = "EEGData[]")
-    private List<EEGDataPackage> eegDataList;
+    @BlockOutput(name = "EEGData", type = "EEGDataList")
+    private EEGDataPackageList eegDataPackageList;
 
     @BlockExecute
     public void process() throws IOException {
-        eegDataList=new ArrayList<>();
+        ArrayList<EEGDataPackage> eegDataList = new ArrayList<>();
         ByteOrder order = ByteOrder.LITTLE_ENDIAN;
         for(File eegFileInput:eegFileInputs){
             File vhdrFile = new File(eegFileInput.getParentFile().getAbsolutePath()+File.separator+eegFileInput.getName().split("\\.")[0]+VHDR_EXTENSION);
@@ -64,6 +64,7 @@ public class OffLineDataProviderBlock implements Serializable {
 
             eegDataList.add(eegData);
         }
+        eegDataPackageList=new EEGDataPackageList(eegDataList);
     }
 
     private String getProperty(String propName, DataTransformer dt) {
@@ -87,11 +88,11 @@ public class OffLineDataProviderBlock implements Serializable {
         this.eegFileInputs = eegFileInputs;
     }
 
-    public List<EEGDataPackage> getEegDataList() {
-        return eegDataList;
+    public EEGDataPackageList getEegDataPackageList() {
+        return eegDataPackageList;
     }
 
-    public void setEegDataList(List<EEGDataPackage> eegDataList) {
-        this.eegDataList = eegDataList;
+    public void setEegDataPackageList(EEGDataPackageList eegDataPackageList) {
+        this.eegDataPackageList = eegDataPackageList;
     }
 }

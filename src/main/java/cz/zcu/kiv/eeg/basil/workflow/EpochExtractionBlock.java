@@ -21,18 +21,18 @@ public class EpochExtractionBlock {
     @BlockProperty(name="PostStimulus onset",type=NUMBER, defaultValue = "0")
     private int postStimulus; /* time after the stimulus onset in ms */
 
-    @BlockInput(name = "EEGData", type = "EEGData[]")
-    private List<EEGDataPackage> eegDataList;
+    @BlockInput(name = "EEGData", type = "EEGDataList")
+    private EEGDataPackageList eegDataPackageList;
 
-    @BlockOutput(name = "Epochs", type = "EEGData[]")
-    private List<EEGDataPackage> epochs;
+    @BlockOutput(name = "Epochs", type = "EEGDataList")
+    private EEGDataPackageList epochs;
 
 
     @BlockExecute
     public void process(){
 
-        epochs = new ArrayList<>();
-        for(EEGDataPackage eegData:eegDataList){
+        ArrayList<EEGDataPackage> epochsList = new ArrayList<>();
+        for(EEGDataPackage eegData:eegDataPackageList.getEegDataPackage()){
 
             List<EEGMarker> markers = eegData.getMarkers();
             double[][]        data  = eegData.getData();
@@ -51,10 +51,11 @@ public class EpochExtractionBlock {
                 for (int i = 0; i < data.length; i++) {
                     System.arraycopy(data[i], offset + startSample , epochData[i], 0, endSample - startSample);
                 }
-                epochs.add(new EEGDataPackage(epochData, Arrays.asList(currentMarker), eegData.getChannelNames()));
+
+                epochsList.add(new EEGDataPackage(epochData, Arrays.asList(currentMarker), eegData.getChannelNames(),eegData.getConfiguration()));
             }
         }
-
+        epochs=new EEGDataPackageList(epochsList);
     }
 
     public int getPreStimulus() {
@@ -73,19 +74,19 @@ public class EpochExtractionBlock {
         this.postStimulus = postStimulus;
     }
 
-    public List<EEGDataPackage> getEegDataList() {
-        return eegDataList;
+    public EEGDataPackageList getEegDataPackageList() {
+        return eegDataPackageList;
     }
 
-    public void setEegDataList(List<EEGDataPackage> eegDataList) {
-        this.eegDataList = eegDataList;
+    public void setEegDataPackageList(EEGDataPackageList eegDataPackageList) {
+        this.eegDataPackageList = eegDataPackageList;
     }
 
-    public List<EEGDataPackage> getEpochs() {
+    public EEGDataPackageList getEpochs() {
         return epochs;
     }
 
-    public void setEpochs(List<EEGDataPackage> epochs) {
+    public void setEpochs(EEGDataPackageList epochs) {
         this.epochs = epochs;
     }
 }

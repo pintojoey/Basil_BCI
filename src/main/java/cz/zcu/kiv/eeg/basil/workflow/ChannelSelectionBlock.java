@@ -14,14 +14,14 @@ public class ChannelSelectionBlock {
     @BlockProperty(name="channels",type = STRING_ARRAY)
     private List<String> selectedChannels;
 
-    @BlockInput(name = "EEGData", type = "EEGData[]")
-    @BlockOutput(name = "EEGData", type = "EEGData[]")
-    private List<EEGDataPackage> eegDataList;
+    @BlockInput(name = "EEGData", type = "EEGDataList")
+    @BlockOutput(name = "EEGData", type = "EEGDataList")
+    private EEGDataPackageList eegDataPackageList;
 
 
     @BlockExecute
     public void process() throws Exception {
-        for(EEGDataPackage eegData:eegDataList){
+        for(EEGDataPackage eegData:eegDataPackageList.getEegDataPackage()){
             String[] channels = eegData.getChannelNames();
             if (channels == null || channels.length == 0)
                 throw new Exception("No channels Selected"); // no channel selection possible - names missing in the data
@@ -60,11 +60,11 @@ public class ChannelSelectionBlock {
         this.selectedChannels = selectedChannels;
     }
 
-    public List<EEGDataPackage> getEegDataList() {
-        return eegDataList;
+    public EEGDataPackageList getEegDataPackageList() {
+        return eegDataPackageList;
     }
 
-    public void setEegDataList(List<EEGDataPackage> eegDataList) {
-        this.eegDataList = eegDataList;
+    public void setEegDataPackageList(EEGDataPackageList eegDataPackageList) {
+        this.eegDataPackageList = eegDataPackageList;
     }
 }

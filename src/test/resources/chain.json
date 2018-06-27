@@ -5,49 +5,30 @@
             "block1": 1,
             "connector1": [
                 "EEGData",
-                "output",
-                0
+                "output"
             ],
             "block2": 2,
             "connector2": [
                 "EEGData",
-                "input",
-                0
+                "input"
             ]
         },
         {
-            "id": 2,
-            "block1": 2,
+            "id": 6,
+            "block1": 8,
             "connector1": [
                 "EEGData",
-                "output",
-                0
+                "output"
             ],
-            "block2": 3,
+            "block2": 7,
             "connector2": [
                 "EEGData",
-                "input",
-                0
-            ]
-        },
-        {
-            "id": 3,
-            "block1": 3,
-            "connector1": [
-                "EEGData",
-                "output",
-                0
-            ],
-            "block2": 4,
-            "connector2": [
-                "EEGData",
-                "input",
-                0
+                "input"
             ]
         },
         {
             "id": 4,
-            "block1": 7,
+            "block1": 9,
             "connector1": [
                 "marker",
                 "output"
@@ -60,28 +41,39 @@
             ]
         },
         {
-            "id": 5,
-            "block1": 4,
-            "connector1": [
-                "Epochs",
-                "output",
-                0
-            ],
-            "block2": 8,
-            "connector2": [
-                "EEGData",
-                "input",
-                0
-            ]
-        },
-        {
-            "id": 6,
-            "block1": 8,
+            "id": 7,
+            "block1": 2,
             "connector1": [
                 "EEGData",
                 "output"
             ],
-            "block2": 6,
+            "block2": 4,
+            "connector2": [
+                "EEGData",
+                "input"
+            ]
+        },
+        {
+            "id": 8,
+            "block1": 4,
+            "connector1": [
+                "Epochs",
+                "output"
+            ],
+            "block2": 3,
+            "connector2": [
+                "EEGData",
+                "input"
+            ]
+        },
+        {
+            "id": 9,
+            "block1": 3,
+            "connector1": [
+                "EEGData",
+                "output"
+            ],
+            "block2": 8,
             "connector2": [
                 "EEGData",
                 "input"
@@ -91,8 +83,8 @@
     "blocks": [
         {
             "id": 1,
-            "x": -476.187380497132,
-            "y": -118.13193116634798,
+            "x": -448,
+            "y": -181,
             "type": "OffLineDataProvider",
             "module": "basil_bci-0.1.0-jar-with-dependencies.jar:cz.zcu.kiv.eeg.basil",
             "values": {
@@ -103,20 +95,22 @@
         },
         {
             "id": 2,
-            "x": -316.6940726577438,
-            "y": -116.348948374761,
+            "x": -279,
+            "y": -179,
             "type": "ChannelSelection",
             "module": "basil_bci-0.1.0-jar-with-dependencies.jar:cz.zcu.kiv.eeg.basil",
             "values": {
                 "channels": [
-                    ""
+                    "Cz",
+                    "Pz",
+                    "Fz"
                 ]
             }
         },
         {
             "id": 3,
-            "x": -151.79636711281074,
-            "y": -130.61281070745696,
+            "x": 85.49606862044317,
+            "y": -190.26590421729804,
             "type": "BaselineCorrection",
             "module": "basil_bci-0.1.0-jar-with-dependencies.jar:cz.zcu.kiv.eeg.basil",
             "values": {
@@ -126,8 +120,8 @@
         },
         {
             "id": 4,
-            "x": 13.27151051625242,
-            "y": -131.39579349904398,
+            "x": -93.57183702644744,
+            "y": -194.13938527519656,
             "type": "EpochExtraction",
             "module": "basil_bci-0.1.0-jar-with-dependencies.jar:cz.zcu.kiv.eeg.basil",
             "values": {
@@ -137,30 +131,30 @@
         },
         {
             "id": 7,
-            "x": 12.035372848948327,
-            "y": -53.4130019120459,
-            "type": "EEGMarker",
-            "module": "basil_bci-0.1.0-jar-with-dependencies.jar:cz.zcu.kiv.eeg.basil",
-            "values": {
-                "Name": "S  2",
-                "Offset": "-1"
-            }
-        },
-        {
-            "id": 6,
-            "x": 351.76673040152957,
-            "y": -102.5793499043977,
+            "x": 358,
+            "y": -84,
             "type": "EEGPlot",
             "module": "basil_bci-0.1.0-jar-with-dependencies.jar:cz.zcu.kiv.eeg.basil",
             "values": {}
         },
         {
             "id": 8,
-            "x": 181.6722720661536,
-            "y": -102.1805295830153,
+            "x": 318.01680009108725,
+            "y": -178.24195036533033,
             "type": "AveragingBlock",
             "module": "basil_bci-0.1.0-jar-with-dependencies.jar:cz.zcu.kiv.eeg.basil",
             "values": {}
+        },
+        {
+            "id": 9,
+            "x": 120.07416146776018,
+            "y": -90.72761002116204,
+            "type": "EEGMarkerBlock",
+            "module": "basil_bci-0.1.0-jar-with-dependencies.jar:cz.zcu.kiv.eeg.basil",
+            "values": {
+                "Name": "S  2",
+                "Offset": "-1"
+            }
         }
     ]
 }

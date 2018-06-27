@@ -8,6 +8,7 @@ import cz.zcu.kiv.eeg.basil.data.processing.structures.EEGDataPackage;
 import cz.zcu.kiv.eeg.basil.data.providers.messaging.EEGMarker;
 import cz.zcu.kiv.eeg.basil.gui.ShowChart;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -21,11 +22,11 @@ public class AveragingBlock {
 	@BlockInput(name = "Markers",type="EEGMarker[]")
 	private List<EEGMarker> markers;
 
-	@BlockInput(name = "EEGData", type = "EEGData[]")
-	private List<EEGDataPackage> epochs;
+	@BlockInput(name = "EEGData", type = "EEGDataList")
+	private EEGDataPackageList epochs;
 
-	@BlockOutput(name = "EEGData", type = "EEGData")
-	private EEGDataPackage eegData;
+	@BlockOutput(name = "EEGData", type = "EEGDataList")
+	private EEGDataPackageList eegData;
 
 	public AveragingBlock(){
 		//Required Empty Default Constructor for Workflow Designer
@@ -33,7 +34,7 @@ public class AveragingBlock {
 
 	@BlockExecute
     public void process(){
-	    eegData=average(epochs);
+	    eegData=new EEGDataPackageList(Arrays.asList(average(epochs.getEegDataPackage())));
     }
 
 	public EEGDataPackage average(List<EEGDataPackage> epochs) {
@@ -65,14 +66,7 @@ public class AveragingBlock {
 				average[i][j] = average[i][j] / numberOfEpochs;
 			}
 		}
-
-        ShowChart showChart = new ShowChart("EEG signal visualization");
-            showChart.update(average, epochs.get(0).getChannelNames());
-            int i=-1;
-            while(i<0){
-                i++;i--;
-            }
-        return new EEGDataPackage(average, markers, epochs.get(0).getChannelNames());
+        return new EEGDataPackage(average, markers, epochs.get(0).getChannelNames(),epochs.get(0).getConfiguration());
 	}
 
     public List<EEGMarker> getMarkers() {
@@ -83,19 +77,19 @@ public class AveragingBlock {
         this.markers = markers;
     }
 
-    public List<EEGDataPackage> getEpochs() {
+    public EEGDataPackageList getEpochs() {
         return epochs;
     }
 
-    public void setEpochs(List<EEGDataPackage> epochs) {
+    public void setEpochs(EEGDataPackageList epochs) {
         this.epochs = epochs;
     }
 
-    public EEGDataPackage getEegData() {
+    public EEGDataPackageList getEegData() {
         return eegData;
     }
 
-    public void setEegData(EEGDataPackage eegData) {
+    public void setEegData(EEGDataPackageList eegData) {
         this.eegData = eegData;
     }
 }

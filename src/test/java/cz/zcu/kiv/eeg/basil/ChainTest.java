@@ -1,5 +1,6 @@
 package cz.zcu.kiv.eeg.basil;
 import cz.zcu.kiv.WorkflowDesigner.FieldMismatchException;
+import cz.zcu.kiv.WorkflowDesigner.Visualizations.Table;
 import cz.zcu.kiv.WorkflowDesigner.Workflow;
 import cz.zcu.kiv.eeg.basil.data.processing.preprocessing.Averaging;
 import cz.zcu.kiv.eeg.basil.data.processing.preprocessing.EpochExtraction;
@@ -103,6 +104,13 @@ public class ChainTest {
         averagingBlock.process();
 
         assert averagingBlock.getEegData()!=null;
+
+        EEGDataTableVisualizer eegDataTableVisualizer = new EEGDataTableVisualizer();
+        eegDataTableVisualizer.setEegDataPackageList(averagingBlock.getEegData());
+        Table table = eegDataTableVisualizer.proces();
+
+        assert table!=null;
+        System.out.println(table.toJSON().toString(4));
 
 
     }

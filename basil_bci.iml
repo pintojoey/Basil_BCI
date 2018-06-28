@@ -308,7 +308,7 @@
     <orderEntry type="library" name="Maven: nz.ac.waikato:weka:1.0" level="project" />
     <orderEntry type="library" name="Maven: biz.source_code.dsp:dsp-collection:1.0" level="project" />
     <orderEntry type="library" name="Maven: net.java.dev.jna:jna:4.2.2" level="project" />
-    <orderEntry type="library" name="Maven: cz.zcu.kiv:workflow_designer:1.9" level="project" />
+    <orderEntry type="library" name="Maven: cz.zcu.kiv:workflow_designer:1.10" level="project" />
     <orderEntry type="library" name="Maven: org.reflections:reflections:0.9.11" level="project" />
     <orderEntry type="library" name="Maven: org.javassist:javassist:3.21.0-GA" level="project" />
     <orderEntry type="library" name="Maven: org.json:json:20180130" level="project" />
